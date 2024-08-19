@@ -1,0 +1,76 @@
+#VRML_SIM R2022b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Parquetry.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/tables/protos/Table.proto"
+EXTERNPROTO "../protos/zeus_arm_test.proto"
+
+WorldInfo {
+  info [
+    "Willow Garage PR2 robot."
+    "The robot model includes 44 actuated joints, 6 cameras and 2 laser-scanners."
+  ]
+  title "PR2"
+  basicTimeStep 16
+  contactProperties [
+    ContactProperties {
+      material2 "pr2_material"
+      softCFM 1e-05
+    }
+  ]
+}
+Viewpoint {
+  orientation -0.08480963261484079 -0.06338847672327672 0.9943788147554424 4.600616187326473
+  position -0.935508928533765 3.2139684454115396 1.5121643053930647
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Floor {
+  tileSize 1 1
+  appearance Parquetry {
+  }
+}
+zeus_arm_test {
+  hidden translation_1 5.56837055009533e-06 2.3457121844927542e-07 -0.0001643861155851134
+  hidden rotation_1 0.9999999999611 -8.113689428533682e-07 8.783029722723164e-06 1.5708190923888687
+  hidden position_1_0 2.617525435586604e-05
+  hidden linearVelocity_1 -7.3428723416732e-06 3.1946979423979564e-05 -2.7921315343803607e-05
+  hidden angularVelocity_1 0.0001463790487193741 -1.0415920446141653e-05 -0.00011418044821739524
+  hidden rotation_2 0 0 1 2.6175245891905493e-05
+  hidden position_2_0 2.664025403952691e-05
+  hidden linearVelocity_2 -1.4831682898995742e-05 6.618222338203371e-05 -5.55198248488938e-05
+  hidden angularVelocity_2 1.0001435575528974 -2.074040074578422e-06 -0.00020535908668422621
+  hidden rotation_3 0 0 1 2.6640259142207624e-05
+  hidden position_3_0 0.0012814060459382937
+  hidden linearVelocity_3 -2.258011229497176e-05 0.00022006726973983074 -9.976746140352618e-05
+  hidden angularVelocity_3 2.000140746277417 2.478728302920375e-05 -0.00027279597973063965
+  hidden rotation_4 0 1 0 0.0012814060457682435
+  hidden position_4_0 0.0012752459686872497
+  hidden linearVelocity_4 -0.0020829097012082867 0.2502515519417035 -0.008232429745837634
+  hidden angularVelocity_4 2.0004207286273936 -0.016059034111767387 -1.0002696727194318
+  hidden rotation_5 0 1 0 0.0012752459685983605
+  hidden position_5_0 -0.0012730628684145748
+  hidden linearVelocity_5 -0.00012070395487767698 -0.002038763345722238 -0.00019873561576656492
+  hidden angularVelocity_5 2.0019629744334386 -0.03217902874341452 -2.0002651310190456
+  hidden rotation_6 0 -1 0 0.0012730628684588475
+  hidden position_6_0 -0.001270233078895143
+  hidden linearVelocity_6 -0.00021868755388059 -0.0043783255862971425 -0.00023239865174836728
+  hidden angularVelocity_6 2.0047492101987356 -0.048343303443326824 -3.000256887995562
+  hidden translation_7 -8.067459292271373e-08 0 0.0001270232737310003
+  hidden rotation_7 0 -1 0 0.0012702330790514392
+  hidden linearVelocity_7 -0.10026936817630429 -0.010058922490922106 -0.0006684210483294244
+  hidden angularVelocity_7 2.008780223746889 -0.06455655685448677 -4.0002431269172565
+}
+Table {
+  translation 1.5 0 0
+  rotation -2.9110807192479472e-08 0.013910303436853236 0.9999032470485799 -5.307179586466759e-06
+}
+Table {
+  translation -1.5 0 0
+  rotation -2.9110807192479472e-08 0.013910303436853236 0.9999032470485799 -5.307179586466759e-06
+  name "table 2"
+}

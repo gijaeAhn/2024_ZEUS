@@ -1,0 +1,293 @@
+#VRML_SIM R2022b utf8
+PROTO zeus_arm_test [
+  field SFVec3f    translation    -1.5 0 0.75
+  field SFRotation rotation       0 0 1 0
+  field SFString   name           "zeus_arm"
+  field SFString   controller      "gj_controller"
+  field MFString   controllerArgs  []
+]
+{
+  Robot {
+    translation    IS translation
+    rotation       IS rotation
+    controller     IS controller
+    controllerArgs IS controllerArgs
+    name IS name
+    children [
+      Transform {
+        translation 0 0 0 
+        rotation 0 0 1 -1.57079632679
+        children [
+          Solid {
+            translation 0 0 0
+            rotation 1 0 0 1.57079632679
+            name "base_link"
+            physics Physics {
+              mass 4.0
+              inertiaMatrix [0.00443333156 0.00443333156 0.0072 0 0 0]
+              centerOfMass [0 0 0]
+            }
+            children [
+              Transform {
+                translation  0 0 0
+                rotation  0 0 1 0
+                children [
+                  Shape {
+                    appearance DEF POS_APP Appearance {
+                      material Material {diffuseColor 0.5 0.5 0.5 specularColor 0.5 0.5 0.5}
+                    }
+                    geometry DEF base_link Mesh {url "./ARM_PARTS/meshes/base_link.stl"}
+                  }
+                ]
+              }
+              HingeJoint {
+                jointParameters HingeJointParameters {
+                  axis 0 1 0
+                  anchor 0 0 0 
+                  dampingConstant 0.0
+                  staticFriction 0.0
+                }
+                device [
+                  RotationalMotor {
+                    name "joint1"
+                    maxVelocity 3.15
+                    minPosition -6.28318530718
+                    maxPosition 6.28318530718
+                    maxTorque 150.0
+                  }
+                  PositionSensor { name "joint1Sensor" }
+                ]
+                endPoint Solid {
+                  translation 0 0 0
+                  rotation 0.0 1.0 0.0 0.0
+                  name "shoulder_link"
+                  physics Physics {
+                    density -1
+                    mass 3.7
+                    inertiaMatrix [0.010267495893 0.010267495893 0.00666 0 0 0]
+                    centerOfMass [0 0 0]
+                  }
+                  children [
+                    Transform {
+                      translation 0 0 0 
+                      rotation 0 0 1 0
+                      children [
+                        Shape {
+                          appearance DEF POS_APP Appearance {
+                            material Material {diffuseColor 0.5 0.5 0.5 specularColor 0.5 0.5 0.5}
+                          }
+                          geometry DEF shoulder_link Mesh {url "./ARM_PARTS/meshes/link1.stl"}
+                        }
+                      ]
+                    }
+                    HingeJoint {
+                      jointParameters HingeJointParameters {
+                        axis 1 0 0
+                        anchor 0 0.145 0 
+                        dampingConstant 0.0
+                        staticFriction 0.0
+                      }
+                      device [
+                        RotationalMotor {
+                          name "joint2"
+                          maxVelocity 3.15
+                          minPosition -6.28318530718
+                          maxPosition 6.28318530718
+                          maxTorque 150.0
+                        }
+                        PositionSensor { name "joint2Sensor" }
+                      ]
+                      endPoint Solid {
+                        translation 0 0 0
+                        rotation 0.0 1.0 0.0 0.0
+                        name "upper_arm_link"
+                        physics Physics {
+                          density -1
+                          mass 8.393
+                          inertiaMatrix [0.22689067591 0.22689067591 0.0151074 0 0 0]
+                          centerOfMass [0 0 0.28]
+                        }
+                        children [
+                          Transform {
+                            translation 0 0 0
+                            rotation 0 0 1 0
+                            children [
+                              Shape {
+                                appearance DEF POS_APP Appearance {
+                                  material Material {diffuseColor 0.5 0.5 0.5 specularColor 0.5 0.5 0.5}
+                                }
+                                geometry DEF elbow_link Mesh {url "./ARM_PARTS/meshes/link2.stl"}
+                              }
+                            ]
+                          }
+                          HingeJoint {
+                            jointParameters HingeJointParameters {
+                              axis 1 0 0
+                              anchor 0 0.635 0 
+                              dampingConstant 0.0
+                              staticFriction 0.0 
+                            }
+                            device [
+                              RotationalMotor {
+                                name "joint3"
+                                maxVelocity 3.15
+                                minPosition -3.14159265359
+                                maxPosition 3.14159265359
+                                maxTorque 150.0
+                              }
+                              PositionSensor { name "joint3Sensor" }
+                            ]
+                            endPoint Solid {
+                              translation 0 0 0
+                              rotation 0.0 1.0 0.0 0.0
+                              name "forearm_link"
+                              physics Physics {
+                                density -1
+                                mass 2.275
+                                inertiaMatrix [0.049443313556 0.049443313556 0.004095 0 0 0]
+                                centerOfMass [0.0 0.0 0.25]
+                              }
+                              children [
+                                Transform {
+                                  translation 0 0 0
+                                  rotation 0 0 1 0
+                                  children [
+                                    Shape {
+                                      appearance DEF POS_APP Appearance {
+                                        material Material {diffuseColor 0.5 0.5 0.5 specularColor 0.5 0.5 0.5}
+                                      }
+                                      geometry DEF elbow_link Mesh {url "./ARM_PARTS/meshes/link3.stl"}
+                                    }
+                                  ]
+                                }
+                                HingeJoint {
+                                  jointParameters HingeJointParameters {
+                                    axis 0 1 0
+                                    anchor 0 0 0 
+                                    dampingConstant 0.0
+                                    staticFriction 0.0 
+                                  }
+                                  device [
+                                    RotationalMotor {
+                                      name "joint4"
+                                      maxVelocity 3.2
+                                      minPosition -6.28318530718
+                                      maxPosition 6.28318530718
+                                      maxTorque 150
+                                    }
+                                    PositionSensor { name "joint4Sensor" }
+                                  ]
+                                  endPoint Solid {
+                                    translation 0 0 0
+                                    rotation 0.0 1.0 0.0 0.0
+                                    name "wrist_1_link"
+                                    physics Physics {
+                                      density -1
+                                      mass 1.219
+                                      inertiaMatrix [0.111172755531 0.111172755531 0.21942 0 0 0]
+                                      centerOfMass [0 0 0]
+                                    }
+                                    children [
+                                      Transform {
+                                        translation 0 0 0
+                                        rotation 0 0 1 0
+                                        children [
+                                          Shape {
+                                            appearance DEF POS_APP Appearance {
+                                              material Material {diffuseColor 0.5 0.5 0.5 specularColor 0.5 0.5 0.5}
+                                            }
+                                            geometry DEF elbow_link Mesh {url "./ARM_PARTS/meshes/link4.stl"}
+                                          }
+                                        ]
+                                      }
+                                      HingeJoint {
+                                        jointParameters HingeJointParameters {
+                                          axis 1 0 0
+                                          anchor 0 1.005 0 
+                                          dampingConstant 0.0
+                                          staticFriction 0.0 
+                                        }
+                                        device [
+                                          RotationalMotor {
+                                            name "joint5"
+                                            maxVelocity 3.2
+                                            minPosition -6.28318530718
+                                            maxPosition 6.28318530718
+                                            maxTorque 150
+                                          }
+                                          PositionSensor { name "joint5Sensor" }
+                                        ]
+                                        endPoint Solid {
+                                          translation 0 0 0
+                                          rotation 0.0 1.0 0.0 0.0
+                                          name "wrist_2_link"
+                                          physics Physics {
+                                            density -1
+                                            mass 1.219
+                                            inertiaMatrix [0.111172755531 0.111172755531 0.21942 0 0 0]
+                                            centerOfMass [0 0 0]
+                                          }
+                                          children [
+                                            Transform {
+                                              translation 0 0 0
+                                              rotation 0 0 1 0
+                                              children [
+                                                Shape {
+                                                  appearance DEF POS_APP Appearance {
+                                                    material Material {diffuseColor 0.5 0.5 0.5 specularColor 0.5 0.5 0.5}
+                                                  }
+                                                  geometry DEF elbow_link Mesh {url "./ARM_PARTS/meshes/link5.stl"}
+                                                }
+                                              ]
+                                            }
+                                            HingeJoint {
+                                              jointParameters HingeJointParameters {
+                                                axis 0 1 0
+                                                anchor -0.1 0 0
+                                                dampingConstant 0.0
+                                                staticFriction 0.0 
+                                              }
+                                              device [
+                                                RotationalMotor {
+                                                  name "joint6"
+                                                  maxVelocity 3.2
+                                                  minPosition -6.28318530718
+                                                  maxPosition 6.28318530718
+                                                  maxTorque 150
+                                                }
+                                                PositionSensor { name "joint6Sensor" }
+                                              ]
+                                              endPoint Solid {
+                                                translation 0 0 0
+                                                rotation 0.0 1.0 0.0 0.0
+                                                name "wrist_3_link"
+                                                physics Physics {
+                                                  density -1
+                                                  mass 0.1879
+                                                  inertiaMatrix [0.0171364731454 0.0171364731454 0.033822 0 0 0]
+                                                  centerOfMass [0 0 0]
+                                                }
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
