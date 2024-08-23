@@ -267,6 +267,22 @@ PROTO zeus_arm_test [
                                                   inertiaMatrix [0.0171364731454 0.0171364731454 0.033822 0 0 0]
                                                   centerOfMass [0 0 0]
                                                 }
+
+                                                children[
+                                                  Transform {
+                                                  translation 0 0 0
+                                                  rotation 0 0 1 0
+                                                  children [
+                                                    Shape {
+                                                      appearance DEF POS_APP Appearance {
+                                                        material Material {diffuseColor 0.5 0.5 0.5 specularColor 0.5 0.5 0.5}
+                                                      }
+                                                      geometry DEF elbow_link Mesh {url "./ARM_PARTS/meshes/link6.stl"}
+                                                    }
+                                              ]
+                                            }
+
+                                                ]
                                               }
                                             }
                                           ]

@@ -20,7 +20,7 @@ public:
         nh_ = std::make_shared<ros::NodeHandle>();
         
         // Create a publisher for the JointState messages
-        joint_pub_ = nh_->advertise<sensor_msgs::JointState>("/zeus_states", 1000);
+        joint_pub_ = nh_->advertise<sensor_msgs::JointState>("/zeus_command", 1000);
         
         // Set initial state
         current_angle_ = M_PI / 4;

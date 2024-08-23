@@ -17,7 +17,7 @@ echo $shared_objects
 # Move all found .so files to the target directory
 for shared_object in $shared_objects; 
 do 
-    mv "$shared_object" ../../lib/
+    mv "$shared_object" ../../lib/zeus_kinematics
 done
 
 # Clean up the build directory

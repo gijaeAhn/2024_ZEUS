@@ -23,7 +23,7 @@
 // ------------- //
 
 
-#define TIME_STEP       1000
+#define TIME_STEP       32
 #define DOF             6
 #define NEAR_VALUE      1e-6
 
@@ -39,7 +39,8 @@ class zeusController : public webots::Robot {
             double jointSpeed = 2.0;
             ros::init(argc, argv, "zeus_controller");
             nhPtr_ =  std::make_shared<ros::NodeHandle>();
-            jointSub_ = nhPtr_->subscribe("/zeus_states",1000, &zeusController::jointStateCallback, this);
+            commandSub_   = nhPtr_->subscribe("/zeus_command",1000, &zeusController::jointStateCallback, this);
+            realJointPub_ = nhPtr_->advertise<sensor_msgs::JointState>("/zeus_states",1000); 
 
             motors_[0] = std::shared_ptr<webots::Motor>(getMotor("joint1"), [](webots::Motor*){});
             motors_[1] = std::shared_ptr<webots::Motor>(getMotor("joint2"), [](webots::Motor*){});
@@ -89,7 +90,8 @@ class zeusController : public webots::Robot {
 
         // ROS SIDE //
         std::shared_ptr<ros::NodeHandle>      nhPtr_;
-        ros::Subscriber                       jointSub_;
+        ros::Subscriber                       commandSub_;
+        ros::Publisher                        realJointPub_;
 
 
         // WEBOTS SIDE //
@@ -117,10 +119,16 @@ class zeusController : public webots::Robot {
         }
 
         void webotsControlFunc(){
+
+            sensor_msgs::JointState realJointMsg;
+            realJointMsg.header.stamp = ros::Time::now();
             // Read Current Position
             for(size_t i = 0; i < DOF ; ++i){
                 sensorPosition_[i] = positionSensors_[i]->getValue();
+                realJointMsg.name.push_back("joint" + std::to_string(i));
+                realJointMsg.position.push_back(sensorPosition_[i]);
             }
+            realJointPub_.publish(realJointMsg);
 
             // Compare Current position and previous command
             

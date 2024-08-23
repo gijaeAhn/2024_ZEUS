@@ -181,6 +181,15 @@ Transform& Transform::rotateDotZNeg(double a) {
 }
 
 
+double Transform::getVal(int i,int j){
+  if (i < 0 || i > 3 || j < 0 || j > 3) {
+    printf("Invalid index\n");
+    return 0.0;
+  }
+  return this->t[i][j];
+
+}
+
 
 
 

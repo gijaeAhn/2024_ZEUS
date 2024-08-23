@@ -29,6 +29,8 @@ public:
   Transform &rotateDotYNeg(double a = 0);
   Transform &rotateDotZNeg(double a = 0);
 
+  double getVal(int i, int j);
+
 
   Transform &mDH(double alpha, double a, double theta, double d);
   void apply(double x[3]);
