@@ -3,7 +3,7 @@ PROTO zeus_arm_test [
   field SFVec3f    translation    -1.5 0 0.75
   field SFRotation rotation       0 0 1 0
   field SFString   name           "zeus_arm"
-  field SFString   controller      "gj_controller"
+  field SFString   controller      "zeus_controller"
   field MFString   controllerArgs  []
 ]
 {
@@ -122,7 +122,7 @@ PROTO zeus_arm_test [
                           }
                           HingeJoint {
                             jointParameters HingeJointParameters {
-                              axis 1 0 0
+                              axis -1 0 0
                               anchor 0 0.635 0 
                               dampingConstant 0.0
                               staticFriction 0.0 
@@ -202,7 +202,7 @@ PROTO zeus_arm_test [
                                       }
                                       HingeJoint {
                                         jointParameters HingeJointParameters {
-                                          axis 1 0 0
+                                          axis -1 0 0
                                           anchor 0 1.005 0 
                                           dampingConstant 0.0
                                           staticFriction 0.0 

@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-TARGETS = gj_controller.Makefile
+# TARGETS = gj_controller.Makefile
+TARGETS = zeus_controller.Makefile
 
 .PHONY: release debug profile clean
 
