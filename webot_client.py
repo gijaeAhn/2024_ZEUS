@@ -25,6 +25,8 @@ class WebotsAgent(Agent) :
     def __init__(self) :
 
         self.initial_pose = WebotsConfig.initPose
+        
+
 
 
 
