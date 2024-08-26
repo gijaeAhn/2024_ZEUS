@@ -1,4 +1,8 @@
 from abc import ABC, abstractmethod
+from fsm import FSM
+from endeffector import endEffector
+
+import rospy
 
 
 
@@ -6,62 +10,48 @@ from abc import ABC, abstractmethod
 class Agent(ABC):
 
     def __init__(self,name):
-        self.name = name
+        self._name = name
 
         # Init Pose should be updated (in config)
-        self.initPose = None
+        self._initPose = None
+
+        self._jointNames = []
+
+        self._fsm = FSM()
+
+        self._EE = endEffector()
+
+        self._DOF = 6
+
+        self.rate1 = rospy.Rate(10)
         
-        self.lidClosed = True
+        self.rate2 = rospy.Rate(20)
 
-        self.state = 'idle'
-
-        self.fsm = self._initialize_fsm()
+        self.rate3 = rospy.Rate(30)
 
 
- # ------------------------ FSM Initialization ------------------------
+        self._curJoint = None
 
-    def _initializeFsm_(self):
+        self._curTrans = None
 
-        return {
-            'idle': {
-                'hri_start' : 'hri_mod',
-                'move': 'moving',
-                'greet': 'greeting'
-            },
-            'hri_mod' : {
-                'hri_end' : 'idle'
-            },
-            'moving': {
-                'stop': 'idle',
-                'shake': 'shaking',
-            },
-            'greeting': {
-                'finish_greet': 'idle',
-            },
-            'shaking': {
-                'finish_shake': 'moving',
-            }
-        }
+        self._commandJoint = None
 
-    def handleEvent(self, event):
+        self._commandTrans = None
 
-        if event in self.fsm[self.state]:
-            new_state = self.fsm[self.state][event]
-            print(f"Transitioning from {self.state} to {new_state} on event '{event}'")
-            self.state = new_state
-        else:
-            print(f"Failed to handle '{event}' in state '{self.state}'")
 
 
 #--------------------------- Action Part ----------------------
 
     @abstractmethod
-    def initial_pose(self):
-        self.movePose(self.initPose)
+    def movePoseT(self,Transform) :
+        pass
 
     @abstractmethod
-    def movePose(self,Transform) :
+    def movePoseA(self,Angle) :
         pass
+
+    def moveInitpose(self):
+        self.movePoseA(self.initPose)
 
     @abstractmethod
     def moveX(self,xDistance) :
@@ -150,6 +140,14 @@ class Agent(ABC):
     @abstractmethod
     def selectMenu(self,source):
         pass
+
+
+
+# ------------------------- Internal param Setting ----------------------
+
+    def setJointNames(self,namelist):
+        
+        self._jointNames = namelist
 
 
 

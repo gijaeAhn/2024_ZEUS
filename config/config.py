@@ -6,8 +6,15 @@ class WebotsConfig :
     TIME_STEP = 0.01
     
 
+
+    smallCommandStep = 0.01
+    bigCommandStep = 0.1
+
+# -----------------------------------------------------
+
     initPose = [0,0,0,0,0,0]
 
+    defaultAngleVelocity = [2.0,2.0,2.0,2.0,2.0,2.0]
 
 # ----------- PREDEFINED POSITIONS  -------------------
 
