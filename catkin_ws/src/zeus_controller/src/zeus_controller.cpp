@@ -39,7 +39,7 @@ class zeusController : public webots::Robot {
             double jointSpeed = 2.0;
             ros::init(argc, argv, "zeus_controller");
             nhPtr_ =  std::make_shared<ros::NodeHandle>();
-            commandSub_   = nhPtr_->subscribe("/zeus_command",1000, &zeusController::jointStateCallback, this);
+            commandSub_   = nhPtr_->subscribe("/zeus/webots/jointCommand",1000, &zeusController::jointStateCallback, this);
             realJointPub_ = nhPtr_->advertise<sensor_msgs::JointState>("/zeus_states",1000); 
 
             motors_[0] = std::shared_ptr<webots::Motor>(getMotor("joint1"), [](webots::Motor*){});

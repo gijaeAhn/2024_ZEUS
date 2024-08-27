@@ -403,12 +403,6 @@ std::vector<double> to_quatp(const Transform &t) {
 void getAngularVelocityTensor(const Transform &adot, const Transform &ainv, double* av){
   Transform w = adot*ainv;
 
-/*
-  printf("W matrix:\n");
-  printf("%.2f %.2f %.2f\n",w(0,0),w(1,0),w(2,0));
-  printf("%.2f %.2f %.2f\n",w(0,1),w(1,1),w(2,1));
-  printf("%.2f %.2f %.2f\n",w(0,2),w(1,2),w(2,2));
-*/
 
 //pointer error here
   av[0]=w(1,2);

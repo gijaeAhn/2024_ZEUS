@@ -8,7 +8,7 @@ class webotsEE(endEffector) :
     
     def __init__(self) :
 
-
+        self._eeCommandPub = rospy.Publisher('/zeus/webots/eeCommand',String,queue_size=10)
          
     def open(self) :
          pass

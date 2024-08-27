@@ -2,7 +2,7 @@
 
 
 from .transform import *
-from .zeus_kinematics import *
+from .zeus_kinematics_solver import *
 
 
 

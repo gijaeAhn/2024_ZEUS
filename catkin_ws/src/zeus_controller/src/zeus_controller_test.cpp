@@ -20,7 +20,7 @@ public:
         nh_ = std::make_shared<ros::NodeHandle>();
         
         // Create a publisher for the JointState messages
-        joint_pub_ = nh_->advertise<sensor_msgs::JointState>("/zeus_command", 1000);
+        joint_pub_ = nh_->advertise<sensor_msgs::JointState>("/zeus/webots/jointCommand", 1000);
         
         // Set initial state
         current_angle_ = M_PI / 4;
@@ -31,22 +31,37 @@ public:
     }
 
     void timerCallback(const ros::TimerEvent&) {
-        // Prepare the JointState message
-        sensor_msgs::JointState msg;
-        msg.header.stamp = ros::Time::now();
-        msg.name.push_back("joint1");  // Adjust the joint name as needed
-        msg.position.push_back(current_angle_);
-        
-        // Publish the joint state
-        joint_pub_.publish(msg);
-        
-        // Update the angle for next time
-        current_angle_ *= direction_;
-        if (std::abs(current_angle_) > M_PI / 4) {
-            direction_ *= -1;  // Change the direction
-            current_angle_ = M_PI / 4 * direction_;
-        }
+  
+    sensor_msgs::JointState msg;
+    msg.header.stamp = ros::Time::now(); 
+
+
+    std::vector<std::string> joints = {"joint1", "joint2", "joint3", "joint4", "joint5", "joint6"};
+    msg.name.insert(msg.name.end(), joints.begin(), joints.end());
+
+    std::vector<double> positions(6);
+    positions[0] = -0.2319595;
+    positions[1] =  0.156886;
+    positions[2] =  1.77;
+    positions[3] =  0.0;
+    positions[4] = 1.214719;
+    positions[5] = 0.0;
+
+
+    msg.position.insert(msg.position.end(), positions.begin(), positions.end());
+
+    // Publish the joint state
+    joint_pub_.publish(msg);
+
+
+    current_angle_ += direction_ * 0.1;  
+
+    // Check bounds and reverse direction if necessary
+    if (std::abs(current_angle_) > M_PI / 4) {
+        direction_ = -direction_;  // Reverse the direction
+        current_angle_ = M_PI / 4 * direction_;  // Ensure angle stays within bounds
     }
+}
 
 private:
     std::shared_ptr<ros::NodeHandle> nh_;

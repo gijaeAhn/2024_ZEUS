@@ -16,13 +16,14 @@ PROTO zeus_arm_test [
     children [
       Transform {
         translation 0 0 0 
-        rotation 0 0 1 -1.57079632679
+        rotation 0 0 1 1.57079632679
         children [
           Solid {
             translation 0 0 0
             rotation 1 0 0 1.57079632679
             name "base_link"
             physics Physics {
+              density -1
               mass 4.0
               inertiaMatrix [0.00443333156 0.00443333156 0.0072 0 0 0]
               centerOfMass [0 0 0]

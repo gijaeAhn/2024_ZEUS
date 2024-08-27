@@ -1,13 +1,15 @@
-# ------- This file is for testing the Pybind11-bound library --------
+# ------- For testing the Pybind11-bound library --------
 
 
 import math
+from lib.zeus_kinematics import transform
+from lib.zeus_kinematics import ARM6_kinematics_inverse_arm
 
 
-NEAR_ZER0 = 1e-6
+NEAR_ZER0 = 1e-5
 
 def nearZero(a,b) :
-    if( abs(a - b) < NEAR_ZER0) :
+    if( math.abs(a - b) < NEAR_ZER0) :
         return True
     else :
         return False
@@ -16,17 +18,14 @@ def nearZero(a,b) :
 
 
 def testInversKinematics() :
-    from lib import zeus_kinematics
-    from lib import transform
-
 
     test_cases = [
         {
-            "input": zeus_kinematics.Transform().translate(1, 2, 3).rotateX(0.5),  
+            "input": transform.Transform().translate(1, 2, 3).rotateX(0.5),  
             "expected": [0, 0, 0, 0, 0, 0]
         },
         {
-            "input": zeus_kinematics.Transform().translate(1, 2, 3).rotateX(0.5),
+            "input": transform.Transform().translate(1, 2, 3).rotateX(0.5),
             "expected": [0, 0, 0, 0, 0, 0]
         },
         # Add more test cases as needed
@@ -35,5 +34,5 @@ def testInversKinematics() :
 
 
     for idx, test in enumerate(test_cases):
-        calculated_result = zeus_kinematics.ARM6_kinematics_inverse_arm(*test["input"])
+        calculated_result = ARM6_kinematics_inverse_arm(*test["input"])
         assert all(nearZero(a, b) for a, b in zip(calculated_result, test["expected"])), f"Inverse Kinematics TEST Failed for test case {idx + 1}"

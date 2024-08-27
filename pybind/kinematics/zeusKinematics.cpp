@@ -31,9 +31,29 @@ Transform ARM6_kinematics_forward_arm(const double *q){
 
 
 
+
+// Modification Needed
+// Can't deal with x<0 area
+
 std::vector<double>
-ARM6_kinematics_inverse_arm(Transform trArm, const double *qOrg,bool wristRoll1){
+ARM6_kinematics_inverse_arm(Transform trArm){
   //SJ: quick and dirty IK (only works with vertically down orientation)
+
+
+  //Boundary Check
+  double boundaryCheck = sqrt(std::pow(trArm.getVal(0,3),2) 
+                            + std::pow(trArm.getVal(1,3),2) 
+                            + std::pow(trArm.getVal(2,3),2));
+  if(boundaryCheck > 0.925 ){
+    std::vector<double> qArm6_fail(6);
+    qArm6_fail[0] = 0.0;
+    qArm6_fail[1] = 0.0;
+    qArm6_fail[2] = 0.0;
+    qArm6_fail[3] = 0.0;
+    qArm6_fail[4] = 0.0;
+    qArm6_fail[5] = 0.0;
+    return qArm6_fail; 
+  }
 
   trArm=trArm.translate(-toolOffsetX-wristLength,0,-toolOffsetZ).rotateY(PI/2);
   Transform t1;
@@ -42,28 +62,14 @@ ARM6_kinematics_inverse_arm(Transform trArm, const double *qOrg,bool wristRoll1)
   double targetXY=sqrt(xEE[0]*xEE[0]+xEE[1]*xEE[1]);
   double armXY=sqrt(targetXY*targetXY-wristOffsetY*wristOffsetY);
   double armXZ=sqrt(xEE[2]*xEE[2] + armXY*armXY);
-
-  // printf("XEE:%f %f %f\n",xEE[0],xEE[1],xEE[2]);
-  // printf("TargetXY:%f ArmXY:%f ArmXZ:%f\n",targetXY, armXY,armXZ);
-
   double c_shoulderYawOffset=(armXY*armXY + targetXY*targetXY - wristOffsetY*wristOffsetY)/ (2.0*armXY*targetXY);
   double shoulderYaw = atan2(xEE[1],xEE[0])-acos(c_shoulderYawOffset);
-
-
-  // printf("ShoulderYaw: %f %f\n", atan2(xEE[1],xEE[0])*180.0/PI, shoulderYaw*180.0/PI) ;
-
   double shoulderPitch0=atan2(xEE[2],armXY);
-
-
   double c_elbow=(lowerArmLength*lowerArmLength + upperArmLength*upperArmLength - armXZ*armXZ )/(2.0*lowerArmLength*upperArmLength);
   double elbowPitch =PI-acos(c_elbow);
-
-
   double c_shoulderPitch=(lowerArmLength*lowerArmLength+armXZ*armXZ-upperArmLength*upperArmLength)/(2.0*armXZ*lowerArmLength);
   double shoulderPitch= PI/2.0 - (shoulderPitch0 + acos(c_shoulderPitch));
 
-  // printf("ShoulderPitch:%f %f\n", shoulderPitch0 *180.0/PI, shoulderPitch *180.0/PI);
-  // printf("ElbowPitch:%f\n", elbowPitch *180.0/PI);
 
   double wristYaw=0.0;
   double wristPitch= PI-shoulderPitch-elbowPitch;

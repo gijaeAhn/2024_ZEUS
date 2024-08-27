@@ -26,8 +26,10 @@ class WebotsAgent(Agent) :
 
     def __init__(self) :
 
-        self._initPose = WebotsConfig.initPose
-        self._curJoint = self._initPose
+        self._initJoint = WebotsConfig.initPoseA
+        self._initTrans = WebotsConfig.initPoseT
+
+        self._curJoint = self._initJoint
         self._commandJoint = self._curJoint
         self._eeController = webotsEE()
 
@@ -35,12 +37,12 @@ class WebotsAgent(Agent) :
         self._jointVelocity = WebotsConfig.defaultAngleVelocity
         
 
-        self._webotsJointCommandPub        = rospy.Publisher('/zeus/webots/jointCommand', JointState    ,  queue_size = 10         )
+        self._webotsJointCommandPub        = rospy.Publisher('/zeus/webots/jointCommand'        , JointState    , queue_size = 10             )  
         
-        self._eeCommandSub                 = rospy.Subscriber('/zeus/webots/eeCommand'  , String        ,  self._eeControlCallback )
-        self._webotsJointStateSub          = rospy.Subscriber('/zeus/webots/jointState'      , JointState , self._updateJointCallback   )
-        self._webotsSimpleMoveSub          = rospy.Subscriber('/zeus/webots/simpleMoveCommand', String     , self._simpleMoveCallback    )
-        self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad',  String     , self._paramPoseCallback     )
+        self._eeCommandSub                 = rospy.Subscriber('/zeus/webots/eeCommand'          , String        , self._eeControlCallback     )
+        self._webotsJointStateSub          = rospy.Subscriber('/zeus/webots/jointState'         , JointState    , self._updateJointCallback   )
+        self._webotsSimpleMoveSub          = rospy.Subscriber('/zeus/webots/simpleMoveCommand'  , String        , self._simpleMoveCallback    )
+        self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'    ,  String       , self._paramPoseCallback     )
 
         
 
@@ -156,6 +158,17 @@ class WebotsAgent(Agent) :
 
     def _closeEE(self) :
         self._eeController.close()
+
+
+# -------------- For Debug ------------------------------
+
+
+    def printTrans(self) :
+        print(self._curTrans)
+
+
+    def printAngle(self) :
+        print(self._curJoint)
 
 
 
