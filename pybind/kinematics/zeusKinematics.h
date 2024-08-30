@@ -9,6 +9,8 @@ const double PI = 2*asin(1);
 const double SQRT2 = sqrt(2);
 const double RAD_TO_DEG = 180.0/PI;
 
+const double FAIL_VALUE = 15.0;
+
 
 
 ///////////////////////////////////////////////////////
