@@ -5,7 +5,8 @@
 // Additional restriction
 // 1. Arm is bent
 // 2. If target x < 0 , Arm should reach out to the target position by rotatting 1st yaw
-
+// 3. Yaw - Pitch - Pitch - Yaw - Pitch - Yaw
+// 4. Final Z axis > 0 
 
 bool show_debug=false;
 
@@ -15,7 +16,7 @@ double mod_angle(double q){
   return q;
 }
 
-Transform ARM6_kinematics_forward_arm(const double *q){
+Transform ARM6_kinematics_forward_arm(std::vector<double> q){
   Transform t;
   t = t
     .translateZ(shoulderOffsetZ)
@@ -33,21 +34,15 @@ Transform ARM6_kinematics_forward_arm(const double *q){
 }
 
 
-
-
-// Modification Needed
-// Can't deal with x<0 area
-
 std::vector<double>
 ARM6_kinematics_inverse_arm(Transform trArm){
-  //SJ: quick and dirty IK (only works with vertically down orientation)
 
 
   //Boundary Check
   double boundaryCheck = sqrt(std::pow(trArm.getVal(0,3),2) 
                             + std::pow(trArm.getVal(1,3),2) 
                             + std::pow(trArm.getVal(2,3),2));
-  if(boundaryCheck > 0.925 ){
+  if(boundaryCheck > 1.08 ){
     std::vector<double> qArm6_fail(6);
     qArm6_fail[0] = FAIL_VALUE;
     qArm6_fail[1] = FAIL_VALUE;
@@ -57,67 +52,77 @@ ARM6_kinematics_inverse_arm(Transform trArm){
     qArm6_fail[5] = FAIL_VALUE;
     return qArm6_fail; 
   }
-  Transform trArmOrig = trArm;
-  trArm=trArm.translate(-toolOffsetX-wristLength,0,-toolOffsetZ);
-  Transform t1;
-  Transform tTemp1;
+
+  Transform trArmOrig = trArm;  // Copy Original Transform
+
+  // We should get Joint 6 first
+  // Transform finalTransform = trArm.translate(-toolOffsetX,0,-toolOffsetZ).rotateY(PI/2);
+
+  Transform finalTransform = trArm.translate(-toolOffsetX,0,-toolOffsetZ);
   
 
-  // World Frame is different.
-  // Should be modified
-  
-  t1=t1.translateZ(-shoulderOffsetZ)*trArm;
-  double xTemp1[3]; t1.apply0(xTemp1); //shoulder center to the wrist pitch/yaw center position
-  double targetXY=sqrt(xTemp1[0]*xTemp1[0]+xTemp1[1]*xTemp1[1]);
-  double armXY=sqrt(targetXY*targetXY-wristOffsetY*wristOffsetY);
-  double armXYZ=sqrt(xTemp1[2]*xTemp1[2] + armXY*armXY);                     // armXY and armXZ are the very straight position form the arm shoulder
-  double c_shoulderYawOffset=(armXY*armXY + targetXY*targetXY - wristOffsetY*wristOffsetY)/ (2.0*armXY*targetXY);
-  double shoulderYaw = atan2(xTemp1[0],xTemp1[1])-acos(c_shoulderYawOffset);
+  double alphaTemp = finalTransform.getVal(0,1)/finalTransform.getVal(0,0);
+  double wristYaw = atan( (-alphaTemp+ std::pow(alphaTemp*alphaTemp + 4, 0.5 )) * 0.5 );
+
+  Transform trPoint5 = finalTransform.translateZ(-wristLength).rotateZ(-wristYaw);
+  double xPoint5[3]; trPoint5.apply0(xPoint5);
+  Transform trPoint4 = trPoint5.translateY(-wristOffsetY);                              // Before the rotate deletion
+
+  double xPoint4[3]; trPoint4.apply0(xPoint4);
+
+  double shoulderYaw = atan2(xPoint4[1],xPoint4[0]);
+
+  double xy_noOffset  = std::pow((xPoint4[0]*xPoint4[0] + xPoint4[1]*xPoint4[1] ),0.5);
+  double xyz_noOffset = std::pow((xPoint4[0]*xPoint4[0] + xPoint4[1]*xPoint4[1] + xPoint4[2]*xPoint4[2]),0.5);
+
+  double elbowPitch   = PI - std::acos( (lowerArmLength*lowerArmLength + upperArmLength*upperArmLength - xyz_noOffset*xyz_noOffset)
+                                       /(2*upperArmLength*lowerArmLength) );
+
+  double point4Angle = std::atan2(xPoint4[2],xy_noOffset);
+  double tempAngle   = std::acos((lowerArmLength*lowerArmLength + xyz_noOffset* xyz_noOffset - upperArmLength*upperArmLength)
+                                / (2*lowerArmLength*xyz_noOffset));
+  double shoulderPitch = PI * 0.5 - (point4Angle + tempAngle);
 
 
-  double shoulderPitch0=atan2(xTemp1[2],armXY);
-  double c_elbow=(lowerArmLength*lowerArmLength + upperArmLength*upperArmLength - armXYZ*armXYZ )/(2.0*lowerArmLength*upperArmLength);
-  double elbowPitch =PI-acos(c_elbow);
+  double tempDistance = xPoint5[2] - xPoint4[2];
+
+  double elbowYaw = std::asin(tempDistance/(wristOffsetY * std::sin(PI - shoulderPitch - elbowPitch)));
+
+
+  Transform trCopyForP5 = trArmOrig;
+  // trCopyForP5 = trCopyForP5.translate(-toolOffsetX,0,-toolOffsetZ).rotateY(PI/2);
+  trCopyForP5 = trCopyForP5.translate(-toolOffsetX,0,-toolOffsetZ);
+
+  Transform tempTr;
+  tempTr = tempTr.rotateZ(-elbowYaw)
+                 .rotateY(-elbowPitch)
+                 .translateZ(-lowerArmLength)
+                 .rotateY(-shoulderPitch)
+                 .rotateZ(-shoulderYaw)
+                 .translateZ(-shoulderOffsetZ);
+
+
+  Transform forCalcJ5 = tempTr * trCopyForP5;
+  double xCalcJ5[3]; forCalcJ5.apply0(xCalcJ5);
+  double wristPitch = std::atan2(-xCalcJ5[0],xCalcJ5[2]-upperArmLength);
+
+  std::vector<double> result(6);
+
+  result[0] = shoulderYaw;
+  result[1] = shoulderPitch;
+  result[2] = -elbowPitch;
+  result[3] = elbowYaw;
+  result[4] = wristPitch;
+  result[5] = wristYaw;
+
+  return result;
+
+
+    
 
 
 
 
-  double c_shoulderPitch=(lowerArmLength*lowerArmLength+armXYZ*armXYZ-upperArmLength*upperArmLength)/(2.0*armXYZ*lowerArmLength);
-  double shoulderPitch= PI/2.0 - (shoulderPitch0 + acos(c_shoulderPitch));
 
 
-
-
-
-
-  tTemp1 = tTemp1.translateZ(-shoulderOffsetZ).
-                rotateZ(-shoulderYaw).
-                rotateY(-shoulderPitch).
-                translateZ(-lowerArmLength).
-                rotateY(-elbowPitch);                     //tTemp1 is a frame for deleting join1,2,3 rotation
-
-
-  Transform tTemp2 = tTemp1 * trArmOrig;
-  double xTemp3[3]; tTemp2.apply(xTemp3);             
-  Transform tTemp3 = tTemp2;
-
-  tTemp2 = tTemp2.translate(-toolOffsetX-wristLength,0,-toolOffsetZ);
-  double xTemp2[3]; tTemp2.apply0(xTemp2);           
-  double wristYaw = atan2(xTemp2[0],xTemp2[1]);
-
-  tTemp3 = tTemp3.rotateZ(-wristYaw);
-  double wristYaw2 = acos(tTemp3.getVal(1,1));
-  double wristPitch = acos((xTemp3[2]- upperArmLength) / wristLength);
-  
-
-
-  std::vector<double> qArm(6);
-  qArm[0] = shoulderYaw;    
-  qArm[1] = shoulderPitch;  
-  qArm[2] = -elbowPitch;    
-  qArm[3] = wristYaw;       //Done
-  qArm[4] = -wristPitch;    //Done
-  qArm[5] = wristYaw2;      //Done
-
-  return qArm;
 }

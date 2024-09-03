@@ -40,12 +40,12 @@ public:
     msg.name.insert(msg.name.end(), joints.begin(), joints.end());
 
     std::vector<double> positions(6);
-    positions[0] = -0.2319595;
-    positions[1] =  0.156886;
-    positions[2] =  1.77;
-    positions[3] =  0.0;
-    positions[4] = 1.214719;
-    positions[5] = 0.0;
+    positions[0] = 1.3694172;
+    positions[1] =  0.25546611;
+    positions[2] =  -1.46206532;
+    positions[3] =  -0.20137905;
+    positions[4] = 0.0;
+    positions[5] = 1.1703511;
 
 
     msg.position.insert(msg.position.end(), positions.begin(), positions.end());

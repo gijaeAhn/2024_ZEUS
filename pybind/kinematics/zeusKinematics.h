@@ -28,6 +28,5 @@ const double toolOffsetX = 0.0;
 const double toolOffsetZ = 0.0;
 
 double mod_angle(double q);
-Transform ARM6_kinematics_forward_arm(const double *q);
-Transform ARM6_kinematics_forward_wrist(const double *q);
+Transform ARM6_kinematics_forward_arm(std::vector<double> q);
 std::vector<double> ARM6_kinematics_inverse_arm(Transform trArm);
