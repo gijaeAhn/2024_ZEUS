@@ -2,7 +2,7 @@ from agent.agent import Agent
 
 import rospy
 from std_msgs.msg import String
-from geometry_msgs.msg import
+from sensor_msgs.msg import Image
 
 
 
