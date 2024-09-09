@@ -42,7 +42,7 @@ class WebotsAgent(Agent) :
         self._eeCommandSub                 = rospy.Subscriber('/zeus/webots/eeCommand'          ,  String        , self._eeControlCallback     )
         self._webotsJointStateSub          = rospy.Subscriber('/zeus/webots/jointState'         ,  JointState    , self._updateJointCallback   )
         self._webotsSimpleMoveSub          = rospy.Subscriber('/zeus/webots/simpleMoveCommand'  ,  String        , self._simpleMoveCallback    )
-        self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'    ,  String       , self._paramPoseCallback     )
+        self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'    ,  String        , self._paramPoseCallback     )
 
         
 
