@@ -52,7 +52,7 @@ Transform ARM6_kinematics_forward_arm(std::vector<double> q){
 
 
 std::vector<double>
-ARM6_kinematics_inverse_iterative_arm(Transform trArm,const double *qOrg,bool wristRoll){
+ARM6_kinematics_inverse_iterative_arm(Transform trArm,const double *qOrg){
 
   trArm=trArm.translate(-toolOffsetX,0,-toolOffsetZ-wristLength);
   Transform t1;
@@ -109,7 +109,7 @@ ARM6_kinematics_inverse_iterative_arm(Transform trArm,const double *qOrg,bool wr
 
 
 std::vector<double>
-ARM6_kinematics_inverse_arm(Transform trArm, const std::vector<double> qOrg, bool wristRoll) {
+ARM6_kinematics_inverse_arm(Transform trArm, const std::vector<double> qOrg) {
     const size_t MAX_ITER       =  100;
     const double errorGain      = -0.5;
     const double errorThreshold = 0.01;         // Error 1cm
@@ -119,7 +119,7 @@ ARM6_kinematics_inverse_arm(Transform trArm, const std::vector<double> qOrg, boo
     std::vector<double> solution = qOrg;
     double errorNorm;
     for(size_t iter = 1; iter <= MAX_ITER; iter++) {
-        solution = ARM6_kinematics_inverse_iterative_arm(targetTR, solution.data(), wristRoll);
+        solution = ARM6_kinematics_inverse_iterative_arm(targetTR, solution.data());
 
 
         Transform trForCheck = ARM6_kinematics_forward_arm(solution);

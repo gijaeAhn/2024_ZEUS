@@ -25,6 +25,7 @@ PYBIND11_MODULE(transform, m) {
         .def("rotateDotYNeg", &Transform::rotateDotYNeg)
         .def("rotateDotZNeg", &Transform::rotateDotZNeg)
         .def("getVal", py::overload_cast<int,int>(&Transform::getVal))
+        .def("setVal", &Transform::setVal)
         .def("mDH", &Transform::mDH)
         .def("apply", &Transform::apply)
         .def("apply0", &Transform::apply0)

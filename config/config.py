@@ -1,4 +1,9 @@
-from lib.transform import Transform
+# import sys
+
+# sys.path.append('/home/sj/Desktop/2024_zeus/')
+
+
+from lib.zeus_kinematics import Transform
 import math
 
 PI = 3.14159265359
@@ -9,7 +14,22 @@ class WebotsConfig :
     
 
     TIME_STEP = 0.01
+
     
+
+
+
+ #------------ Robot ----------------------------------
+
+    jointNameList = ['joint1',
+                     'joint2',
+                     'joint3',
+                     'joint4',
+                     'joint5',
+                     'joint6']
+
+    DOF = 6
+   
 
 
 #------------- For Webots Position Logger -------------
@@ -32,7 +52,7 @@ class WebotsConfig :
 
     initPoseA = [0,0,0,0,0,0]
 
-    initPoseT = Transform.transform().rotateY(-PI/2).translateX(upperArmLength).translateX(foreArmLength).translateY(-wrist1Length).translateX(wrist2Length)
+    initPoseT = Transform().rotateY(-PI/2).translateX(upperArmLength).translateX(foreArmLength).translateY(-wrist1Length).translateX(wrist2Length)
 
     defaultAngleVelocity = [2.0,2.0,2.0,2.0,2.0,2.0]
 

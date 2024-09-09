@@ -30,6 +30,7 @@ public:
   Transform &rotateDotZNeg(double a = 0);
 
   double getVal(int i, int j);
+  void setVal(int i, int j,double value);
 
 
   Transform &mDH(double alpha, double a, double theta, double d);

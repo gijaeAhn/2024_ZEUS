@@ -1,4 +1,4 @@
-import endeffector 
+from .endeffector import endEffector 
 
 import rospy
 
@@ -11,7 +11,9 @@ class webotsEE(endEffector) :
         self._eeCommandPub = rospy.Publisher('/zeus/webots/eeCommand',String,queue_size=10)
          
     def open(self) :
-         pass
+        msg = String('open')
+        self._eeCommandPub.publish(msg)
 
     def close(self) :    
-        pass
+        msg = String('close')
+        self._eeCommandPub.publish(msg)

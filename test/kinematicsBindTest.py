@@ -45,7 +45,7 @@ def testInversKinematics() :
 
         qTest = [*test["input"]]
         trTest = ARM6_kinematics_forward_arm(qTest)
-        calculated_result = ARM6_kinematics_inverse_arm(trTest, q, False)
+        calculated_result = ARM6_kinematics_inverse_arm(trTest, q)
         calculated_result = [0.0 if nearZero(component,NEAR_ZER0) else component for component in calculated_result]        
         print(qTest)
         print(calculated_result)

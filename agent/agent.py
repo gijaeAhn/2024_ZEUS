@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from fsm import FSM
-from endeffector import endEffector
+from .fsm import FSM
+from .endeffector import endEffector
 
 import rospy
 
@@ -54,92 +54,92 @@ class Agent(ABC):
         self.movePoseA(self.initPose)
 
     @abstractmethod
-    def moveX(self,xDistance) :
+    def _moveX(self,xDistance) :
         pass
 
     @abstractmethod
-    def moveY(self,yDistance) :
+    def _moveY(self,yDistance) :
         pass
 
     @abstractmethod
-    def moveZ(self,zDistance) :
+    def _moveZ(self,zDistance) :
         pass
 
     @abstractmethod    
-    def rotateX(self,xAngle)  :
+    def _rotateX(self,xAngle)  :
         pass
 
     @abstractmethod    
-    def rotateY(self,yAngle)  :
+    def _rotateY(self,yAngle)  :
         pass
 
     @abstractmethod    
-    def rotateZ(self,zAngle)  :
+    def _rotateZ(self,zAngle)  :
         pass
 
     @abstractmethod
-    def openEE(self) :
+    def _openEE(self) :
         pass
 
     @abstractmethod
-    def closeEE(self) :
+    def _closeEE(self) :
         pass
 
 
 
 # -------------------------------- High level movement ---------------------------
 
-    @abstractmethod
-    def shake(self) :
-        pass
+    # @abstractmethod
+    # def shake(self) :
+    #     pass
 
-    @abstractmethod 
-    def greetCustomer(self) :
-        pass
+    # @abstractmethod 
+    # def greetCustomer(self) :
+    #     pass
 
-    @abstractmethod
-    def moveSetPose(self ,index):
-        pass
+    # @abstractmethod
+    # def moveSetPose(self ,index):
+    #     pass
 
-    @abstractmethod
-    def getSources(self, index) :
-        # This motion should come back to pre-defined position
-        pass    
+    # @abstractmethod
+    # def getSources(self, index) :
+    #     # This motion should come back to pre-defined position
+    #     pass    
 
 
 # -------------------------- HRI Part -----------------------------
 
-    @abstractmethod
-    def say(self, sentence, show_display = False):
-        pass
+#     @abstractmethod
+#     def say(self, sentence, show_display = False):
+#         pass
 
         
-    @abstractmethod
-    def listen(self, sentence, show_display = False):
-        pass 
+#     @abstractmethod
+#     def listen(self, sentence, show_display = False):
+#         pass 
 
-    @abstractmethod
-    def filterSentence(self, sentence) :
-        pass
+#     @abstractmethod
+#     def filterSentence(self, sentence) :
+#         pass
 
-    @abstractmethod
-    def sendLLM_Sentence(self, sentence, show_display = False):
-        pass
+#     @abstractmethod
+#     def sendLLM_Sentence(self, sentence, show_display = False):
+#         pass
 
-    @abstractmethod
-    def getLLM_Response(self) :
-        pass    
+#     @abstractmethod
+#     def getLLM_Response(self) :
+#         pass    
         
-    @abstractmethod
-    def checkWord(self, direction) :
-        # Dirction == from customer , to customer
-        pass
+#     @abstractmethod
+#     def checkWord(self, direction) :
+#         # Dirction == from customer , to customer
+#         pass
 
-#------------------------------------------------------------------------
+# #------------------------------------------------------------------------
 
-    @abstractmethod
-    def selectMenu(self,source):
-        pass
+#     @abstractmethod
+#     def selectMenu(self,source):
+#         pass
 
 
 

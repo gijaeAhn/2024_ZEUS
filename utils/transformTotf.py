@@ -1,3 +1,8 @@
+import sys
+
+sys.path.append('/home/sj/Desktop/2024_zeus/')
+
+
 from lib.zeus_kinematics import *
 
 import tf2_msgs.msg
@@ -12,7 +17,7 @@ from scipy.spatial.transform import Rotation as R
 
 
 
-
+DEG_TO_RAD = 0.0174533
 
 
 
@@ -45,19 +50,44 @@ def transformToTfMessage(tr):
 
     return t
 
+def TfMessageToTransform(Msg):
+    
+    tr = Transform()
+    
+    translate = (Msg.transform.translation.x,
+                 Msg.transform.translation.y,
+                 Msg.transform.translation.z)
+        
+    qrotation = (Msg.transform.rotation.x,
+                 Msg.transform.rotation.y,
+                 Msg.transform.rotation.z,
+                 Msg.transform.rotation.w)
+    
+    #  Cannot assign to function call
+    tr.setVal(0, 0, 1 - 2 * qrotation[1]**2 - 2 * qrotation[2]**2)
+    tr.setVal(0, 1, 2 * qrotation[0] * qrotation[1] - 2 * qrotation[2] * qrotation[3])
+    tr.setVal(0, 2, 2 * qrotation[0] * qrotation[2] + 2 * qrotation[1] * qrotation[3])
+    tr.setVal(0, 3, translate[0])
+    
+    tr.setVal(1, 0 ,2 * qrotation[0] * qrotation[1] + 2 * qrotation[2] * qrotation[3])
+    tr.setVal(1, 1 ,1 - 2 * qrotation[0]**2 - 2 * qrotation[2]**2)
+    tr.setVal(1, 2 ,2 * qrotation[1] * qrotation[2] - 2 * qrotation[0] * qrotation[3])
+    tr.setVal(1, 3 ,translate[1])
+    
+    tr.setVal(2, 0, 2 * qrotation[0] * qrotation[2] - 2 * qrotation[1] * qrotation[3])
+    tr.setVal(2, 1, 2 * qrotation[1] * qrotation[2] + 2 * qrotation[0] * qrotation[3])
+    tr.setVal(2, 2, 1 - 2 * qrotation[0]**2 - 2 * qrotation[1]**2)
+    tr.setVal(2, 3, translate[2])
+
+    return tr
+
+
 
 def main():
 
     br = tf2_ros.TransformBroadcaster()
-
-
-
-    rospy.init_node('zeus_position_logger', anonymous=True)
+    rospy.init_node('transform_test', anonymous=True)
     
-    
-
-    DEG_TO_RAD = 0.0174533
-
     testTR = Transform()
 
     testTR.translateX(0.5)
@@ -70,6 +100,8 @@ def main():
     Transform.printTransform(testTR)
 
     testTF = transformToTfMessage(testTR)
+
+  
 
     testTF.child_frame_id = "world"
     testTF.header.frame_id = "test_link"
