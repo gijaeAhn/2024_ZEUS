@@ -16,11 +16,11 @@ PROTO zeus_arm_test [
     children [
       Transform {
         translation 0 0 0 
-        rotation 0 0 1 1.57079632679
+        rotation 0 0 1 -1.57079632679
         children [
           Solid {
             translation 0 0 0
-            rotation 1 0 0 1.57079632679
+            # rotation 0 0 1 1.57079632679
             name "base_link"
             physics Physics {
               density -1
@@ -52,8 +52,8 @@ PROTO zeus_arm_test [
                   RotationalMotor {
                     name "joint1"
                     maxVelocity 3.15
-                    minPosition -6.28318530718
-                    maxPosition 6.28318530718
+                    minPosition -4.18879
+                    maxPosition 4.18879
                     maxTorque 150.0
                   }
                   PositionSensor { name "joint1Sensor" }
@@ -83,7 +83,7 @@ PROTO zeus_arm_test [
                     }
                     HingeJoint {
                       jointParameters HingeJointParameters {
-                        axis 1 0 0
+                        axis -1 0 0
                         anchor 0 0.145 0 
                         dampingConstant 0.0
                         staticFriction 0.0
@@ -172,8 +172,8 @@ PROTO zeus_arm_test [
                                     RotationalMotor {
                                       name "joint4"
                                       maxVelocity 3.2
-                                      minPosition -6.28318530718
-                                      maxPosition 6.28318530718
+                                      minPosition -4.18879
+                                      maxPosition 4.18879
                                       maxTorque 150
                                     }
                                     PositionSensor { name "joint4Sensor" }

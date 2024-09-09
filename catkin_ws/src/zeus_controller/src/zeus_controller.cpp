@@ -85,9 +85,6 @@ class zeusController : public webots::Robot {
         
 
     private :
-
-        
-
         // ROS SIDE //
         std::shared_ptr<ros::NodeHandle>      nhPtr_;
         ros::Subscriber                       commandSub_;
@@ -109,19 +106,21 @@ class zeusController : public webots::Robot {
 
             for(size_t i = 0; i < msg->name.size() ; i++){
             ROS_INFO("Succeed to recieve joint states :");
-            // ROS_INFO("Joint : %s, Position : %f, Velocity : %f , Effort : %f"  , msg->name[i].c_str()
-            //                                                                    , msg->position[i]
-            //                                                                    , msg->velocity[i]
-            //                                                                    , msg->effort[i]);
-            // Update Goal Position                                                                
-            motorGoal_[i] = msg->position[i];
-            }       
+            // if(i ==2 || i ==4 ){
+            //     motorGoal_[i] = -msg->position[i];
+            // }                                                   
+            // else{
+                motorGoal_[i] = msg->position[i];
+            // }       
+            }
         }
 
         void webotsControlFunc(){
 
             sensor_msgs::JointState realJointMsg;
             realJointMsg.header.stamp = ros::Time::now();
+
+            ROS_INFO("JOINT POSITION : %f %f %f %f %f %f", sensorPosition_[0],sensorPosition_[1],sensorPosition_[2],sensorPosition_[3],sensorPosition_[4],sensorPosition_[5]);
             // Read Current Position
             for(size_t i = 0; i < DOF ; ++i){
                 sensorPosition_[i] = positionSensors_[i]->getValue();
@@ -138,7 +137,7 @@ class zeusController : public webots::Robot {
                     positionCheck = false;
                 }
             }
-            if( positionCheck){
+            if(positionCheck){
             ROS_INFO("ROBOT CAN NOT REACH THE GOAL POSITION");
             }
 

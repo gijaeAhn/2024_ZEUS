@@ -21,7 +21,6 @@ class Agent(ABC):
 
         self._EE = endEffector()
 
-        self._DOF = 6
 
         self.rate1 = rospy.Rate(10)
         

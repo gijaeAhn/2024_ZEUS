@@ -189,12 +189,13 @@ double Transform::getVal(int i,int j){
   return this->t[i][j];
 }
 
-void Transform::setVal(int i ,int j,double value){
+Transform& Transform::setVal(int i ,int j,double value){
   if (i < 0 || i > 3 || j < 0 || j > 3){
     printf("Invalid index\n");
-    return ;
+    return *this;
   }
   this->t[i][j] = value;
+  return *this;
 }
 
 

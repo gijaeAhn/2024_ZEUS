@@ -1,9 +1,9 @@
-# import sys
+import sys
 
-# sys.path.append('/home/sj/Desktop/2024_zeus/')
+sys.path.append('/home/sj/Desktop/2024_zeus/')
 
 
-from lib.zeus_kinematics import Transform
+from lib.zeus_kinematics import *
 import math
 
 PI = 3.14159265359
@@ -50,8 +50,7 @@ class WebotsConfig :
     toolOffsetZ = 0.0
     
 
-    initPoseA = [0,0,0,0,0,0]
-
+    initPoseA = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     initPoseT = Transform().rotateY(-PI/2).translateX(upperArmLength).translateX(foreArmLength).translateY(-wrist1Length).translateX(wrist2Length)
 
     defaultAngleVelocity = [2.0,2.0,2.0,2.0,2.0,2.0]
@@ -80,6 +79,10 @@ class WebotsConfig :
     pose5A   = [20,20,20,20,20,20]
 
     pose6A   = [20,20,20,20,20,20]
+
+    startPoseT = Transform().translateZ(0.4).translateX(0.3).rotateY(PI/2)
+
+    startPoseA = ARM6_kinematics_inverse_arm(startPoseT,initPoseA)
 
 
 

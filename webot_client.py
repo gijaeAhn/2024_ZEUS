@@ -44,11 +44,10 @@ class WebotsAgent(Agent) :
 
         self._jointVelocity = WebotsConfig.defaultAngleVelocity
         
-
+        #----- Publisher
         self._webotsJointCommandPub        = rospy.Publisher('/zeus/webots/jointCommand'           ,  JointState    , queue_size = 10             )  
 
-
-
+        #----- Subscriber
         self._paramPoseSub                 = rospy.Subscriber('/zeus/webots/paramPose'             ,  String              , self._paramPoseCallback         )
         self._eeCommandSub                 = rospy.Subscriber('/zeus/webots/eeCommand'             ,  String              , self._eeControlCallback         )
         self._webotsJointCommandSub        = rospy.Subscriber('/zeus/webots/prejointCommand'       ,  JointState          , self._preJointCommandCallback   )
@@ -70,26 +69,26 @@ class WebotsAgent(Agent) :
 
 
     def _updateJointCallback(self, jointState):
-        print("Updating Joint :", end=' ')
-        tempPosition = [0] * 6  # Corrected list initialization for 6 elements
+        # print("Updating Joint :", end=' ')
+        tempPosition = [0.0] * 6  
         for index, (name, position) in enumerate(zip(jointState.name, jointState.position)):
-            if index < 6:  # Ensure we do not exceed the tempPosition list size
+            if index < 6: 
                 tempPosition[index] = position
-                print(f"{{{position:.2f}}}", end=' ')  # Print each joint position
+                # print(f"{{{position:.2f}}}", end=' ') 
             else:
-                break  # Break out of the loop if more joints than expected
-
-        self._curTrans = ARM6_forward_kinematics(tempPosition)  # Assuming this function is defined elsewhere
+                break  
         self._curJoint = tempPosition
-        print() 
+        # self._curJoint[2] = -self._curJoint[2]
+        # self._curJoint[4] = -self._curJoint[4]
+        self._curTrans = ARM6_kinematics_forward_arm(self._curJoint)  
+        # print()
+
+        self._curTrans.printTransform(self._curTrans) 
 
 
     def _simpleMoveCallback(self,msg, scale = 'small') :
         
-        command = msg.data
-        print(command)
-
-        
+        command = msg.data        
 
         if scale == 'small':
             if command == 'w' :
@@ -104,7 +103,9 @@ class WebotsAgent(Agent) :
             elif command == 'q' :
                 self._moveZ(WebotsConfig.smallCommandStep)
             elif command == 'e' :
-                self._moveZ(WebotsConfig.smallCommandStep)
+                self._moveZ(-WebotsConfig.smallCommandStep)
+            elif command == 'i' :
+                self.movePoseT(WebotsConfig.startPoseT)
         elif scale == 'big' :
             if command == 'w' :
                 self._moveX(WebotsConfig.bigCommandStep)
@@ -117,7 +118,9 @@ class WebotsAgent(Agent) :
             elif command == 'q' :
                 self._moveZ(WebotsConfig.bigCommandStep)
             elif command == 'e' :
-                self._moveZ(WebotsConfig.bigCommandStep)
+                self._moveZ(-WebotsConfig.bigCommandStep)
+            elif command == 'i' :
+                self.movePoseT(WebotsConfig.startPoseT)
 
 
     def _eeControlCallback(self,command):
@@ -148,38 +151,51 @@ class WebotsAgent(Agent) :
 # ---------------- Webots Action ---------------------
 
     def movePoseA(self, Angle):
-        print('Debug movePoseA\n')
+
+        if len(Angle) != WebotsConfig.DOF:
+            rospy.logerr("Incorrect number of angles provided. Expected {}, got {}.".format(WebotsConfig.DOF, len(Angle)))
+            return
+        
+
+        # for i in range(WebotsConfig.DOF):
+        #     print("Mod Angle")
+        #     Angle[i] = mod_angle(Angle[i])
+        
+        
+        print(Angle)
         msg = JointState()
         msg.header = Header()
         msg.header.stamp = rospy.Time.now()
         for i in range(WebotsConfig.DOF):
             msg.name.append(self._jointNames[i])
-        msg.position = Angle
-        #
+            msg.position.append(Angle[i])
+        
         msg.velocity = self._jointVelocity
         msg.effort = []
 
         self._webotsJointCommandPub.publish(msg)
 
-        
-
     def movePoseT(self,Transform):
+
+        Transform.printTransform(Transform)
         solvedAngle = ARM6_kinematics_inverse_arm(Transform,self._curJoint)
         self.movePoseA(solvedAngle)
 
-        # Translate and Rotatae will gonnna modify the stored data
-        # So another method should be needed
-
     def _moveX(self,xDistance) :
-        goalTrans = self._curTrans.translateX(xDistance)
+        goalTrans = self._curTrans
+
+        goalTrans = goalTrans.setVal(0,3,self._curTrans(0,3) + xDistance)
         self.movePoseT(goalTrans)
 
     def _moveY(self,yDistance) :
-        goalTrans = self._curTrans.translateY(yDistance)
+        goalTrans = self._curTrans
+
+        goalTrans = goalTrans.setVal(1,3,self._curTrans(1,3) + yDistance)
         self.movePoseT(goalTrans)
 
     def _moveZ(self,zDistance) :
-        goalTrans = self._curTrans.translateZ(zDistance)
+        goalTrans = self._curTrans
+        goalTrans = goalTrans.setVal(2,3,self._curTrans(2,3) + zDistance)
         self.movePoseT(goalTrans)
     
     def _rotateX(self,xAngle)  :
