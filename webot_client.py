@@ -40,9 +40,11 @@ class WebotsAgent(Agent) :
         self._webotsJointCommandPub        = rospy.Publisher('/zeus/webots/jointCommand'        , JointState    , queue_size = 10             )  
         
         self._eeCommandSub                 = rospy.Subscriber('/zeus/webots/eeCommand'          , String        , self._eeControlCallback     )
+        self._paramPoseSub                 = rospy.Subscriber('/zeus/webots/paramPose'          , String        , self.__paramPoseCallback  )
         self._webotsJointStateSub          = rospy.Subscriber('/zeus/webots/jointState'         , JointState    , self._updateJointCallback   )
         self._webotsSimpleMoveSub          = rospy.Subscriber('/zeus/webots/simpleMoveCommand'  , String        , self._simpleMoveCallback    )
         self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'    ,  String       , self._paramPoseCallback     )
+
 
         
 
