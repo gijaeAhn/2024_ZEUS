@@ -2,7 +2,8 @@ from agent.agent import Agent
 
 import rospy
 from std_msgs.msg import String
-from sensor_msgs.msg import Image
+from geometry_msgs.msg import Image
+from sensor_msgs.msg import JointState
 
 
 
@@ -14,18 +15,24 @@ class ZeusAgent(Agent):
         
         # PUB
             #Output Display Setting
-        self.head_display_image_pub = rospy.Publisher('/output_display'     , Image, queue_size = 10)
-        self.head_text_pub          = rospy.Publisher('/output_display_text', String, queue_size = 10)
-        self.arm_joint_pub          = rospy.Publisher('')
+        self._headDisplayImagePub  = rospy.Publisher('/zeus/real/outputDisplay_image'     , Image      , queue_size = 10)
+        self._headTextPub          = rospy.Publisher('/zeus/real/outputDisplay_text'      , String     , queue_size = 10)
+        self._paramPosePub         = rospy.Pulbicher('/zeus/real/parampose'               , tf         , queue_size = 10)
+        self._armJointPub          = rospy.Publisher('/zeus/real/armJoint'                , JointState , queue_size = 10)
 
         # SUB 
 
-        self.fer_sub                = rospy.Subscriber('/fer', String, self.fer_callback )
+        self._menuSub                = rospy.Subscriber('/zeus/real/menu', String, self._menuCallback )
+        
+
+        # SERVICE
+
+        self._paramPoseClient          = rospy.ServiceProxy('/zeus/real/paramPose', tf_servicef)
 
 
         # INTERNAL ESTIMATE
 
         self.cur_pose = None
 
-    def fer_callback(self,msg):    
+    def _menuCallback(self,msg):    
         pass

@@ -12,7 +12,7 @@ from std_msgs.msg import Header
 
 from cv_bridge import CvBridge
 
-from lib.zeus_kinematics import *
+import lib.zeus_kinematics_module
 
 
 from config.config import WebotsConfig
@@ -37,12 +37,21 @@ class WebotsAgent(Agent) :
         self._jointVelocity = WebotsConfig.defaultAngleVelocity
         
 
-        self._webotsJointCommandPub        = rospy.Publisher('/zeus/webots/jointCommand'        ,  JointState    , queue_size = 10             )  
+        self._webotsJointCommandPub        = rospy.Publisher('/zeus/webots/jointCommand'        , JointState    , queue_size = 10             )  
         
+<<<<<<< HEAD
         self._eeCommandSub                 = rospy.Subscriber('/zeus/webots/eeCommand'          ,  String        , self._eeControlCallback     )
         self._webotsJointStateSub          = rospy.Subscriber('/zeus/webots/jointState'         ,  JointState    , self._updateJointCallback   )
         self._webotsSimpleMoveSub          = rospy.Subscriber('/zeus/webots/simpleMoveCommand'  ,  String        , self._simpleMoveCallback    )
         self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'    ,  String        , self._paramPoseCallback     )
+=======
+        self._eeCommandSub                 = rospy.Subscriber('/zeus/webots/eeCommand'          , String        , self._eeControlCallback     )
+        self._paramPoseSub                 = rospy.Subscriber('/zeus/webots/paramPose'          , String        , self.__paramPoseCallback  )
+        self._webotsJointStateSub          = rospy.Subscriber('/zeus/webots/jointState'         , JointState    , self._updateJointCallback   )
+        self._webotsSimpleMoveSub          = rospy.Subscriber('/zeus/webots/simpleMoveCommand'  , String        , self._simpleMoveCallback    )
+        self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'    ,  String       , self._paramPoseCallback     )
+>>>>>>> 5cd5ba25f44e32187d0e5717ddc3208509f429c1
+
 
         
 
@@ -99,7 +108,19 @@ class WebotsAgent(Agent) :
         
 
     def __paramPoseCallback(self,command):
-        pass
+        
+        if command == '1' :
+            self.movePoseT(WebotsConfig.pose1T)
+        elif command == '2' :
+            self.movePoseT(WebotsConfig.pose2T)
+        elif command == '3' :
+            self.movePoseT(WebotsConfig.pose3T)
+        elif command == '4' :
+            self.movePoseT(WebotsConfig.pose4T)
+        elif command == '5' :
+            self.movePoseT(WebotsConfig.pose5T)
+        
+        
 
     
 
@@ -123,7 +144,7 @@ class WebotsAgent(Agent) :
         self.rate1.sleep()
 
     def movePoseT(self,Transform):
-        solvedAngle = ARM6_kinematics_inverse_arm(Transform)
+        solvedAngle = zeus_kinematics.ARM6_kinematics_inverse_arm(Transform)
         self.movePoseA(solvedAngle)
 
         # Translate and Rotatae will gonnna modify the stored data
