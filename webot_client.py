@@ -101,7 +101,19 @@ class WebotsAgent(Agent) :
         
 
     def __paramPoseCallback(self,command):
-        pass
+        
+        if command == '1' :
+            self.movePoseT(WebotsConfig.pose1T)
+        elif command == '2' :
+            self.movePoseT(WebotsConfig.pose2T)
+        elif command == '3' :
+            self.movePoseT(WebotsConfig.pose3T)
+        elif command == '4' :
+            self.movePoseT(WebotsConfig.pose4T)
+        elif command == '5' :
+            self.movePoseT(WebotsConfig.pose5T)
+        
+        
 
     
 

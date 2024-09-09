@@ -8,6 +8,10 @@
 // 3. Yaw - Pitch - Pitch - Yaw - Pitch - Yaw
 // 4. Final Z axis > 0 
 
+
+
+
+
 bool show_debug=false;
 
 double mod_angle(double q){
@@ -16,113 +20,138 @@ double mod_angle(double q){
   return q;
 }
 
+
+template <typename T>
+T clamp(T value, T min, T max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
+
 Transform ARM6_kinematics_forward_arm(std::vector<double> q){
-  Transform t;
-  t = t
-    .translateZ(shoulderOffsetZ)
-    .rotateZ(q[0])
-    .rotateY(q[1])
-    .translateZ(lowerArmLength)
-    .rotateY(-q[2])                 // Using original axis
-    .rotateZ(q[3])
-    .translateZ(upperArmLength)
-    .rotateY(-q[4])
-    .translateY(-wristOffsetY)
-    .translateZ(wristLength)
-    .rotateZ(q[5]);
-  return t;
+
+
+      Transform t;
+    t = t
+      .translateZ(shoulderOffsetZ)
+      .rotateZ(q[0])
+      .rotateY(q[1])
+      .translateZ(lowerArmLength)
+      .rotateY(q[2])
+      .translateZ(upperArmLength)
+      .rotateZ(q[3])
+      .rotateY(q[4])
+      .translateY(wristOffsetY)
+      .rotateZ(q[5])
+      .translate(toolOffsetX,0,toolOffsetZ+wristLength);
+    return t;
+}
+
+
+
+
+std::vector<double>
+ARM6_kinematics_inverse_iterative_arm(Transform trArm,const double *qOrg,bool wristRoll){
+
+trArm=trArm.translate(-toolOffsetX,0,-toolOffsetZ-wristLength);
+Transform t1;
+t1=t1.translateZ(-shoulderOffsetZ)*trArm;
+double xEE[3]; t1.apply0(xEE); //shoulder center to the wrist pitch/yaw center position
+double shoulderYaw = atan2(xEE[1],xEE[0]);
+double armXY=sqrt(xEE[0]*xEE[0]+xEE[1]*xEE[1]);
+double armXZ=sqrt(xEE[2]*xEE[2] + armXY*armXY);
+double shoulderPitch0=atan2(xEE[2],armXY);
+double c_elbow=(lowerArmLength*lowerArmLength + upperArmLength*upperArmLength - armXZ*armXZ )/(2.0*lowerArmLength*upperArmLength);
+// Should be Clamped because of no-offset
+c_elbow = clamp(c_elbow, -1.0, 1.0);
+double elbowPitch =PI-acos(c_elbow);
+double c_shoulderPitch=(lowerArmLength*lowerArmLength+armXZ*armXZ-upperArmLength*upperArmLength)/(2.0*armXZ*lowerArmLength);
+// Should be Clamped because of no-offset
+c_shoulderPitch = clamp(c_shoulderPitch,-1.0,1.0);
+double shoulderPitch= PI/2.0 - (shoulderPitch0 + acos(c_shoulderPitch));
+//now we know SY, SP, EP
+Transform t5;
+t5=t5 //this transform is the wrist transform
+  .translateZ(-upperArmLength)
+  .rotateY(-elbowPitch)
+  .translateZ(-lowerArmLength)
+  .rotateY(-shoulderPitch)
+  .translateZ(-shoulderOffsetZ)
+  .rotateZ(-shoulderYaw)
+  *trArm;
+//t3 is the wrist rotation (Z-Y-Z)
+ double wristPitch_1=acos(t5(2,2));
+ double wrist_pitch_th=0.001745331; //0.1 degree
+ double wristYaw1, wristYaw2, wristPitch;
+ if(fabs(wristPitch_1)<wrist_pitch_th){
+    printf("wrist pitch singular!!!  \n");
+    wristPitch= qOrg[5];
+    wristYaw1 = qOrg[4];
+    wristYaw2 = qOrg[6];
+  }else{
+    wristPitch=wristPitch_1;
+    double s_wp=sin(wristPitch);
+    wristYaw1 = atan2(t5(1,2)/s_wp,t5(0,2)/s_wp);
+    wristYaw2 = atan2(t5(2,1)/s_wp,-t5(2,0)/s_wp);
+  }
+  std::vector<double> qArm(6);
+  qArm[0] = shoulderYaw;
+  qArm[1] = shoulderPitch;
+  qArm[2] = elbowPitch;
+  qArm[3] = wristYaw1;
+  qArm[4] = wristPitch;
+  qArm[5] = wristYaw2;
+
+
+  return qArm;
+
 }
 
 
 std::vector<double>
-ARM6_kinematics_inverse_arm(Transform trArm){
+ARM6_kinematics_inverse_arm(Transform trArm, const std::vector<double> qOrg, bool wristRoll) {
+    const size_t MAX_ITER       =  100;
+    const double errorGain      = -0.5;
+    const double errorThreshold = 0.01;
 
 
-  //Boundary Check
-  double boundaryCheck = sqrt(std::pow(trArm.getVal(0,3),2) 
-                            + std::pow(trArm.getVal(1,3),2) 
-                            + std::pow(trArm.getVal(2,3),2));
-  if(boundaryCheck > 1.08 ){
-    std::vector<double> qArm6_fail(6);
-    qArm6_fail[0] = FAIL_VALUE;
-    qArm6_fail[1] = FAIL_VALUE;
-    qArm6_fail[2] = FAIL_VALUE;
-    qArm6_fail[3] = FAIL_VALUE;
-    qArm6_fail[4] = FAIL_VALUE;
-    qArm6_fail[5] = FAIL_VALUE;
-    return qArm6_fail; 
-  }
+    Transform targetTR = trArm;
+    
 
-  Transform trArmOrig = trArm;  // Copy Original Transform
-
-  // We should get Joint 6 first
-  // Transform finalTransform = trArm.translate(-toolOffsetX,0,-toolOffsetZ).rotateY(PI/2);
-
-  Transform finalTransform = trArm.translate(-toolOffsetX,0,-toolOffsetZ);
-  
-
-  double alphaTemp = finalTransform.getVal(0,1)/finalTransform.getVal(0,0);
-  double wristYaw = atan( (-alphaTemp+ std::pow(alphaTemp*alphaTemp + 4, 0.5 )) * 0.5 );
-
-  Transform trPoint5 = finalTransform.translateZ(-wristLength).rotateZ(-wristYaw);
-  double xPoint5[3]; trPoint5.apply0(xPoint5);
-  Transform trPoint4 = trPoint5.translateY(-wristOffsetY);                              // Before the rotate deletion
-
-  double xPoint4[3]; trPoint4.apply0(xPoint4);
-
-  double shoulderYaw = atan2(xPoint4[1],xPoint4[0]);
-
-  double xy_noOffset  = std::pow((xPoint4[0]*xPoint4[0] + xPoint4[1]*xPoint4[1] ),0.5);
-  double xyz_noOffset = std::pow((xPoint4[0]*xPoint4[0] + xPoint4[1]*xPoint4[1] + xPoint4[2]*xPoint4[2]),0.5);
-
-  double elbowPitch   = PI - std::acos( (lowerArmLength*lowerArmLength + upperArmLength*upperArmLength - xyz_noOffset*xyz_noOffset)
-                                       /(2*upperArmLength*lowerArmLength) );
-
-  double point4Angle = std::atan2(xPoint4[2],xy_noOffset);
-  double tempAngle   = std::acos((lowerArmLength*lowerArmLength + xyz_noOffset* xyz_noOffset - upperArmLength*upperArmLength)
-                                / (2*lowerArmLength*xyz_noOffset));
-  double shoulderPitch = PI * 0.5 - (point4Angle + tempAngle);
+    // printf("TR_Orig:%.3f %.3f %.3f\n",trArm(0,3),trArm(1,3),trArm(2,3));
 
 
-  double tempDistance = xPoint5[2] - xPoint4[2];
-
-  double elbowYaw = std::asin(tempDistance/(wristOffsetY * std::sin(PI - shoulderPitch - elbowPitch)));
-
-
-  Transform trCopyForP5 = trArmOrig;
-  // trCopyForP5 = trCopyForP5.translate(-toolOffsetX,0,-toolOffsetZ).rotateY(PI/2);
-  trCopyForP5 = trCopyForP5.translate(-toolOffsetX,0,-toolOffsetZ);
-
-  Transform tempTr;
-  tempTr = tempTr.rotateZ(-elbowYaw)
-                 .rotateY(-elbowPitch)
-                 .translateZ(-lowerArmLength)
-                 .rotateY(-shoulderPitch)
-                 .rotateZ(-shoulderYaw)
-                 .translateZ(-shoulderOffsetZ);
+    std::vector<double> solution = qOrg;
+    double errorNorm;
+    for(size_t iter = 1; iter <= MAX_ITER; iter++) {
+        solution = ARM6_kinematics_inverse_iterative_arm(targetTR, solution.data(), wristRoll);
 
 
-  Transform forCalcJ5 = tempTr * trCopyForP5;
-  double xCalcJ5[3]; forCalcJ5.apply0(xCalcJ5);
-  double wristPitch = std::atan2(-xCalcJ5[0],xCalcJ5[2]-upperArmLength);
+        Transform trForCheck = ARM6_kinematics_forward_arm(solution);
 
-  std::vector<double> result(6);
 
-  result[0] = shoulderYaw;
-  result[1] = shoulderPitch;
-  result[2] = -elbowPitch;
-  result[3] = elbowYaw;
-  result[4] = wristPitch;
-  result[5] = wristYaw;
+        std::vector<double> error = {
+            trForCheck(0,3)  -  trArm(0,3),
+            trForCheck(1,3)  -  trArm(1,3),
+            trForCheck(2,3)  -  trArm(2,3)
+        };
 
-  return result;
+        errorNorm = std::sqrt(error[0]*error[0] + error[1]*error[1] + error[2]*error[2]);
+
+        targetTR(0,3) = targetTR(0,3) + (errorGain * error[0]); 
+        targetTR(1,3) = targetTR(1,3) + (errorGain * error[1]); 
+        targetTR(2,3) = targetTR(2,3) + (errorGain * error[2]);
+
+        if(iter == MAX_ITER && errorNorm > errorThreshold){
+          printf("Failure : IK do not Converge");
+        }
+    }
+
+    // printf("Error Norm : %f\n", errorNorm);
+
 
 
     
-
-
-
-
-
-
+    return solution; 
 }
