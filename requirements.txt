@@ -1,6 +1,0 @@
-pyaml
-rospkg
-numpy
-opencv-contrib-python
-scipy
-pynput
