@@ -3,9 +3,9 @@
 // ------------------------------- //
 
 // WEBOTS INCLUDE //
-#include <webots/Robot.hpp>
-#include <webots/Motor.hpp>
-#include <webots/PositionSensor.hpp>
+#include "/usr/local/webots/include/controller/cpp/webots/Robot.hpp"
+#include "/usr/local/webots/include/controller/cpp/webots/Motor.hpp"
+#include "/usr/local/webots/include/controller/cpp/webots/PositionSensor.hpp"
 // -------------- //
 
 // ROS INCLUDE //

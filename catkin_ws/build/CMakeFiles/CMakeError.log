@@ -1,21 +1,21 @@
 Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
 Change Dir: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_75eeb/fast && /usr/bin/make -f CMakeFiles/cmTC_75eeb.dir/build.make CMakeFiles/cmTC_75eeb.dir/build
+Run Build Command(s):/usr/bin/make cmTC_58715/fast && /usr/bin/make -f CMakeFiles/cmTC_58715.dir/build.make CMakeFiles/cmTC_58715.dir/build
 make[1]: Entering directory '/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_75eeb.dir/src.c.o
-/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_75eeb.dir/src.c.o   -c /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles/CMakeTmp/src.c
-Linking C executable cmTC_75eeb
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_75eeb.dir/link.txt --verbose=1
-/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    -rdynamic CMakeFiles/cmTC_75eeb.dir/src.c.o  -o cmTC_75eeb 
-/usr/bin/ld: CMakeFiles/cmTC_75eeb.dir/src.c.o: in function `main':
+Building C object CMakeFiles/cmTC_58715.dir/src.c.o
+/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_58715.dir/src.c.o   -c /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_58715
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_58715.dir/link.txt --verbose=1
+/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    -rdynamic CMakeFiles/cmTC_58715.dir/src.c.o  -o cmTC_58715 
+/usr/bin/ld: CMakeFiles/cmTC_58715.dir/src.c.o: in function `main':
 src.c:(.text+0x46): undefined reference to `pthread_create'
 /usr/bin/ld: src.c:(.text+0x52): undefined reference to `pthread_detach'
 /usr/bin/ld: src.c:(.text+0x63): undefined reference to `pthread_join'
 collect2: error: ld returned 1 exit status
-make[1]: *** [CMakeFiles/cmTC_75eeb.dir/build.make:87: cmTC_75eeb] Error 1
+make[1]: *** [CMakeFiles/cmTC_58715.dir/build.make:87: cmTC_58715] Error 1
 make[1]: Leaving directory '/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles/CMakeTmp'
-make: *** [Makefile:121: cmTC_75eeb/fast] Error 2
+make: *** [Makefile:121: cmTC_58715/fast] Error 2
 
 
 Source file was:
@@ -41,18 +41,18 @@ int main(void)
 Determining if the function pthread_create exists in the pthreads failed with the following output:
 Change Dir: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_83293/fast && /usr/bin/make -f CMakeFiles/cmTC_83293.dir/build.make CMakeFiles/cmTC_83293.dir/build
+Run Build Command(s):/usr/bin/make cmTC_43d3a/fast && /usr/bin/make -f CMakeFiles/cmTC_43d3a.dir/build.make CMakeFiles/cmTC_43d3a.dir/build
 make[1]: Entering directory '/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_83293.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_83293.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
-Linking C executable cmTC_83293
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_83293.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_83293.dir/CheckFunctionExists.c.o  -o cmTC_83293  -lpthreads 
+Building C object CMakeFiles/cmTC_43d3a.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_43d3a.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
+Linking C executable cmTC_43d3a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_43d3a.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_43d3a.dir/CheckFunctionExists.c.o  -o cmTC_43d3a  -lpthreads 
 /usr/bin/ld: cannot find -lpthreads
 collect2: error: ld returned 1 exit status
-make[1]: *** [CMakeFiles/cmTC_83293.dir/build.make:87: cmTC_83293] Error 1
+make[1]: *** [CMakeFiles/cmTC_43d3a.dir/build.make:87: cmTC_43d3a] Error 1
 make[1]: Leaving directory '/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles/CMakeTmp'
-make: *** [Makefile:121: cmTC_83293/fast] Error 2
+make: *** [Makefile:121: cmTC_43d3a/fast] Error 2
 
 
 

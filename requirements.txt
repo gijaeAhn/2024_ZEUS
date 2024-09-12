@@ -4,3 +4,7 @@ numpy
 opencv-contrib-python
 scipy
 pynput
+pybind11
+pybind11-global
+scipy
+pynput

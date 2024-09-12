@@ -6,10 +6,10 @@ find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs sensor_msgs messag
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  # ${CPLUS_INCLUDE_PATH}
 )
 
 set(WEBOTS_HOME "/usr/local/webots")
-#set(WEBOTS_HOME "/snap/webots/current/usr/share/webots")
 
 
 link_directories($ENV{WEBOTS_HOME}/lib/controller)

@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append('/home/sj/Desktop/2024_zeus/')
+sys.path.append('/home/sjlab3090/Desktop/2024_ZEUS/')
 
 
 from lib.zeus_kinematics import *
