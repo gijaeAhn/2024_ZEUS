@@ -1,31 +1,42 @@
-# 2024_ZEUS
+2024_ZEUS
 
+Setup Guide
 
-## Setup
+1. Install ROS Noetic (Ubuntu 20.04) & CUDA (Optional)
+- Follow the official instructions to install ROS Noetic: http://wiki.ros.org/noetic/Installation/Ubuntu
+- Install CUDA if needed for your project (Optional, depending on GPU-related tasks).
 
+2. Install Anaconda
+- Download and install Anaconda from Anaconda's official website: https://www.anaconda.com/products/distribution#download-section
+- After installation, create and manage your Python environments as required.
 
-1. Install Ros Noetic (Ubuntu 20.04)  & cuda??
-2. Install Anaconda 
+3. Install Webots 2022b
+- Download the Webots 2022b Debian package from Webots GitHub Releases: https://github.com/cyberbotics/webots/releases
+- Install the package:
+  sudo dpkg -i webots_2022b_Ubuntu-20.04_amd64.deb
+- Install Webots dependencies:
+  sudo apt --fix-broken install
 
-3. install webots 2022b
-    -- Webots 깃헙에서 Release가서 2022b debian pkg 다운 받아서 설치
-    -- Dependeies 설치하기 
+4. Build Catkin Workspace (ROS Packages)
+- To build your ROS packages, run the following command in the root of your project:
+  bash ./build_catkin.sh
 
-4. build catkin(Ros Packages )
-```bash
-bash ./build_catkin.sh 
-```
-5. install pybind Lib
-```bash
-bash ./install_pybind.sh
-```
+5. Install Pybind Library
+- Install the Pybind library needed for Python-C++ bindings:
+  bash ./install_pybind.sh
 
-6. Webots 실험용 
-    -- Webots 실행후, 
-    -- webot_client.py 실행
-    -- Tools/positionLogger.py 실행
-    -- Frame은 로봇 베이스 기준 FLU( Front , Left ,UP)
-    -- i : 누르면 이니셜 포지션
-    -- w,s : x 방향 전진 후진
-    -- a,d : y 방향 전진 후진
-    -- q,e : z 방향 상승 하강
+6. Webots Simulation
+- Open Webots.
+- Run the Webots client:
+  python webot_client.py
+- Run the position logger tool:
+  python Tools/positionLogger.py
+- Coordinate system: The robot's frame follows the FLU (Front, Left, Up) convention.
+- Control Commands:
+  - Press i: Set the robot to the initial position.
+  - Press w, s: Move forward or backward along the x-axis.
+  - Press a, d: Move left or right along the y-axis.
+  - Press q, e: Move up or down along the z-axis.
+
+7. Update Dependencies
+- Keep track of your dependencies by updating the relevant .txt file. This file should contain a list of the required packages for the project.
