@@ -13,10 +13,13 @@ Setup Guide
 3. Install Webots 2022b
 - Download the Webots 2022b Debian package from Webots GitHub Releases: https://github.com/cyberbotics/webots/releases
 - Install the package:
+```bash
   sudo dpkg -i webots_2022b_Ubuntu-20.04_amd64.deb
+```
 - Install Webots dependencies:
+```bash
   sudo apt --fix-broken install
-
+```
 4. Build Catkin Workspace (ROS Packages)
 - To build your ROS packages, run the following command in the root of your project:
   bash ./build_catkin.sh
