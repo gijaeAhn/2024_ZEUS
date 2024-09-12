@@ -1,6 +1,10 @@
 import sys
+import os
 
-sys.path.append('/home/sjlab3090/Desktop/2024_ZEUS/')
+
+home_dir = os.path.expanduser('~')
+
+sys.path.append(os.path.join(home_dir, 'Desktop/2024_ZEUS/'))
 
 
 from lib.zeus_kinematics import *

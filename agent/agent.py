@@ -1,6 +1,7 @@
-from abc import ABC, abstractmethod
-from .fsm import FSM
+from abc          import ABC, abstractmethod
+from .fsm         import FSM
 from .endeffector import endEffector
+from .tts         import TTS
 
 import rospy
 
@@ -36,6 +37,8 @@ class Agent(ABC):
         self._commandJoint = None
 
         self._commandTrans = None
+
+        self._tts = TTS()
 
 
 
@@ -140,6 +143,18 @@ class Agent(ABC):
 #     def selectMenu(self,source):
 #         pass
 
+
+
+# ------------------------- HRI ----------------------------------------
+
+    def _say(self,sentence, show_display = False) :
+        self._tts.say(sentence)
+        if show_display:
+            self._show_text(sentence)
+
+    def _show_text(self,sentence) :
+        pass    
+    
 
 
 # ------------------------- Internal param Setting ----------------------

@@ -1,6 +1,13 @@
 import sys
+import os
 
-sys.path.append('/home/sj/Desktop/2024_zeus/')
+
+SHORT_SLEEP = 0.5
+LONG_SLEEP  = 1
+
+home_dir = os.path.expanduser('~')
+
+sys.path.append(os.path.join(home_dir, 'Desktop/2024_ZEUS/'))
 
 
 from agent.agent import Agent
@@ -45,7 +52,7 @@ class WebotsAgent(Agent) :
         self._jointVelocity = WebotsConfig.defaultAngleVelocity
         
         #----- Publisher
-        self._webotsJointCommandPub        = rospy.Publisher( WebotsConfig.webotsJointComamnd         ,  JointState    , queue_size = 10             )  
+        self._webotsJointCommandPub        = rospy.Publisher('/zeus/webots/jointCommand'           ,  JointState    , queue_size = 10             )  
 
         #----- Subscriber
         self._paramPoseSub                 = rospy.Subscriber('/zeus/webots/paramPose'             ,  String              , self._paramPoseCallback         )
@@ -54,6 +61,8 @@ class WebotsAgent(Agent) :
         self._webotsRealJointSub           = rospy.Subscriber('/zeus/webots/realJoint'             ,  JointState          , self._updateJointCallback       )
         self._webotsSimpleMoveSub          = rospy.Subscriber('/zeus/webots/simpleMoveCommand'     ,  String              , self._simpleMoveCallback        )
         self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'       ,  String              , self._paramPoseCallback         )
+        self._webotsMenuSub                = rospy.Subscriber('/zeus/webots/menu'                  ,  String              , self._menuCallback              )
+        self._webotsCusMsgSub              = rospy.Subscriber('/zeus/webots/customerMsg'           ,  String              , self._cusMsgCallback            )
 
         rospy.spin()
 
@@ -61,8 +70,79 @@ class WebotsAgent(Agent) :
 
 # ---------------- Callback Functions ----------------
 
+    def _cusMsgCallback(self,sentence):
+        pass 
 
 
+    def _menuCallback(self,menu):
+        self._fsm.handleEvent("get_menu")
+        self._makeMenu(menu)
+
+
+        self._fsm.handleEvent("serve_menu")
+        self.movePoseT(WebotsConfig.servicePositionT)
+
+        self._hereYouare()
+
+
+    def _makeMenu(self,menu):
+        self.movePoseT(WebotsConfig.dispensorT)
+        print("Arrived at the dispensor")
+        rospy.sleep(SHORT_SLEEP)
+        if menu == WebotsConfig.menuList[0]:
+            # Key characters should be replaced with actual menu name
+            # Moving sequence should be y - x - z || z - x - y 
+            self._moveY(WebotsConfig.menuOffset['A'][1])
+            self._moveX(WebotsConfig.menuOffset['A'][0])
+            self._moveZ(WebotsConfig.menuOffset['A'][2])
+            # Move backward
+            self._moveZ(-WebotsConfig.menuOffset['A'][2])
+            self._moveX(-WebotsConfig.menuOffset['A'][0])
+            self._moveY(-WebotsConfig.menuOffset['A'][1])
+        elif menu == WebotsConfig.menuList[1]:
+            self._moveY(WebotsConfig.menuOffset['B'][1])
+            self._moveX(WebotsConfig.menuOffset['B'][0])
+            self._moveZ(WebotsConfig.menuOffset['B'][2])
+            self._moveZ(-WebotsConfig.menuOffset['B'][2])
+            self._moveX(-WebotsConfig.menuOffset['B'][0])
+            self._moveY(-WebotsConfig.menuOffset['B'][1])
+        elif menu == WebotsConfig.menuList[2]:
+            self._moveY(WebotsConfig.menuOffset['C'][1])
+            self._moveX(WebotsConfig.menuOffset['C'][0])
+            self._moveZ(WebotsConfig.menuOffset['C'][2])
+            self._moveZ(-WebotsConfig.menuOffset['C'][2])
+            self._moveX(-WebotsConfig.menuOffset['C'][0])
+            self._moveY(-WebotsConfig.menuOffset['C'][1])
+        elif menu == WebotsConfig.menuList[3]:
+            self._moveY(WebotsConfig.menuOffset['D'][1])
+            self._moveX(WebotsConfig.menuOffset['D'][0])
+            self._moveZ(WebotsConfig.menuOffset['D'][2])
+            self._moveZ(-WebotsConfig.menuOffset['D'][2])
+            self._moveX(-WebotsConfig.menuOffset['D'][0])
+            self._moveY(-WebotsConfig.menuOffset['D'][1])
+        elif menu == WebotsConfig.menuList[4]:
+            self._moveY(WebotsConfig.menuOffset['E'][1])
+            self._moveX(WebotsConfig.menuOffset['E'][0])
+            self._moveZ(WebotsConfig.menuOffset['E'][2])
+            self._moveZ(-WebotsConfig.menuOffset['E'][2])
+            self._moveX(-WebotsConfig.menuOffset['E'][0])
+            self._moveY(-WebotsConfig.menuOffset['E'][1])
+        
+        print("Success to get base bevarge\n")
+
+        self.movePoseT(WebotsConfig.shakingT)
+
+        print("Arrvied at the Shaking Position")
+
+        self._fsm.handleEvent('shake')
+
+        self.shake()
+
+        self._fsm.handleEvent('finish_shake')
+
+        print("Shaking Done\n")
+
+    
     def _preJointCommandCallback(self,jointState):
         msg = JointState(jointState)
         self._webotsJointCommandPub.publish(msg)
@@ -150,6 +230,9 @@ class WebotsAgent(Agent) :
 
 # ---------------- Webots Action ---------------------
 
+    def shake(self):
+        pass
+
     def movePoseA(self, Angle):
 
         if len(Angle) != WebotsConfig.DOF:
@@ -215,6 +298,20 @@ class WebotsAgent(Agent) :
 
     def _closeEE(self) :
         self._eeController.close()
+
+
+# -------------- For HRI --------------------------------
+
+    def _hereYouare(self):
+        pass
+    
+    def _speak(self,ttsData):
+        pass
+    
+    def _listen(self,sttData):
+        pass
+
+
 
 
 # -------------- For Debug ------------------------------

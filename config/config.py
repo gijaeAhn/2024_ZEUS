@@ -1,6 +1,9 @@
 import sys
+import os
 
-sys.path.append('/home/sj/Desktop/2024_zeus/')
+home_dir = os.path.expanduser('~')
+
+sys.path.append(os.path.join(home_dir, 'Desktop/2024_ZEUS/'))
 
 
 from lib.zeus_kinematics import *
@@ -84,7 +87,23 @@ class WebotsConfig :
 
     startPoseA = ARM6_kinematics_inverse_arm(startPoseT,initPoseA)
 
-    webotsJointComamnd = '/zeus/webots/jointCommand'
+    dispensorT = Transform()
+
+    shakingT = Transform()
+    
+    servicePositionT = Transform()
+
+#--------------------------------------------------------
+
+    menuList = ['A', 'B', 'C', 'D', 'E']
+
+    menuOffset = {
+    'A': [0, 0, 0],
+    'B': [0, 0, 0],
+    'C': [0, 0, 0],
+    'D': [0, 0, 0],
+    'E': [0, 0, 0]
+    }
 
 
 

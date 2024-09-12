@@ -10,19 +10,21 @@ class FSM() :
 
         return {
             'idle': {
-                'hri_start' : 'hri_mod',
-                'move': 'moving',
+                'hri_start' : 'hri_idle',
                 'greet': 'greeting'
             },
-            'hri_mod' : {
-                'hri_end' : 'idle'
+            'greeting': {
+                'finish_greet': 'idle',
+            },
+            'hri_idle' : {
+                'speak'    : 'speaking',
+                'listen'   : 'listeing',
+                'get_menu' : 'moving'
             },
             'moving': {
                 'stop': 'idle',
                 'shake': 'shaking',
-            },
-            'greeting': {
-                'finish_greet': 'idle',
+                'serve_menu' : 'idle'
             },
             'shaking': {
                 'finish_shake': 'moving',
