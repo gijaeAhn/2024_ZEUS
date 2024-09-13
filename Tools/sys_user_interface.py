@@ -1,5 +1,6 @@
 from positionLogger import positionLogger
 
+
 from ms_pkg.srv import LLMC_service, LLMC_serviceResponse
 from ms_pkg.srv import STT_service, STT_serviceResponse
 from ms_pkg.srv import TF_service, TF_serviceResponse
@@ -14,9 +15,11 @@ from cv_bridge import CvBridge
 import numpy as np
 import time
 import sys, os
-sys.path.append(os.path.expanduser("~/Desktop/2024_ZEUS/module/ms_library"))
+sys.path.append(os.path.expanduser("~/Desktop/2024_ZEUS/module"))
+# sys.path.append(os.path.expanduser("~/Desktop/2024_ZEUS/module/ms_library"))
 
-from custom_utils import EasyLogger as EL
+from ms_library.custom_utils import EasyLogger as EL
+from recommand_from_fer import recommand_from_fer
 config = {}
 config["STT"] = rospy.get_param("~STT_SN", default="STTService")
 config["LLMC"] = rospy.get_param("~LLMC_SN", default="LLMCService")
@@ -46,8 +49,6 @@ class SysUserInterface(positionLogger):
         rospy.wait_for_service(config['LLMC'])
         rospy.wait_for_service(config['TF'])
         
-
-
         self.recording_buffer = []
         self.is_stream_open = False
         self.audio_stream = sd.InputStream(samplerate = 44100, channels=2, callback = self.voice_callback)
@@ -63,7 +64,7 @@ class SysUserInterface(positionLogger):
     
     # @override
     def on_press(self, key):
-        print()
+        
         try :
             key_str = '{0}'.format(key.char)
         except :
@@ -84,13 +85,6 @@ class SysUserInterface(positionLogger):
             rospy.loginfo("프로그램을 종료합니다.")
             return
 
-
-            # rospy.loginfo("Close audio stream")
-            # self.audio_steam.stop()
-            # self.is_recording = False
-
-
-
     def voice_callback(self, indata,  frames, time, status):
         self.recording_buffer.append(indata.copy())
 
@@ -104,8 +98,6 @@ class SysUserInterface(positionLogger):
             print("close audio stream")
             self.audio_stream.stop()
             
-            # if not len(self.recording_buffer):
-            #     return 
             recorded_data_arr =  np.concatenate(self.recording_buffer, axis=0)
             write(self.audio_save_path, 44100, recorded_data_arr)
             self.recording_buffer.clear()
@@ -118,22 +110,18 @@ class SysUserInterface(positionLogger):
             ret, frame = captureImagefromCam()
             if ret:
                 request_img = bridge.cv2_to_imgmsg(frame, encoding="bgr8")
-                fer_score = self.FERService_rq(request_img)
+                fer_score = self.FERService_rq(request_img).result
                 print(fer_score)
+                print(type(fer_score))
+                print("here")
+                best_menu = recommand_from_fer(fer_score)
+                print(best_menu)
+
             else:
                 print("camera dosen't work")
         else:
             llm_answer = self.LLMCservice_rq(stt_result).model_text 
             print(llm_answer)
-
-
-
-
-
-
-
-
-
 
 
 def main():
@@ -144,9 +132,6 @@ def main():
         rospy.spin()
     except KeyboardInterrupt:
         print("Shutdown")
-
-
-
 
 
 if __name__ == "__main__":
