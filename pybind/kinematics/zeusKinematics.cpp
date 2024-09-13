@@ -12,7 +12,7 @@
 
 
 
-bool show_debug=false;
+bool show_debug=true;
 
 double mod_angle(double q){
   if (q>PI) return q-2*PI;
@@ -26,6 +26,17 @@ T clamp(T value, T min, T max) {
     if (value < min) return min;
     if (value > max) return max;
     return value;
+}
+
+double continuous_angle(double new_angle, double prev_angle){
+    new_angle = mod_angle(new_angle);
+    double delta = new_angle - prev_angle;
+    if(delta > PI){
+        new_angle -= 2 * PI;
+    } else if(delta < -PI){
+        new_angle += 2 * PI;
+    }
+    return new_angle;
 }
 
 
@@ -95,13 +106,14 @@ ARM6_kinematics_inverse_iterative_arm(Transform trArm,const double *qOrg){
       wristYaw1 = atan2(t5(1,2)/s_wp,t5(0,2)/s_wp);
       wristYaw2 = atan2(t5(2,1)/s_wp,-t5(2,0)/s_wp);
     }
+
     std::vector<double> qArm(6);
     qArm[0] = shoulderYaw;
     qArm[1] = shoulderPitch;
     qArm[2] = elbowPitch;
-    qArm[3] = wristYaw1;
-    qArm[4] = wristPitch;
-    qArm[5] = wristYaw2;
+    qArm[3] = continuous_angle(wristYaw1,qOrg[3]);
+    qArm[4] = continuous_angle(wristPitch,qOrg[4]);
+    qArm[5] = continuous_angle(wristYaw2,qOrg[5]);
 
     return qArm;
 
@@ -112,7 +124,7 @@ std::vector<double>
 ARM6_kinematics_inverse_arm(Transform trArm, const std::vector<double> qOrg) {
     const size_t MAX_ITER       =  100;
     const double errorGain      = -0.5;
-    const double errorThreshold = 0.01;         // Error 1cm
+    const double errorThreshold = 1.0E-6;       
 
     Transform targetTR = trArm;
     
@@ -132,13 +144,24 @@ ARM6_kinematics_inverse_arm(Transform trArm, const std::vector<double> qOrg) {
 
         errorNorm = std::sqrt(error[0]*error[0] + error[1]*error[1] + error[2]*error[2]);
 
-        targetTR(0,3) = targetTR(0,3) + (errorGain * error[0]); 
-        targetTR(1,3) = targetTR(1,3) + (errorGain * error[1]); 
-        targetTR(2,3) = targetTR(2,3) + (errorGain * error[2]);
-
-        if(iter == MAX_ITER && errorNorm > errorThreshold){
-          printf("Failure : IK do not Converge");
+        if (errorNorm < errorThreshold) {
+            // Converged
+            if (show_debug) {
+                printf("Converged in %zu iterations. Error norm: %f\n", iter, errorNorm);
+            }
+            break;
         }
-    }    
+
+        // Adjust target transformation to aid convergence
+        targetTR.setVal(0, 3, targetTR(0, 3) + (errorGain * error[0]));
+        targetTR.setVal(1, 3, targetTR(1, 3) + (errorGain * error[1]));
+        targetTR.setVal(2, 3, targetTR(2, 3) + (errorGain * error[2]));
+
+        if (iter == MAX_ITER && errorNorm > errorThreshold) {
+            printf("Failure: IK did not converge within %zu iterations. Final error norm: %f\n", MAX_ITER, errorNorm);
+        }
+    }
+
     return solution; 
-}
+  }    
+    

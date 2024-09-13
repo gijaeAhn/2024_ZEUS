@@ -154,16 +154,12 @@ class WebotsAgent(Agent) :
         for index, (name, position) in enumerate(zip(jointState.name, jointState.position)):
             if index < 6: 
                 tempPosition[index] = position
-                # print(f"{{{position:.2f}}}", end=' ') 
             else:
                 break  
         self._curJoint = tempPosition
-        # self._curJoint[2] = -self._curJoint[2]
-        # self._curJoint[4] = -self._curJoint[4]
-        self._curTrans = ARM6_kinematics_forward_arm(self._curJoint)  
-        # print()
 
-        self._curTrans.printTransform(self._curTrans) 
+        self._curTrans = ARM6_kinematics_forward_arm(self._curJoint)  
+
 
 
     def _simpleMoveCallback(self,msg, scale = 'small') :
@@ -239,13 +235,6 @@ class WebotsAgent(Agent) :
             rospy.logerr("Incorrect number of angles provided. Expected {}, got {}.".format(WebotsConfig.DOF, len(Angle)))
             return
         
-
-        # for i in range(WebotsConfig.DOF):
-        #     print("Mod Angle")
-        #     Angle[i] = mod_angle(Angle[i])
-        
-        
-        print(Angle)
         msg = JointState()
         msg.header = Header()
         msg.header.stamp = rospy.Time.now()

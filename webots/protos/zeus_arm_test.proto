@@ -52,8 +52,8 @@ PROTO zeus_arm_test [
                   RotationalMotor {
                     name "joint1"
                     maxVelocity 3.15
-                    minPosition -4.18879
-                    maxPosition 4.18879
+                    minPosition -100.0
+                    maxPosition 100.0
                     maxTorque 150.0
                   }
                   PositionSensor { name "joint1Sensor" }
@@ -92,8 +92,8 @@ PROTO zeus_arm_test [
                         RotationalMotor {
                           name "joint2"
                           maxVelocity 3.15
-                          minPosition -6.28318530718
-                          maxPosition 6.28318530718
+                          minPosition -100.0
+                          maxPosition 100.0
                           maxTorque 150.0
                         }
                         PositionSensor { name "joint2Sensor" }
@@ -132,8 +132,8 @@ PROTO zeus_arm_test [
                               RotationalMotor {
                                 name "joint3"
                                 maxVelocity 3.15
-                                minPosition -3.14159265359
-                                maxPosition 3.14159265359
+                                minPosition -100.0
+                                maxPosition 100.0
                                 maxTorque 150.0
                               }
                               PositionSensor { name "joint3Sensor" }
@@ -172,8 +172,8 @@ PROTO zeus_arm_test [
                                     RotationalMotor {
                                       name "joint4"
                                       maxVelocity 3.2
-                                      minPosition -4.18879
-                                      maxPosition 4.18879
+                                      minPosition -100.0
+                                      maxPosition 100.0
                                       maxTorque 150
                                     }
                                     PositionSensor { name "joint4Sensor" }
@@ -212,8 +212,8 @@ PROTO zeus_arm_test [
                                           RotationalMotor {
                                             name "joint5"
                                             maxVelocity 3.2
-                                            minPosition -6.28318530718
-                                            maxPosition 6.28318530718
+                                            minPosition -100.0
+                                            maxPosition 100.0
                                             maxTorque 150
                                           }
                                           PositionSensor { name "joint5Sensor" }
@@ -252,8 +252,8 @@ PROTO zeus_arm_test [
                                                 RotationalMotor {
                                                   name "joint6"
                                                   maxVelocity 3.2
-                                                  minPosition -6.28318530718
-                                                  maxPosition 6.28318530718
+                                                  minPosition -100.0
+                                                  maxPosition 100.0
                                                   maxTorque 150
                                                 }
                                                 PositionSensor { name "joint6Sensor" }
