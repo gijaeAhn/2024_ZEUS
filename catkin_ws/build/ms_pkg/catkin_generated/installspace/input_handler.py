@@ -3,10 +3,10 @@ sys.path.append(os.path.expanduser("~/Desktop/2024_ZEUS/module/ms_library"))
 
 
 import rospy
+from ms_pkg.srv import LLMC_service, LLMC_serviceResponse
 from ms_pkg.srv import STT_service, STT_serviceResponse
 from ms_pkg.srv import TF_service, TF_serviceResponse
 from ms_pkg.srv import FER_service, FER_serviceResponse
-from ms_pkg.srv import LLMC_serivce, LLMC_serviceResponse
 
 import os
 import cv2
@@ -33,7 +33,7 @@ el.initHello()
 
 
 
-temp_file_dir = os.path.expanduser(".temp_files")
+temp_file_dir = os.path.expanduser("~/.temp_files")
 sample_rate = 44100
 duration = 5  # 5초 동안 녹음
 bridge = CvBridge()
@@ -55,7 +55,7 @@ class InputHandler():
         self.STTService_rq = rospy.ServiceProxy(config["STT"], STT_service)
         self.TFService_rq = rospy.ServiceProxy(config["TF"], TF_service)
         self.FERService_rq = rospy.ServiceProxy(config["FER"], FER_service)
-        self.LLMCservice_rq = rospy.ServiceProxy(config["LLMC"], LLMC_serivce)
+        self.LLMCservice_rq = rospy.ServiceProxy(config["LLMC"], LLMC_service)
         
 
         

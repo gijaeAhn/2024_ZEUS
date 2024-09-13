@@ -33,7 +33,7 @@ el.initHello()
 
 
 
-temp_file_dir = os.path.expanduser(".temp_files")
+temp_file_dir = os.path.expanduser("~/.temp_files")
 sample_rate = 44100
 duration = 5  # 5초 동안 녹음
 bridge = CvBridge()
