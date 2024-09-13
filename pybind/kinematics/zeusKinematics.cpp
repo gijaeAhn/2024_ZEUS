@@ -111,9 +111,9 @@ ARM6_kinematics_inverse_iterative_arm(Transform trArm,const double *qOrg){
     qArm[0] = shoulderYaw;
     qArm[1] = shoulderPitch;
     qArm[2] = elbowPitch;
-    qArm[3] = continuous_angle(wristYaw1,qOrg[3]);
-    qArm[4] = continuous_angle(wristPitch,qOrg[4]);
-    qArm[5] = continuous_angle(wristYaw2,qOrg[5]);
+    qArm[3] = wristYaw1;
+    qArm[4] = wristPitch;
+    qArm[5] = wristYaw2;
 
     return qArm;
 
@@ -161,6 +161,8 @@ ARM6_kinematics_inverse_arm(Transform trArm, const std::vector<double> qOrg) {
             printf("Failure: IK did not converge within %zu iterations. Final error norm: %f\n", MAX_ITER, errorNorm);
         }
     }
+
+    solution[3] = continuous_angle(solution[3], qOrg[3]);
 
     return solution; 
   }    

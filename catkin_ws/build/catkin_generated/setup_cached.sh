@@ -7,7 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel:$CMAKE_PREFIX_PATH"
-export LD_LIBRARY_PATH="/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib:$LD_LIBRARY_PATH"
 export PWD='/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build'
-export ROS_PACKAGE_PATH="/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src:$ROS_PACKAGE_PATH"

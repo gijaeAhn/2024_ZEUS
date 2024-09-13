@@ -131,6 +131,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/gtest/cmake_install.cmake")
+  include("/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg/cmake_install.cmake")
   include("/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller/cmake_install.cmake")
 
 endif()
