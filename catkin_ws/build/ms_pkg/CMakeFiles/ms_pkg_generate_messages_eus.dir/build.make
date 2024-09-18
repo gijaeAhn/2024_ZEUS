@@ -58,6 +58,7 @@ ms_pkg/CMakeFiles/ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEU
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/srv/STT_service.l
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/srv/TF_service.l
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/srv/LLMC_service.l
+ms_pkg/CMakeFiles/ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/srv/TTS_service.l
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/manifest.l
 
 
@@ -90,8 +91,13 @@ ms_pkg/CMakeFiles/ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEU
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Generating EusLisp code from ms_pkg/LLMC_service.srv"
 	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg && ../catkin_generated/env_cached.sh /home/sjlab3090/anaconda3/bin/python3 /opt/ros/noetic/share/geneus/cmake/../../../lib/geneus/gen_eus.py /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv -Ims_pkg:/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -Isensor_msgs:/opt/ros/noetic/share/sensor_msgs/cmake/../msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -p ms_pkg -o /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/srv
 
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/srv/TTS_service.l: /opt/ros/noetic/lib/geneus/gen_eus.py
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/srv/TTS_service.l: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Generating EusLisp code from ms_pkg/TTS_service.srv"
+	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg && ../catkin_generated/env_cached.sh /home/sjlab3090/anaconda3/bin/python3 /opt/ros/noetic/share/geneus/cmake/../../../lib/geneus/gen_eus.py /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv -Ims_pkg:/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -Isensor_msgs:/opt/ros/noetic/share/sensor_msgs/cmake/../msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -p ms_pkg -o /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/srv
+
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/manifest.l: /opt/ros/noetic/lib/geneus/gen_eus.py
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Generating EusLisp manifest code for ms_pkg"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Generating EusLisp manifest code for ms_pkg"
 	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg && ../catkin_generated/env_cached.sh /home/sjlab3090/anaconda3/bin/python3 /opt/ros/noetic/share/geneus/cmake/../../../lib/geneus/gen_eus.py -m -o /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg ms_pkg std_msgs sensor_msgs
 
 ms_pkg_generate_messages_eus: ms_pkg/CMakeFiles/ms_pkg_generate_messages_eus
@@ -100,6 +106,7 @@ ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/
 ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/srv/STT_service.l
 ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/srv/TF_service.l
 ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/srv/LLMC_service.l
+ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/srv/TTS_service.l
 ms_pkg_generate_messages_eus: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/roseus/ros/ms_pkg/manifest.l
 ms_pkg_generate_messages_eus: ms_pkg/CMakeFiles/ms_pkg_generate_messages_eus.dir/build.make
 

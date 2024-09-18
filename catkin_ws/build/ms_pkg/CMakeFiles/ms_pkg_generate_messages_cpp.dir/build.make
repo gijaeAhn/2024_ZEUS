@@ -58,6 +58,7 @@ ms_pkg/CMakeFiles/ms_pkg_generate_messages_cpp: /home/sjlab3090/Desktop/2024_ZEU
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_cpp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/STT_service.h
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_cpp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/TF_service.h
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_cpp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/LLMC_service.h
+ms_pkg/CMakeFiles/ms_pkg_generate_messages_cpp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/TTS_service.h
 
 
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/img_num.h: /opt/ros/noetic/lib/gencpp/gen_cpp.py
@@ -98,12 +99,20 @@ ms_pkg/CMakeFiles/ms_pkg_generate_messages_cpp: /home/sjlab3090/Desktop/2024_ZEU
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Generating C++ code from ms_pkg/LLMC_service.srv"
 	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg && /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/catkin_generated/env_cached.sh /home/sjlab3090/anaconda3/bin/python3 /opt/ros/noetic/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv -Ims_pkg:/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -Isensor_msgs:/opt/ros/noetic/share/sensor_msgs/cmake/../msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -p ms_pkg -o /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg -e /opt/ros/noetic/share/gencpp/cmake/..
 
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/TTS_service.h: /opt/ros/noetic/lib/gencpp/gen_cpp.py
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/TTS_service.h: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/TTS_service.h: /opt/ros/noetic/share/gencpp/msg.h.template
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/TTS_service.h: /opt/ros/noetic/share/gencpp/srv.h.template
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Generating C++ code from ms_pkg/TTS_service.srv"
+	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg && /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/catkin_generated/env_cached.sh /home/sjlab3090/anaconda3/bin/python3 /opt/ros/noetic/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv -Ims_pkg:/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -Isensor_msgs:/opt/ros/noetic/share/sensor_msgs/cmake/../msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -p ms_pkg -o /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg -e /opt/ros/noetic/share/gencpp/cmake/..
+
 ms_pkg_generate_messages_cpp: ms_pkg/CMakeFiles/ms_pkg_generate_messages_cpp
 ms_pkg_generate_messages_cpp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/img_num.h
 ms_pkg_generate_messages_cpp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/FER_service.h
 ms_pkg_generate_messages_cpp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/STT_service.h
 ms_pkg_generate_messages_cpp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/TF_service.h
 ms_pkg_generate_messages_cpp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/LLMC_service.h
+ms_pkg_generate_messages_cpp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/include/ms_pkg/TTS_service.h
 ms_pkg_generate_messages_cpp: ms_pkg/CMakeFiles/ms_pkg_generate_messages_cpp.dir/build.make
 
 .PHONY : ms_pkg_generate_messages_cpp

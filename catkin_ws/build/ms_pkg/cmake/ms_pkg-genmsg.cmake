@@ -1,6 +1,6 @@
 # generated from genmsg/cmake/pkg-genmsg.cmake.em
 
-message(STATUS "ms_pkg: 1 messages, 4 services")
+message(STATUS "ms_pkg: 1 messages, 5 services")
 
 set(MSG_I_FLAGS "-Ims_pkg:/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg;-Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg;-Isensor_msgs:/opt/ros/noetic/share/sensor_msgs/cmake/../msg;-Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg")
 
@@ -42,6 +42,11 @@ add_custom_target(_ms_pkg_generate_messages_check_deps_${_filename}
   COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "ms_pkg" "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv" ""
 )
 
+get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv" NAME_WE)
+add_custom_target(_ms_pkg_generate_messages_check_deps_${_filename}
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "ms_pkg" "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv" ""
+)
+
 #
 #  langs = gencpp;geneus;genlisp;gennodejs;genpy
 #
@@ -80,6 +85,12 @@ _generate_srv_cpp(ms_pkg
   ""
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/ms_pkg
 )
+_generate_srv_cpp(ms_pkg
+  "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/ms_pkg
+)
 
 ### Generating Module File
 _generate_module_cpp(ms_pkg
@@ -102,6 +113,8 @@ add_dependencies(ms_pkg_generate_messages_cpp _ms_pkg_generate_messages_check_de
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TF_service.srv" NAME_WE)
 add_dependencies(ms_pkg_generate_messages_cpp _ms_pkg_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv" NAME_WE)
+add_dependencies(ms_pkg_generate_messages_cpp _ms_pkg_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv" NAME_WE)
 add_dependencies(ms_pkg_generate_messages_cpp _ms_pkg_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility
@@ -145,6 +158,12 @@ _generate_srv_eus(ms_pkg
   ""
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/ms_pkg
 )
+_generate_srv_eus(ms_pkg
+  "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/ms_pkg
+)
 
 ### Generating Module File
 _generate_module_eus(ms_pkg
@@ -167,6 +186,8 @@ add_dependencies(ms_pkg_generate_messages_eus _ms_pkg_generate_messages_check_de
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TF_service.srv" NAME_WE)
 add_dependencies(ms_pkg_generate_messages_eus _ms_pkg_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv" NAME_WE)
+add_dependencies(ms_pkg_generate_messages_eus _ms_pkg_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv" NAME_WE)
 add_dependencies(ms_pkg_generate_messages_eus _ms_pkg_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility
@@ -210,6 +231,12 @@ _generate_srv_lisp(ms_pkg
   ""
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/ms_pkg
 )
+_generate_srv_lisp(ms_pkg
+  "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/ms_pkg
+)
 
 ### Generating Module File
 _generate_module_lisp(ms_pkg
@@ -232,6 +259,8 @@ add_dependencies(ms_pkg_generate_messages_lisp _ms_pkg_generate_messages_check_d
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TF_service.srv" NAME_WE)
 add_dependencies(ms_pkg_generate_messages_lisp _ms_pkg_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv" NAME_WE)
+add_dependencies(ms_pkg_generate_messages_lisp _ms_pkg_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv" NAME_WE)
 add_dependencies(ms_pkg_generate_messages_lisp _ms_pkg_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility
@@ -275,6 +304,12 @@ _generate_srv_nodejs(ms_pkg
   ""
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/ms_pkg
 )
+_generate_srv_nodejs(ms_pkg
+  "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/ms_pkg
+)
 
 ### Generating Module File
 _generate_module_nodejs(ms_pkg
@@ -297,6 +332,8 @@ add_dependencies(ms_pkg_generate_messages_nodejs _ms_pkg_generate_messages_check
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TF_service.srv" NAME_WE)
 add_dependencies(ms_pkg_generate_messages_nodejs _ms_pkg_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv" NAME_WE)
+add_dependencies(ms_pkg_generate_messages_nodejs _ms_pkg_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv" NAME_WE)
 add_dependencies(ms_pkg_generate_messages_nodejs _ms_pkg_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility
@@ -340,6 +377,12 @@ _generate_srv_py(ms_pkg
   ""
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/ms_pkg
 )
+_generate_srv_py(ms_pkg
+  "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/ms_pkg
+)
 
 ### Generating Module File
 _generate_module_py(ms_pkg
@@ -362,6 +405,8 @@ add_dependencies(ms_pkg_generate_messages_py _ms_pkg_generate_messages_check_dep
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TF_service.srv" NAME_WE)
 add_dependencies(ms_pkg_generate_messages_py _ms_pkg_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv" NAME_WE)
+add_dependencies(ms_pkg_generate_messages_py _ms_pkg_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv" NAME_WE)
 add_dependencies(ms_pkg_generate_messages_py _ms_pkg_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility

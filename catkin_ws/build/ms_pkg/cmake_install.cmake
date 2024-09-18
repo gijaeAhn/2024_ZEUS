@@ -47,6 +47,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
     "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/STT_service.srv"
     "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TF_service.srv"
     "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv"
+    "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv"
     )
 endif()
 
@@ -115,6 +116,10 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/ms_pkg" TYPE PROGRAM FILES "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg/catkin_generated/installspace/LLMCServiceServer_script.py")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/ms_pkg" TYPE PROGRAM FILES "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg/catkin_generated/installspace/TTSServiceServer_script.py")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)

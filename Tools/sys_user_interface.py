@@ -5,6 +5,7 @@ from ms_pkg.srv import LLMC_service, LLMC_serviceResponse
 from ms_pkg.srv import STT_service, STT_serviceResponse
 from ms_pkg.srv import TF_service, TF_serviceResponse
 from ms_pkg.srv import FER_service, FER_serviceResponse
+from ms_pkg.srv import TTS_service, TTS_serviceResponse
 
 import rospy
 import cv2
@@ -15,6 +16,7 @@ from cv_bridge import CvBridge
 import numpy as np
 import time
 import sys, os
+from gtts import gTTS
 sys.path.append(os.path.expanduser("~/Desktop/2024_ZEUS/module"))
 # sys.path.append(os.path.expanduser("~/Desktop/2024_ZEUS/module/ms_library"))
 
@@ -25,11 +27,12 @@ config["STT"] = rospy.get_param("~STT_SN", default="STTService")
 config["LLMC"] = rospy.get_param("~LLMC_SN", default="LLMCService")
 config["TF"] = rospy.get_param("~TF_SN", default="TFService")
 config["FER"] = rospy.get_param("~FER_SN", default="FERService")
+config["TTS"] = rospy.get_param("~TTS_SN", default="TTSService")
 # el = EL(node_name, config)
 
 bridge = CvBridge()
 
-
+#get image from webcam
 def captureImagefromCam():
         time.sleep(0.5)
         cap = cv2.VideoCapture(0)
@@ -37,10 +40,9 @@ def captureImagefromCam():
         cap.release()
         return ret, frame
 
-
-
-
+#controller for webot and recording
 class SysUserInterface(positionLogger):
+   
     def __init__(self):
         super().__init__()
         rospy.loginfo("Checking for service's activation")
@@ -48,23 +50,25 @@ class SysUserInterface(positionLogger):
         rospy.wait_for_service(config['FER'])
         rospy.wait_for_service(config['LLMC'])
         rospy.wait_for_service(config['TF'])
-        
-        self.recording_buffer = []
-        self.is_stream_open = False
-        self.audio_stream = sd.InputStream(samplerate = 44100, channels=2, callback = self.voice_callback)
-        self.audio_save_dir = os.path.expanduser("~/.temp_files")
-        os.makedirs(self.audio_save_dir, exist_ok=True)
-        self.audio_save_path = os.path.join(os.path.expanduser("~/.temp_files"), "record.wav")
+        rospy.wait_for_service(config['TTS'])
         
         self.STTService_rq = rospy.ServiceProxy(config["STT"], STT_service)
         self.TFService_rq = rospy.ServiceProxy(config["TF"], TF_service)
         self.FERService_rq = rospy.ServiceProxy(config["FER"], FER_service)
         self.LLMCservice_rq = rospy.ServiceProxy(config["LLMC"], LLMC_service)
+        self.TTSService_rq = rospy.ServiceProxy(config["TTS"], TTS_service)
 
-    
-    # @override
+        self.recording_buffer = []
+        self.is_stream_open = False
+        self.audio_stream = sd.InputStream(samplerate = 44100, channels=2, callback = self.voice_callback)
+        self.temp_file_dir = os.path.expanduser("~/.temp_files")
+        os.makedirs(self.temp_file_dir, exist_ok=True)
+        self.audio_save_path = os.path.join(self.temp_file_dir, "record.wav")
+        self.tts_save_path = os.path.join(self.temp_file_dir, "tts.mp3")
+        print("here")
+ 
+
     def on_press(self, key):
-        
         try :
             key_str = '{0}'.format(key.char)
         except :
@@ -77,16 +81,17 @@ class SysUserInterface(positionLogger):
                 self.process_voice_input()
         else:
             self._moveCommandPub.publish(key_str)
-    
-    
-    # @override
+
+
     def on_release(self, key):
         if key == keyboard.Key.esc:    
             rospy.loginfo("프로그램을 종료합니다.")
             return
 
+
     def voice_callback(self, indata,  frames, time, status):
         self.recording_buffer.append(indata.copy())
+
 
     def toggle_audio_stream(self):
         if self.is_stream_open == False:
@@ -102,6 +107,7 @@ class SysUserInterface(positionLogger):
             write(self.audio_save_path, 44100, recorded_data_arr)
             self.recording_buffer.clear()
     
+
     def process_voice_input(self):
         stt_result = self.STTService_rq(self.audio_save_path).result
         tf_result =  self.TFService_rq(stt_result).result
@@ -111,9 +117,6 @@ class SysUserInterface(positionLogger):
             if ret:
                 request_img = bridge.cv2_to_imgmsg(frame, encoding="bgr8")
                 fer_score = self.FERService_rq(request_img).result
-                print(fer_score)
-                print(type(fer_score))
-                print("here")
                 best_menu = recommand_from_fer(fer_score)
                 print(best_menu)
 
@@ -121,7 +124,10 @@ class SysUserInterface(positionLogger):
                 print("camera dosen't work")
         else:
             llm_answer = self.LLMCservice_rq(stt_result).model_text 
-            print(llm_answer)
+            tts_result = self.TTSService_rq(llm_answer).result
+            print(tts_result)
+            if not tts_result:
+                print(tts_result)
 
 
 def main():

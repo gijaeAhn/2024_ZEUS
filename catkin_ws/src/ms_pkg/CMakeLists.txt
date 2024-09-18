@@ -61,6 +61,7 @@ add_service_files(
   STT_service.srv
   TF_service.srv
   LLMC_service.srv
+  TTS_service.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -169,6 +170,7 @@ catkin_install_python(PROGRAMS
   src/service_scripts/STTServiceServer_script.py
   src/service_scripts/TFServiceServer_script.py
   src/service_scripts/LLMCServiceServer_script.py
+  src/service_scripts/TTSServiceServer_script.py
   src/test.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

@@ -1,7 +1,7 @@
 # generated from genmsg/cmake/pkg-genmsg.context.in
 
 messages_str = "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg/img_num.msg"
-services_str = "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/FER_service.srv;/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/STT_service.srv;/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TF_service.srv;/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv"
+services_str = "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/FER_service.srv;/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/STT_service.srv;/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TF_service.srv;/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv;/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv"
 pkg_name = "ms_pkg"
 dependencies_str = "std_msgs;sensor_msgs"
 langs = "gencpp;geneus;genlisp;gennodejs;genpy"

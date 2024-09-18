@@ -13,4 +13,6 @@
     (:file "_package_STT_service" :depends-on ("_package"))
     (:file "TF_service" :depends-on ("_package_TF_service"))
     (:file "_package_TF_service" :depends-on ("_package"))
+    (:file "TTS_service" :depends-on ("_package_TTS_service"))
+    (:file "_package_TTS_service" :depends-on ("_package"))
   ))

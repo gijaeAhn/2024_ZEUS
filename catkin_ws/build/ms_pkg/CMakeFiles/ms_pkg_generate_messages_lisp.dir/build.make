@@ -58,6 +58,7 @@ ms_pkg/CMakeFiles/ms_pkg_generate_messages_lisp: /home/sjlab3090/Desktop/2024_ZE
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_lisp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv/STT_service.lisp
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_lisp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv/TF_service.lisp
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_lisp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv/LLMC_service.lisp
+ms_pkg/CMakeFiles/ms_pkg_generate_messages_lisp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv/TTS_service.lisp
 
 
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/msg/img_num.lisp: /opt/ros/noetic/lib/genlisp/gen_lisp.py
@@ -89,12 +90,18 @@ ms_pkg/CMakeFiles/ms_pkg_generate_messages_lisp: /home/sjlab3090/Desktop/2024_ZE
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Generating Lisp code from ms_pkg/LLMC_service.srv"
 	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg && ../catkin_generated/env_cached.sh /home/sjlab3090/anaconda3/bin/python3 /opt/ros/noetic/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv -Ims_pkg:/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -Isensor_msgs:/opt/ros/noetic/share/sensor_msgs/cmake/../msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -p ms_pkg -o /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv
 
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv/TTS_service.lisp: /opt/ros/noetic/lib/genlisp/gen_lisp.py
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv/TTS_service.lisp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Generating Lisp code from ms_pkg/TTS_service.srv"
+	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg && ../catkin_generated/env_cached.sh /home/sjlab3090/anaconda3/bin/python3 /opt/ros/noetic/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv -Ims_pkg:/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -Isensor_msgs:/opt/ros/noetic/share/sensor_msgs/cmake/../msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -p ms_pkg -o /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv
+
 ms_pkg_generate_messages_lisp: ms_pkg/CMakeFiles/ms_pkg_generate_messages_lisp
 ms_pkg_generate_messages_lisp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/msg/img_num.lisp
 ms_pkg_generate_messages_lisp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv/FER_service.lisp
 ms_pkg_generate_messages_lisp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv/STT_service.lisp
 ms_pkg_generate_messages_lisp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv/TF_service.lisp
 ms_pkg_generate_messages_lisp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv/LLMC_service.lisp
+ms_pkg_generate_messages_lisp: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp/ros/ms_pkg/srv/TTS_service.lisp
 ms_pkg_generate_messages_lisp: ms_pkg/CMakeFiles/ms_pkg_generate_messages_lisp.dir/build.make
 
 .PHONY : ms_pkg_generate_messages_lisp

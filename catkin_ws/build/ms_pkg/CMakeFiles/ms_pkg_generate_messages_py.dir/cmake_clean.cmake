@@ -5,6 +5,7 @@ file(REMOVE_RECURSE
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_LLMC_service.py"
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_STT_service.py"
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_TF_service.py"
+  "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_TTS_service.py"
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/__init__.py"
   "CMakeFiles/ms_pkg_generate_messages_py"
 )

@@ -58,6 +58,7 @@ ms_pkg/CMakeFiles/ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_STT_service.py
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_TF_service.py
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_LLMC_service.py
+ms_pkg/CMakeFiles/ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_TTS_service.py
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/msg/__init__.py
 ms_pkg/CMakeFiles/ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/__init__.py
 
@@ -91,13 +92,19 @@ ms_pkg/CMakeFiles/ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Generating Python code from SRV ms_pkg/LLMC_service"
 	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg && ../catkin_generated/env_cached.sh /home/sjlab3090/anaconda3/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/gensrv_py.py /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/LLMC_service.srv -Ims_pkg:/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -Isensor_msgs:/opt/ros/noetic/share/sensor_msgs/cmake/../msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -p ms_pkg -o /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv
 
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_TTS_service.py: /opt/ros/noetic/lib/genpy/gensrv_py.py
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_TTS_service.py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Generating Python code from SRV ms_pkg/TTS_service"
+	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg && ../catkin_generated/env_cached.sh /home/sjlab3090/anaconda3/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/gensrv_py.py /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/TTS_service.srv -Ims_pkg:/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -Isensor_msgs:/opt/ros/noetic/share/sensor_msgs/cmake/../msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -p ms_pkg -o /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv
+
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/msg/__init__.py: /opt/ros/noetic/lib/genpy/genmsg_py.py
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/msg/__init__.py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/msg/_img_num.py
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/msg/__init__.py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_FER_service.py
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/msg/__init__.py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_STT_service.py
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/msg/__init__.py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_TF_service.py
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/msg/__init__.py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_LLMC_service.py
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Generating Python msg __init__.py for ms_pkg"
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/msg/__init__.py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_TTS_service.py
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Generating Python msg __init__.py for ms_pkg"
 	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg && ../catkin_generated/env_cached.sh /home/sjlab3090/anaconda3/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py -o /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/msg --initpy
 
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/__init__.py: /opt/ros/noetic/lib/genpy/genmsg_py.py
@@ -106,7 +113,8 @@ ms_pkg/CMakeFiles/ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/__init__.py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_STT_service.py
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/__init__.py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_TF_service.py
 /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/__init__.py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_LLMC_service.py
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Generating Python srv __init__.py for ms_pkg"
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/__init__.py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_TTS_service.py
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Generating Python srv __init__.py for ms_pkg"
 	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg && ../catkin_generated/env_cached.sh /home/sjlab3090/anaconda3/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py -o /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv --initpy
 
 ms_pkg_generate_messages_py: ms_pkg/CMakeFiles/ms_pkg_generate_messages_py
@@ -115,6 +123,7 @@ ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/l
 ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_STT_service.py
 ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_TF_service.py
 ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_LLMC_service.py
+ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/_TTS_service.py
 ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/msg/__init__.py
 ms_pkg_generate_messages_py: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/lib/python3/dist-packages/ms_pkg/srv/__init__.py
 ms_pkg_generate_messages_py: ms_pkg/CMakeFiles/ms_pkg_generate_messages_py.dir/build.make
