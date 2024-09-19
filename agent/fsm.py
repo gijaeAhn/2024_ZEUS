@@ -16,10 +16,16 @@ class FSM() :
             'greeting': {
                 'finish_greet': 'idle',
             },
-            'hri_idle' : {
+            'hri_idle' : {  
                 'speak'    : 'speaking',
-                'listen'   : 'listeing',
+                'listen'   : 'listening',
                 'get_menu' : 'moving'
+            },
+            'speaking' :{
+                'stop'     : 'hri_idle'
+            },
+            'listening' :{
+                'stop'     : 'hri_idle'
             },
             'moving': {
                 'stop': 'idle',
@@ -42,4 +48,7 @@ class FSM() :
 
     def checkState(self,event) :
         return self.state == event
+    
+    def getState(self) :
+        return self.state
 

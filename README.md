@@ -43,3 +43,13 @@ Setup Guide
 
 7. Update Dependencies
 - Keep track of your dependencies by updating the relevant .txt file. This file should contain a list of the required packages for the project.
+
+Style Guide
+
+1. Ros Topic Namespace Rule
+- Topics which are shared both by real and webots 
+  - /zeus/'topicName'
+- Topics only for real
+  - /zeus/real/'topicName'
+- Topics only for webots
+  - /zeus/webots/'topicName'

@@ -17,7 +17,13 @@ class WebotsConfig :
     
 
     TIME_STEP = 0.01
+    
 
+    SHORT_SLEEP  = 0.1
+
+    NORMAL_SLEEP = 1.0
+
+    LONG_SLEEP   = 10.0
     
 
 
@@ -104,6 +110,8 @@ class WebotsConfig :
     'D': [0, 0, 0],
     'E': [0, 0, 0]
     }
+
+    pourAngle = PI * 0.666
 
 
 
