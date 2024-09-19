@@ -1,6 +1,4 @@
 (cl:in-package ms_pkg-srv)
-(cl:export '(IMG-VAL
-          IMG
-          RESULT-VAL
+(cl:export '(RESULT-VAL
           RESULT
 ))

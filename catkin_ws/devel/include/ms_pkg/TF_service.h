@@ -40,7 +40,7 @@ template<>
 struct MD5Sum< ::ms_pkg::TF_service > {
   static const char* value()
   {
-    return "05354734935e371f83dc4d09f1c13d77";
+    return "248729ee8327b3251b6765c06dc48c85";
   }
 
   static const char* value(const ::ms_pkg::TF_service&) { return value(); }

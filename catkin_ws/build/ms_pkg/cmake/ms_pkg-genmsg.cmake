@@ -19,12 +19,12 @@ add_custom_target(ms_pkg_generate_messages ALL)
 
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg/img_num.msg" NAME_WE)
 add_custom_target(_ms_pkg_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "ms_pkg" "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg/img_num.msg" "sensor_msgs/Image:std_msgs/Header"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "ms_pkg" "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg/img_num.msg" "std_msgs/Header:sensor_msgs/Image"
 )
 
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/FER_service.srv" NAME_WE)
 add_custom_target(_ms_pkg_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "ms_pkg" "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/FER_service.srv" "sensor_msgs/Image:std_msgs/Header"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "ms_pkg" "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/FER_service.srv" ""
 )
 
 get_filename_component(_filename "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/STT_service.srv" NAME_WE)
@@ -56,7 +56,7 @@ add_custom_target(_ms_pkg_generate_messages_check_deps_${_filename}
 _generate_msg_cpp(ms_pkg
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg/img_num.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/ms_pkg
 )
 
@@ -64,7 +64,7 @@ _generate_msg_cpp(ms_pkg
 _generate_srv_cpp(ms_pkg
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/FER_service.srv"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg"
+  ""
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/ms_pkg
 )
 _generate_srv_cpp(ms_pkg
@@ -129,7 +129,7 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS ms_pkg_generate_messages_cpp)
 _generate_msg_eus(ms_pkg
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg/img_num.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/ms_pkg
 )
 
@@ -137,7 +137,7 @@ _generate_msg_eus(ms_pkg
 _generate_srv_eus(ms_pkg
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/FER_service.srv"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg"
+  ""
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/ms_pkg
 )
 _generate_srv_eus(ms_pkg
@@ -202,7 +202,7 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS ms_pkg_generate_messages_eus)
 _generate_msg_lisp(ms_pkg
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg/img_num.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/ms_pkg
 )
 
@@ -210,7 +210,7 @@ _generate_msg_lisp(ms_pkg
 _generate_srv_lisp(ms_pkg
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/FER_service.srv"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg"
+  ""
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/ms_pkg
 )
 _generate_srv_lisp(ms_pkg
@@ -275,7 +275,7 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS ms_pkg_generate_messages_lisp)
 _generate_msg_nodejs(ms_pkg
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg/img_num.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/ms_pkg
 )
 
@@ -283,7 +283,7 @@ _generate_msg_nodejs(ms_pkg
 _generate_srv_nodejs(ms_pkg
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/FER_service.srv"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg"
+  ""
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/ms_pkg
 )
 _generate_srv_nodejs(ms_pkg
@@ -348,7 +348,7 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS ms_pkg_generate_messages_nodejs)
 _generate_msg_py(ms_pkg
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/msg/img_num.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/ms_pkg
 )
 
@@ -356,7 +356,7 @@ _generate_msg_py(ms_pkg
 _generate_srv_py(ms_pkg
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/srv/FER_service.srv"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/sensor_msgs/cmake/../msg/Image.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg"
+  ""
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/ms_pkg
 )
 _generate_srv_py(ms_pkg

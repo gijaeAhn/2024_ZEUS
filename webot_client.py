@@ -55,14 +55,15 @@ class WebotsAgent(Agent) :
         self._webotsJointCommandPub        = rospy.Publisher('/zeus/webots/jointCommand'           ,  JointState    , queue_size = 10             )  
 
         #----- Subscriber
-        self._paramPoseSub                 = rospy.Subscriber('/zeus/webots/paramPose'             ,  String              , self._paramPoseCallback         )
-        self._eeCommandSub                 = rospy.Subscriber('/zeus/webots/eeCommand'             ,  String              , self._eeControlCallback         )
-        self._webotsJointCommandSub        = rospy.Subscriber('/zeus/webots/prejointCommand'       ,  JointState          , self._preJointCommandCallback   )
-        self._webotsRealJointSub           = rospy.Subscriber('/zeus/webots/realJoint'             ,  JointState          , self._updateJointCallback       )
+        # self._paramPoseSub                 = rospy.Subscriber('/zeus/webots/paramPose'             ,  String              , self._paramPoseCallback         )
+        # self._eeCommandSub                 = rospy.Subscriber('/zeus/webots/eeCommand'             ,  String              , self._eeControlCallback         )
+        # self._webotsJointCommandSub        = rospy.Subscriber('/zeus/webots/prejointCommand'       ,  JointState          , self._preJointCommandCallback   )
+        # self._webotsRealJointSub           = rospy.Subscriber('/zeus/webots/realJoint'             ,  JointState          , self._updateJointCallback       )
         self._webotsSimpleMoveSub          = rospy.Subscriber('/zeus/webots/simpleMoveCommand'     ,  String              , self._simpleMoveCallback        )
-        self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'       ,  String              , self._paramPoseCallback         )
-        self._webotsMenuSub                = rospy.Subscriber('/zeus/webots/menu'                  ,  String              , self._menuCallback              )
-        self._webotsCusMsgSub              = rospy.Subscriber('/zeus/webots/customerMsg'           ,  String              , self._cusMsgCallback            )
+        # self._webotsHRICommandSub          = rospy.Subscriber('/zeus/webots/HRICommand'            ,  String              , self._HRIEventLoopCallback           )
+        # self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'       ,  String              , self._paramPoseCallback         )
+        # self._webotsMenuSub                = rospy.Subscriber('/zeus/webots/menu'                  ,  String              , self._menuCallback              )
+        # self._webotsCusMsgSub              = rospy.Subscriber('/zeus/webots/customerMsg'           ,  String              , self._cusMsgCallback            )
 
         rospy.spin()
 
@@ -159,7 +160,6 @@ class WebotsAgent(Agent) :
         self._curJoint = tempPosition
 
         self._curTrans = ARM6_kinematics_forward_arm(self._curJoint)  
-
 
 
     def _simpleMoveCallback(self,msg, scale = 'small') :
@@ -290,6 +290,8 @@ class WebotsAgent(Agent) :
 
 
 # -------------- For HRI --------------------------------
+
+            
 
     def _hereYouare(self):
         pass

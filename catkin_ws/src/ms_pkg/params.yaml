@@ -3,3 +3,10 @@ recommand_wordset:
   - "제안"
   - "잘나가는"
   - "배고프다"
+
+cheking_wordset:
+  - "응"
+  - "예"
+  - "그래"
+  - "사과"
+  - "추천"

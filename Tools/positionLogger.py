@@ -34,26 +34,35 @@ class positionLogger :
 
         self._savedTransform      =      None
 
-        self._transSub            =      rospy.Subscriber("/zeus/webots/realTF", tfMessage, self._transSubCallback)
+        self._transSub            =      rospy.Subscriber("/zeus/webots/realTF", tfMessage, self._transSubCallback) 
 
-        self._moveCommandPub      =      rospy.Publisher("/zeus/webots/simpleMoveCommand",String, queue_size= 10)
+        self._moveCommandPub      =      rospy.Publisher("/zeus/webots/simpleMoveCommand",String, queue_size= 10) #키 값을 받아서 WebotClient에게 넘겨주는 Publisher, 키가 눌릴때마다 그 값이 webotClient 에게 전달됨.
 
+        self._HRICommandPub       =      rospy.Publisher("HRICommand", String, queue_size=1) #modified by ms
+
+     
 
     def on_press(self,key) :
         try :
             key_str = '{0}'.format(key.char)
         except :
             key_str = '{0}'.format(key)
-
-        self._moveCommandPub.publish(key_str)
+        print(key_str)
+        if key_str == 'o' or key_str == 'c':
+            self._HRICommandPub.publish(key_str)
+        else:
+            self._moveCommandPub.publish(key_str)
+    
+        # self._moveCommandPub.publish(key_str)
 
     def on_release(self,key):
-        if key == keyboard.Key.esc:
-            return False    
+        # if key == keyboard.Key.esc:
+        #     return False    
+        pass
 
 
     def _transSubCallback(self,data):
-        tr = TfMessgaeToTransform(Msg)
+        tr = TfMessgaeToTransform(Msg) #c++ 바인딩 된 부분인듯????
         self._savedTransform = tr
 
     def _getPosition(self,Transform):

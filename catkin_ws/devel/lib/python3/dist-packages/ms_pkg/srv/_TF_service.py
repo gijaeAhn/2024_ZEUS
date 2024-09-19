@@ -8,13 +8,14 @@ import struct
 
 
 class TF_serviceRequest(genpy.Message):
-  _md5sum = "74697ed3d931f6eede8bf3a8dfeca160"
+  _md5sum = "c8972f6056255fe9b22ae3cd1d15f1ce"
   _type = "ms_pkg/TF_serviceRequest"
   _has_header = False  # flag to mark the presence of a Header object
   _full_text = """string text
+string mode
 """
-  __slots__ = ['text']
-  _slot_types = ['string']
+  __slots__ = ['text','mode']
+  _slot_types = ['string','string']
 
   def __init__(self, *args, **kwds):
     """
@@ -24,7 +25,7 @@ class TF_serviceRequest(genpy.Message):
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       text
+       text,mode
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -35,8 +36,11 @@ class TF_serviceRequest(genpy.Message):
       # message fields cannot be None, assign default values for those that are
       if self.text is None:
         self.text = ''
+      if self.mode is None:
+        self.mode = ''
     else:
       self.text = ''
+      self.mode = ''
 
   def _get_types(self):
     """
@@ -51,6 +55,12 @@ class TF_serviceRequest(genpy.Message):
     """
     try:
       _x = self.text
+      length = len(_x)
+      if python3 or type(_x) == unicode:
+        _x = _x.encode('utf-8')
+        length = len(_x)
+      buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+      _x = self.mode
       length = len(_x)
       if python3 or type(_x) == unicode:
         _x = _x.encode('utf-8')
@@ -77,6 +87,15 @@ class TF_serviceRequest(genpy.Message):
         self.text = str[start:end].decode('utf-8', 'rosmsg')
       else:
         self.text = str[start:end]
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += length
+      if python3:
+        self.mode = str[start:end].decode('utf-8', 'rosmsg')
+      else:
+        self.mode = str[start:end]
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -90,6 +109,12 @@ class TF_serviceRequest(genpy.Message):
     """
     try:
       _x = self.text
+      length = len(_x)
+      if python3 or type(_x) == unicode:
+        _x = _x.encode('utf-8')
+        length = len(_x)
+      buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+      _x = self.mode
       length = len(_x)
       if python3 or type(_x) == unicode:
         _x = _x.encode('utf-8')
@@ -117,6 +142,15 @@ class TF_serviceRequest(genpy.Message):
         self.text = str[start:end].decode('utf-8', 'rosmsg')
       else:
         self.text = str[start:end]
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += length
+      if python3:
+        self.mode = str[start:end].decode('utf-8', 'rosmsg')
+      else:
+        self.mode = str[start:end]
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -240,6 +274,6 @@ def _get_struct_b():
     return _struct_b
 class TF_service(object):
   _type          = 'ms_pkg/TF_service'
-  _md5sum = '05354734935e371f83dc4d09f1c13d77'
+  _md5sum = '248729ee8327b3251b6765c06dc48c85'
   _request_class  = TF_serviceRequest
   _response_class = TF_serviceResponse

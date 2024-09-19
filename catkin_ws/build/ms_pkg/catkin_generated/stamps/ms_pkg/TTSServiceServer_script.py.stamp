@@ -12,7 +12,7 @@ from pydub.playback import play
 node_name = "TTSServiceServerNode"
 rospy.init_node(node_name)
 config = {}
-config["temp_dir"] = os.path.expanduser("~/temp_files")
+config["temp_dir"] = os.path.expanduser("~/.temp_files")
 config["mp3_path"] = os.path.join(config["temp_dir"], "tts.mp3")
 config["service_name"] = rospy.get_param("~service_name", default="TTSService")
 config['language'] = rospy.get_param("~lang", default='ko')
@@ -22,10 +22,13 @@ el = EL(node_name, config)
 
 def TTSServiceCallback(req):
     text=  req.text
+    # print("im in TTS service callback function")
     tts = gTTS(text=text, lang=config['language'])
     tts.save(config["mp3_path"])
+    
     try:
         play(AudioSegment.from_mp3(config["mp3_path"]))
+    # print("tts updated")
         return TTS_serviceResponse(1)
     except:
         return TTS_serviceResponse(0)

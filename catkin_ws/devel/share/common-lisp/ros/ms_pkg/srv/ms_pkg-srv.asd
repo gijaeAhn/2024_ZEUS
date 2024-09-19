@@ -2,8 +2,7 @@
 (cl:in-package :asdf)
 
 (defsystem "ms_pkg-srv"
-  :depends-on (:roslisp-msg-protocol :roslisp-utils :sensor_msgs-msg
-)
+  :depends-on (:roslisp-msg-protocol :roslisp-utils )
   :components ((:file "_package")
     (:file "FER_service" :depends-on ("_package_FER_service"))
     (:file "_package_FER_service" :depends-on ("_package"))

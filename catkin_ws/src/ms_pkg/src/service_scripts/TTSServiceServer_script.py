@@ -22,11 +22,13 @@ el = EL(node_name, config)
 
 def TTSServiceCallback(req):
     text=  req.text
-    print("im in TTS service callback function")
+    # print("im in TTS service callback function")
     tts = gTTS(text=text, lang=config['language'])
     tts.save(config["mp3_path"])
+    
     try:
         play(AudioSegment.from_mp3(config["mp3_path"]))
+    # print("tts updated")
         return TTS_serviceResponse(1)
     except:
         return TTS_serviceResponse(0)

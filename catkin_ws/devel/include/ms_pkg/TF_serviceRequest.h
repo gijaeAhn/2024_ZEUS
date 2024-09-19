@@ -24,10 +24,12 @@ struct TF_serviceRequest_
   typedef TF_serviceRequest_<ContainerAllocator> Type;
 
   TF_serviceRequest_()
-    : text()  {
+    : text()
+    , mode()  {
     }
   TF_serviceRequest_(const ContainerAllocator& _alloc)
-    : text(_alloc)  {
+    : text(_alloc)
+    , mode(_alloc)  {
   (void)_alloc;
     }
 
@@ -35,6 +37,9 @@ struct TF_serviceRequest_
 
    typedef std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>> _text_type;
   _text_type text;
+
+   typedef std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>> _mode_type;
+  _mode_type mode;
 
 
 
@@ -65,7 +70,8 @@ return s;
 template<typename ContainerAllocator1, typename ContainerAllocator2>
 bool operator==(const ::ms_pkg::TF_serviceRequest_<ContainerAllocator1> & lhs, const ::ms_pkg::TF_serviceRequest_<ContainerAllocator2> & rhs)
 {
-  return lhs.text == rhs.text;
+  return lhs.text == rhs.text &&
+    lhs.mode == rhs.mode;
 }
 
 template<typename ContainerAllocator1, typename ContainerAllocator2>
@@ -122,12 +128,12 @@ struct MD5Sum< ::ms_pkg::TF_serviceRequest_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "74697ed3d931f6eede8bf3a8dfeca160";
+    return "c8972f6056255fe9b22ae3cd1d15f1ce";
   }
 
   static const char* value(const ::ms_pkg::TF_serviceRequest_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x74697ed3d931f6eeULL;
-  static const uint64_t static_value2 = 0xde8bf3a8dfeca160ULL;
+  static const uint64_t static_value1 = 0xc8972f6056255fe9ULL;
+  static const uint64_t static_value2 = 0xb22ae3cd1d15f1ceULL;
 };
 
 template<class ContainerAllocator>
@@ -147,6 +153,7 @@ struct Definition< ::ms_pkg::TF_serviceRequest_<ContainerAllocator> >
   static const char* value()
   {
     return "string text\n"
+"string mode\n"
 ;
   }
 
@@ -166,6 +173,7 @@ namespace serialization
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
       stream.next(m.text);
+      stream.next(m.mode);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER
@@ -186,6 +194,8 @@ struct Printer< ::ms_pkg::TF_serviceRequest_<ContainerAllocator> >
   {
     s << indent << "text: ";
     Printer<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>::stream(s, indent + "  ", v.text);
+    s << indent << "mode: ";
+    Printer<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>::stream(s, indent + "  ", v.mode);
   }
 };
 
