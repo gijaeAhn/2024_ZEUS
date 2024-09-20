@@ -4,15 +4,16 @@
 
 import sys 
 
-sys.path.append('/home/sj/Desktop/2024_zeus/lib')
+sys.path.append('/home/sj/Desktop/2024_ZEUS/')
 
 
 import math
-from zeus_kinematics import *
+from lib.zeus_kinematics import *
 
 
-NEAR_ZER0 = 1e-8
+NEAR_ZER0 = 1e-5
 DEGREE_TO_RADIAN = 0.0174533
+PI = 3.14159265359
 
 def nearZero(a,b) :
     if( abs(a - b) < NEAR_ZER0) :
@@ -43,8 +44,9 @@ def testInversKinematics() :
 
     for idx, test in enumerate(test_cases):
 
-        qTest = [*test["input"]]
-        trTest = ARM6_kinematics_forward_arm(qTest)
+        qTest = [*test["input"]]    
+        trTest = ARM6_kinematics_forward_armReal(qTest)
+        # trTest = Transform().translateZ(0.4).translateX(0.3).rotateY(PI/2)
         calculated_result = ARM6_kinematics_inverse_arm(trTest, q)
         calculated_result = [0.0 if nearZero(component,NEAR_ZER0) else component for component in calculated_result]        
         print(qTest)

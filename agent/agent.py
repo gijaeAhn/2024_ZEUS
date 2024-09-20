@@ -1,5 +1,5 @@
 import sys
-
+import os
 
 home_dir = os.path.expanduser('~')
 
@@ -22,8 +22,8 @@ from config.config import *
 
 class Agent(ABC):
 
-    def __init__(self,name):
-        self._name = name
+    def __init__(self):
+        
 
         # Init Pose should be updated (in config)
         self._initPose = None
@@ -32,14 +32,14 @@ class Agent(ABC):
 
         self._fsm = FSM()
 
-        self._EE = endEffector()
+        # self._EE = endEffector()
 
 
-        self.rateFast = rospy.Rate(WebotsConfig.SHORT_SLEEP)
+        self.rateFast = rospy.Rate(WebotsConfig.LONG_SLEEP)
         
         self.rateNormal = rospy.Rate(WebotsConfig.NORMAL_SLEEP)
 
-        self.rateSlow = rospy.Rate(WebotsConfig.LONG_SLEEP)
+        self.rateSlow = rospy.Rate(WebotsConfig.SHORT_SLEEP)
 
 
         self._curJoint = None
@@ -50,7 +50,7 @@ class Agent(ABC):
 
         self._commandTrans = None
 
-        self._tts = TTS()
+        # self._tts = TTS()
 
 
 

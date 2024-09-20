@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller/src/zeus_controller.cpp
+/home/sj/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller/src/zeus_controller.cpp
 /usr/local/webots/include/controller/cpp/webots/Robot.hpp
 -
 /usr/local/webots/include/controller/cpp/webots/Motor.hpp
@@ -728,31 +728,5 @@ string
 vector
 -
 time.h
--
-
-/usr/local/webots/include/controller/c/webots/types.h
-math.h
--
-
-/usr/local/webots/include/controller/cpp/webots/Device.hpp
-string
--
-../../c/webots/types.h
-/usr/local/webots/include/controller/c/webots/types.h
-
-/usr/local/webots/include/controller/cpp/webots/Motor.hpp
-/usr/local/webots/include/controller/cpp/webots/Device.hpp
--
-math.h
--
-
-/usr/local/webots/include/controller/cpp/webots/PositionSensor.hpp
-/usr/local/webots/include/controller/cpp/webots/Device.hpp
--
-
-/usr/local/webots/include/controller/cpp/webots/Robot.hpp
-iostream
--
-vector
 -
 

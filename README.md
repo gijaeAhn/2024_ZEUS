@@ -1,6 +1,6 @@
-2024_ZEUS
+##2024_ZEUS
 
-Setup Guide
+#Setup Guide
 
 1. Install ROS Noetic (Ubuntu 20.04) & CUDA (Optional)
 - Follow the official instructions to install ROS Noetic: http://wiki.ros.org/noetic/Installation/Ubuntu
@@ -25,6 +25,8 @@ Setup Guide
   bash ./build_catkin.sh
 
 5. Install Pybind Library
+- Set your pybind_DIR depends on your python version
+  Example : set(pybind11_DIR /home/sj/.local/lib/python3.8/site-packages/pybind11/share/cmake/pybind11)
 - Install the Pybind library needed for Python-C++ bindings:
   bash ./install_pybind.sh
 

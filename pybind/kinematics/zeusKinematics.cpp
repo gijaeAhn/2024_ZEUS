@@ -8,10 +8,6 @@
 // 3. Yaw - Pitch - Pitch - Yaw - Pitch - Yaw
 // 4. Final Z axis > 0 
 
-
-
-
-
 bool show_debug=true;
 
 double mod_angle(double q){
@@ -31,20 +27,19 @@ T clamp(T value, T min, T max) {
 double continuous_angle(double new_angle, double prev_angle){
     new_angle = mod_angle(new_angle);
     double delta = new_angle - prev_angle;
-    if(delta > PI){
-        new_angle -= 2 * PI;
-    } else if(delta < -PI){
-        new_angle += 2 * PI;
+    if(delta > 6.0){
+        new_angle = 2 * PI - new_angle;
+    } else if(delta < -6.0){
+        new_angle = 2 * PI + new_angle;
     }
     return new_angle;
 }
 
 
+// J2, J4, J6 inverted for simple calc
 Transform ARM6_kinematics_forward_arm(std::vector<double> q){
-
-
       Transform t;
-    t = t
+      t = t
       .translateZ(shoulderOffsetZ)
       .rotateZ(q[0])
       .rotateY(q[1])
@@ -53,7 +48,25 @@ Transform ARM6_kinematics_forward_arm(std::vector<double> q){
       .rotateZ(q[3])
       .translateZ(upperArmLength)
       .rotateY(q[4])
-      .translateY(wristOffsetY)
+      .translateY(-wristOffsetY)
+      .rotateZ(q[5])
+      .translate(toolOffsetX,0,toolOffsetZ+wristLength);
+    return t;
+}
+
+Transform ARM6_kinematics_forward_armReal(std::vector<double> q){
+      Transform t;
+      t = t
+      .rotateZ(PI/2)
+      .translateZ(shoulderOffsetZ)
+      .rotateZ(q[0])
+      .rotateY(q[1])
+      .translateZ(lowerArmLength)
+      .rotateY(q[2])
+      .rotateZ(q[3])
+      .translateZ(upperArmLength)
+      .rotateY(q[4])
+      .translateY(-wristOffsetY)
       .rotateZ(q[5])
       .translate(toolOffsetX,0,toolOffsetZ+wristLength);
     return t;
@@ -124,9 +137,13 @@ std::vector<double>
 ARM6_kinematics_inverse_arm(Transform trArm, const std::vector<double> qOrg) {
     const size_t MAX_ITER       =  100;
     const double errorGain      = -0.5;
-    const double errorThreshold = 1.0E-6;       
+    const double errorThreshold = 1.0E-6;
 
-    Transform targetTR = trArm;
+
+    Transform frameSetTR = Transform().rotateZ(-PI/2);
+    Transform targetTR =  frameSetTR * trArm;
+    Transform targetTRorig = targetTR;
+
     
     std::vector<double> solution = qOrg;
     double errorNorm;
@@ -137,9 +154,9 @@ ARM6_kinematics_inverse_arm(Transform trArm, const std::vector<double> qOrg) {
         Transform trForCheck = ARM6_kinematics_forward_arm(solution);
         
         std::vector<double> error = {
-            trForCheck(0,3)  -  trArm(0,3),
-            trForCheck(1,3)  -  trArm(1,3),
-            trForCheck(2,3)  -  trArm(2,3)
+            trForCheck(0,3)  -  targetTRorig(0,3),
+            trForCheck(1,3)  -  targetTRorig(1,3),
+            trForCheck(2,3)  -  targetTRorig(2,3)
         };
 
         errorNorm = std::sqrt(error[0]*error[0] + error[1]*error[1] + error[2]*error[2]);
@@ -162,6 +179,10 @@ ARM6_kinematics_inverse_arm(Transform trArm, const std::vector<double> qOrg) {
         }
     }
 
+    for(size_t i = 0; i < 6 ; i++){
+      solution[i] = mod_angle(solution[i]);
+      solution[i] = continuous_angle(solution[i], qOrg[i]);
+    }
     return solution; 
   }    
     

@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src
+CMAKE_SOURCE_DIR = /home/sj/Desktop/2024_ZEUS/catkin_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build
+CMAKE_BINARY_DIR = /home/sj/Desktop/2024_ZEUS/catkin_ws/build
 
 # Utility rule file for rosgraph_msgs_generate_messages_eus.
 
@@ -63,10 +63,10 @@ zeus_controller/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build: rosgra
 .PHONY : zeus_controller/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build
 
 zeus_controller/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/clean:
-	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller && $(CMAKE_COMMAND) -P CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/cmake_clean.cmake
+	cd /home/sj/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller && $(CMAKE_COMMAND) -P CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/cmake_clean.cmake
 .PHONY : zeus_controller/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/clean
 
 zeus_controller/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/depend:
-	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/sj/Desktop/2024_ZEUS/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/sj/Desktop/2024_ZEUS/catkin_ws/src /home/sj/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller /home/sj/Desktop/2024_ZEUS/catkin_ws/build /home/sj/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller /home/sj/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : zeus_controller/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/depend
 

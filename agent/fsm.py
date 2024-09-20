@@ -2,8 +2,8 @@ class FSM() :
 
     def __init__(self):
         
-        self.state_ = 'idle'
-        self.stateTable_ = self._initialize_states()
+        self._state = 'idle'
+        self._stateTable = self._initializeStates()
 
 
     def _initializeStates(self) :
@@ -39,16 +39,16 @@ class FSM() :
     
     def handleEvent(self,event) :
 
-        if event in self.fsm[self.state]:
-            new_state = self.fsm[self.state][event]
-            print(f"Transitioning from {self.state} to {new_state} on event '{event}'")
-            self.state = new_state
+        if event in self._stateTable[self._state]:
+            new_state = self._stateTable[self._state][event]
+            print(f"Transitioning from {self._state} to {new_state} on event '{event}'")
+            self._state = new_state
         else:
-            print(f"Failed to handle '{event}' in state '{self.state}'")
+            print(f"Failed to handle '{event}' in state '{self._state}'")
 
     def checkState(self,event) :
-        return self.state == event
+        return self._state == event
     
     def getState(self) :
-        return self.state
+        return self._state
 

@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src
+CMAKE_SOURCE_DIR = /home/sj/Desktop/2024_ZEUS/catkin_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build
+CMAKE_BINARY_DIR = /home/sj/Desktop/2024_ZEUS/catkin_ws/build
 
 # Utility rule file for roscpp_generate_messages_cpp.
 
@@ -63,10 +63,10 @@ zeus_controller/CMakeFiles/roscpp_generate_messages_cpp.dir/build: roscpp_genera
 .PHONY : zeus_controller/CMakeFiles/roscpp_generate_messages_cpp.dir/build
 
 zeus_controller/CMakeFiles/roscpp_generate_messages_cpp.dir/clean:
-	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller && $(CMAKE_COMMAND) -P CMakeFiles/roscpp_generate_messages_cpp.dir/cmake_clean.cmake
+	cd /home/sj/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller && $(CMAKE_COMMAND) -P CMakeFiles/roscpp_generate_messages_cpp.dir/cmake_clean.cmake
 .PHONY : zeus_controller/CMakeFiles/roscpp_generate_messages_cpp.dir/clean
 
 zeus_controller/CMakeFiles/roscpp_generate_messages_cpp.dir/depend:
-	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller/CMakeFiles/roscpp_generate_messages_cpp.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/sj/Desktop/2024_ZEUS/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/sj/Desktop/2024_ZEUS/catkin_ws/src /home/sj/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller /home/sj/Desktop/2024_ZEUS/catkin_ws/build /home/sj/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller /home/sj/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller/CMakeFiles/roscpp_generate_messages_cpp.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : zeus_controller/CMakeFiles/roscpp_generate_messages_cpp.dir/depend
 

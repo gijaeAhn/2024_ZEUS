@@ -9,6 +9,7 @@ sys.path.append(os.path.join(home_dir, 'Desktop/2024_ZEUS/'))
 
 from agent.agent import Agent
 from agent.webots_endeffector import webotsEE
+import rospy
 
 # ----------------- ROS Message -----------------
 
@@ -27,30 +28,24 @@ from lib.zeus_kinematics import *
 from config.config import WebotsConfig
 
 
-import tf
-import rospy
-
 
 class WebotsAgent(Agent) :
 
     def __init__(self) :
 
+
+        Agent.__init__(self)
+
         self._initJoint = WebotsConfig.initPoseA
         self._initTrans = WebotsConfig.initPoseT
-
         self._jointNames = WebotsConfig.jointNameList
-
         self._curJoint = self._initJoint
         self._curTrans = self._initTrans
         self._commandJoint = self._curJoint
         self._eeController = webotsEE()
-
-
         self._jointVelocity = WebotsConfig.defaultAngleVelocity
 
-        #----- Additional Threads
 
-        threading.Thread(target=self._publishFsmState,daemon=True).start()
 
 
         #----- Publisher
@@ -65,6 +60,14 @@ class WebotsAgent(Agent) :
         self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'       ,  String              , self._paramPoseCallback         )
         self._webotsMenuSub                = rospy.Subscriber('/zeus/webots/menu'                  ,  String              , self._menuCallback              )
         self._webotsCusMsgSub              = rospy.Subscriber('/zeus/webots/customerMsg'           ,  String              , self._cusMsgCallback            )
+        
+        #----- Additional Threads
+        threading.Thread(target=self._publishFsmState,daemon=True).start()
+
+        #Temp
+        self._fsm.handleEvent('hri_start')
+        self._fsm.handleEvent('get_menu')
+
 
         rospy.spin()
 
@@ -99,16 +102,17 @@ class WebotsAgent(Agent) :
 
 
     def _updateJointCallback(self, jointState):
-        # print("Updating Joint :", end=' ')
         tempPosition = [0.0] * 6  
         for index, (name, position) in enumerate(zip(jointState.name, jointState.position)):
             if index < 6: 
                 tempPosition[index] = position
             else:
                 break  
+        tempPosition = [angle * direction for angle, direction in zip(tempPosition, WebotsConfig.ROTATE_DIRECTION)]    
         self._curJoint = tempPosition
 
-        self._curTrans = ARM6_kinematics_forward_arm(self._curJoint)  
+        self._curTrans = ARM6_kinematics_forward_armReal(self._curJoint)
+        self._curTrans.printTransform(self._curTrans)  
 
 
     def _simpleMoveCallback(self,msg, scale = 'small') :
@@ -280,8 +284,9 @@ class WebotsAgent(Agent) :
 
 # --------------- Base Action ------------------------
     def movePoseA(self, Angle):
-
-        if not(self._fsm.getState == 'moving' or self._fsm.getState == 'shaking'):
+        
+        print(self._fsm.getState())
+        if not(self._fsm.getState() == "moving" or self._fsm.getState() == "shaking"):
             print('State is not Moiving : Quit!!!')
             return 
 
@@ -289,6 +294,11 @@ class WebotsAgent(Agent) :
             rospy.logerr("Incorrect number of angles provided. Expected {}, got {}.".format(WebotsConfig.DOF, len(Angle)))
             return
         
+        # For debug
+        # DEGREE_TO_RADIAN = 0.0174533
+        # Angle = [angle * DEGREE_TO_RADIAN for angle in WebotsConfig.pose3A]
+        Angle = [angle * direction for angle, direction in zip(Angle, WebotsConfig.ROTATE_DIRECTION)]
+
         msg = JointState()
         msg.header = Header()
         msg.header.stamp = rospy.Time.now()
@@ -302,8 +312,6 @@ class WebotsAgent(Agent) :
         self._webotsJointCommandPub.publish(msg)
 
     def movePoseT(self,Transform):
-
-        Transform.printTransform(Transform)
         solvedAngle = ARM6_kinematics_inverse_arm(Transform,self._curJoint)
         self.movePoseA(solvedAngle)
 
@@ -345,9 +353,6 @@ class WebotsAgent(Agent) :
 
 # -------------- For HRI --------------------------------
 
-
-
-    
     def _speak(self,ttsData):
         pass
     
@@ -363,7 +368,6 @@ class WebotsAgent(Agent) :
 
 
 # -------------- For Debug ------------------------------
-
 
     def printTrans(self) :
         print(self._curTrans)

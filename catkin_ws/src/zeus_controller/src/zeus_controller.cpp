@@ -78,8 +78,7 @@ class zeusController : public webots::Robot {
                 }
 
                 ros::spinOnce(); // Handle ROS events
-                webotsControlFunc(); // Your control function
-            }
+                webotsControlFunc(); 
         } 
             
         
@@ -129,8 +128,6 @@ class zeusController : public webots::Robot {
             }
             realJointPub_.publish(realJointMsg);
 
-            // Compare Current position and previous command
-            
             bool positionCheck = true;
             for(size_t i = 0; i < DOF ; i++){
                 if(std::abs(sensorPosition_[i] - motorGoalPrev_[i]) > NEAR_VALUE){
