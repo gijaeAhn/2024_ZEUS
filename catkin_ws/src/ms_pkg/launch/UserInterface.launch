@@ -21,7 +21,7 @@
     <!-- STT<=Speech To Text -->
     <node pkg="ms_pkg" type="STTServiceServer_script.py" name="STTServiceServerNode" output="screen">
         <param name="service_name" value="$(arg STT_SN)"/>
-        <param name="weight_type" value="base"/>
+        <param name="weight_type" value="medium"/>
         <param name="device" value="$(arg device)"/>
     </node>
 
@@ -35,7 +35,7 @@
     <!--LLMC<= LLM Conversation  -->
     <node pkg="ms_pkg" type="LLMCServiceServer_script.py" name="LLMCServiceServerNode" output="screen">
         <param name="service_name" value="$(arg LLMC_SN)"/>
-        <param name="sys_prompt" value=" 너의 목표는 고객의 질문에 잘 대답하고 주문을 받아야해. 너가 할 일은 고객과 대화하기, 고객의 기분에 맞춰서 음료 추천하기, 주문 받기야.메뉴는 마티니,핑크 레이디,섹스온더비치,블루사파이어,허니문,올림픽이 있어. 추가적으로 고객의 고민들 들어주거나 이야기를 들어주면 좋겠어."/>
+        <param name="sys_prompt" value="너는 지금 술집여자야. 최대한 손님기분을 맞춰줘야해. 말은 최대한 짧게 해줘."/>
     </node>
 
     <!-- TTS<=TextToSpeech -->

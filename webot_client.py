@@ -31,13 +31,14 @@ from config.config import WebotsConfig
 
 
 import tf
-import rospy
+import rospy 
 
 
 class WebotsAgent(Agent) :
 
     def __init__(self) :
-
+        
+        super().__init__()
         self._initJoint = WebotsConfig.initPoseA
         self._initTrans = WebotsConfig.initPoseT
 
@@ -62,7 +63,7 @@ class WebotsAgent(Agent) :
         self._webotsSimpleMoveSub          = rospy.Subscriber('/zeus/webots/simpleMoveCommand'     ,  String              , self._simpleMoveCallback        )
         # self._webotsHRICommandSub          = rospy.Subscriber('/zeus/webots/HRICommand'            ,  String              , self._HRIEventLoopCallback           )
         # self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'       ,  String              , self._paramPoseCallback         )
-        # self._webotsMenuSub                = rospy.Subscriber('/zeus/webots/menu'                  ,  String              , self._menuCallback              )
+        self._webotsMenuSub                = rospy.Subscriber('/zeus/webots/menu'                  ,  String              , self._menuCallback              )
         # self._webotsCusMsgSub              = rospy.Subscriber('/zeus/webots/customerMsg'           ,  String              , self._cusMsgCallback            )
 
         rospy.spin()

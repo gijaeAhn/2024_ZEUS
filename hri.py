@@ -61,6 +61,8 @@ class HRI:
         self.LLMCservice_rq = rospy.ServiceProxy(config["LLMC"], LLMC_service)
         self.TTSService_rq = rospy.ServiceProxy(config["TTS"], TTS_service)
 
+        self.orderPubblisher = rospy.Publisher("/zeus/webots/menu", String, queue_size=1)
+
 
         self.recording_buffer = []
         self.is_mic_open = False
@@ -150,7 +152,11 @@ class HRI:
         print("user answer", user_answer)
         if user_answer:
             order_ment = f"{recommand_menu}를 제조하겠습니다"
-            #여기에 로봇한테 주문 넣는 명령어 들어감
+
+            ####여기에 로봇한테 주문 넣는 명령어 들어감
+            self.orderPubblisher.publish(recommand_menu)
+            ####
+        
         else:
             order_ment = "다른게 필요하면 말씀해주세요"
 

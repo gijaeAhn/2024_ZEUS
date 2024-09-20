@@ -10,8 +10,10 @@ import rospy
 
 class Agent(ABC):
 
-    def __init__(self,name):
-        self._name = name
+    # def __init__(self,name):
+        # self._name = name
+    def __init__(self):
+        # self._name = name
 
         # Init Pose should be updated (in config)
         self._initPose = None
@@ -20,7 +22,7 @@ class Agent(ABC):
 
         self._fsm = FSM()
 
-        self._EE = endEffector()
+        # self._EE = endEffector()
 
 
         self.rate1 = rospy.Rate(10)
