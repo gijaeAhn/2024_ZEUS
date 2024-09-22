@@ -122,6 +122,9 @@ class realAgent(Agent):
                 self._moveZ(-realConfig.smallCommandStep)
             elif command == 'i' :
                 self.movePoseT(realConfig.startPoseT)
+            elif command == '0' :
+                angle = [0,0,0,0,0,0]
+                self.movePoseA(angle)
         elif scale == 'big' :
             if command == 'w' :
                 self._moveX(realConfig.bigCommandStep)
@@ -258,10 +261,11 @@ class realAgent(Agent):
         traj_msg = JointTrajectory()
         traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
         traj_point = JointTrajectoryPoint()
+        print(Angle)
         traj_point.positions = Angle
         traj_point.time_from_start = rospy.Duration(1.0)
-        traj_point.positions = []
         traj_msg.points.append(traj_point)
+        print(traj_msg.points[0].positions)
         self._realJointCommandPub.publish(traj_msg)
 
     def movePoseT(self,Transform):
