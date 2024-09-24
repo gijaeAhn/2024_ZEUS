@@ -28,6 +28,8 @@ class positionLogger :
 
     def __init__(self):
 
+        self.exist_user = False
+        
         keyListener               =      keyboard.Listener(on_press= self.on_press, on_release= self.on_release)
 
         keyListener.start()
@@ -40,19 +42,32 @@ class positionLogger :
 
         self._HRICommandPub       =      rospy.Publisher("HRICommand", String, queue_size=1) #modified by ms
 
-     
+        
 
     def on_press(self,key) :
-        try :
-            key_str = '{0}'.format(key.char)
-        except :
-            key_str = '{0}'.format(key)
-        print(key_str)
-        if key_str == 'o' or key_str == 'c':
-            self._HRICommandPub.publish(key_str)
-        else:
-            self._moveCommandPub.publish(key_str)
-    
+            try :
+                key_str = '{0}'.format(key.char)
+            except :
+                key_str = '{0}'.format(key)
+            
+            if key_str == 'z':
+                if self.exist_user == True:
+                    print("user left our bar")
+                else:
+                    print("user came in our bar")
+                self.exist_user = not self.exist_user
+                return
+
+
+            
+            if (key_str == 'x' or key_str == 'c') and self.exist_user:
+                self._HRICommandPub.publish(key_str)
+            else:
+                self._moveCommandPub.publish(key_str)
+            
+            return
+
+
         # self._moveCommandPub.publish(key_str)
 
     def on_release(self,key):

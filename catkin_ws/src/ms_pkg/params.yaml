@@ -14,4 +14,9 @@ cheking_wordset:
     negative_wordset:
     - '싫어'
     - '별로야'
-    
+
+menu_set:
+  - '깔루아밀크'
+  - '미도리샤워'
+  - '마티니'    
+  - '아라이'
