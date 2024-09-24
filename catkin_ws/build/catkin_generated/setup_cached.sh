@@ -7,11 +7,7 @@
 # new environment variables
 
 # modified environment variables
-<<<<<<< HEAD
+export LD_LIBRARY_PATH='/opt/ros/noetic/lib:/usr/local/webots/projects/default/controllers/ros/lib/ros:/usr/local/webots/lib/controller:/usr/local/webots/lib/webots:/usr/local/cuda/lib64:/usr/local/webots/projects/default/controllers/ros/lib/ros:/usr/local/webots/lib/controller:/usr/local/webots/lib/webots:/usr/local/cuda/lib64'
+export PKG_CONFIG_PATH='/opt/ros/noetic/lib/pkgconfig'
 export PWD='/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build'
-=======
-export CMAKE_PREFIX_PATH="/home/sj/Desktop/2024_ZEUS/catkin_ws/devel:$CMAKE_PREFIX_PATH"
-export PWD='/home/sj/Desktop/2024_ZEUS/catkin_ws/build'
-export ROSLISP_PACKAGE_DIRECTORIES='/home/sj/Desktop/2024_ZEUS/catkin_ws/devel/share/common-lisp'
-export ROS_PACKAGE_PATH="/home/sj/Desktop/2024_ZEUS/catkin_ws/src:$ROS_PACKAGE_PATH"
->>>>>>> 6535e9b93b832376daa2b8fd13e71f0c69797878
+export PYTHONPATH='/opt/ros/noetic/lib/python3/dist-packages'

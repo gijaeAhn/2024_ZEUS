@@ -1,8 +1,8 @@
-# Install script for directory: /home/sj/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller
+# Install script for directory: /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/sj/Desktop/2024_ZEUS/catkin_ws/install")
+  set(CMAKE_INSTALL_PREFIX "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -44,7 +44,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/zeus_controller"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/sj/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller/zeus_controller")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller/zeus_controller")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/zeus_controller" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/zeus_controller")
     file(RPATH_CHANGE

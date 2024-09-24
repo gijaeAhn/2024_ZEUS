@@ -60,9 +60,6 @@ class WebotsAgent(Agent) :
         # self._webotsHRICommandSub          = rospy.Subscriber('/zeus/webots/HRICommand'            ,  String              , self._HRIEventLoopCallback           )
         # self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'       ,  String              , self._paramPoseCallback         )
         self._webotsMenuSub                = rospy.Subscriber('/zeus/webots/menu'                  ,  String              , self._menuCallback              )
-<<<<<<< HEAD
-        # self._webotsCusMsgSub              = rospy.Subscriber('/zeus/webots/customerMsg'           ,  String              , self._cusMsgCallback            )
-=======
         self._webotsCusMsgSub              = rospy.Subscriber('/zeus/webots/customerMsg'           ,  String              , self._cusMsgCallback            )
         
         #----- Additional Threads
@@ -72,7 +69,6 @@ class WebotsAgent(Agent) :
         self._fsm.handleEvent('hri_start')
         self._fsm.handleEvent('get_menu')
 
->>>>>>> 6535e9b93b832376daa2b8fd13e71f0c69797878
 
         rospy.spin()
 
@@ -357,14 +353,6 @@ class WebotsAgent(Agent) :
 
 # -------------- For HRI --------------------------------
 
-<<<<<<< HEAD
-            
-
-    def _hereYouare(self):
-        pass
-    
-=======
->>>>>>> 6535e9b93b832376daa2b8fd13e71f0c69797878
     def _speak(self,ttsData):
         pass
     

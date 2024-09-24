@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/sj/Desktop/2024_ZEUS/catkin_ws/src
+CMAKE_SOURCE_DIR = /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/sj/Desktop/2024_ZEUS/catkin_ws/build
+CMAKE_BINARY_DIR = /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build
 
 # Utility rule file for actionlib_msgs_generate_messages_lisp.
 
@@ -63,10 +63,10 @@ zeus_controller/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/build: acti
 .PHONY : zeus_controller/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/build
 
 zeus_controller/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/clean:
-	cd /home/sj/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller && $(CMAKE_COMMAND) -P CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/cmake_clean.cmake
+	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller && $(CMAKE_COMMAND) -P CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/cmake_clean.cmake
 .PHONY : zeus_controller/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/clean
 
 zeus_controller/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/depend:
-	cd /home/sj/Desktop/2024_ZEUS/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/sj/Desktop/2024_ZEUS/catkin_ws/src /home/sj/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller /home/sj/Desktop/2024_ZEUS/catkin_ws/build /home/sj/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller /home/sj/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller /home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : zeus_controller/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/depend
 

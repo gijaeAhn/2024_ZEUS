@@ -19,7 +19,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "ms_pkg/catkin_generated/package.cmake"
   "ms_pkg/cmake/ms_pkg-genmsg.cmake"
   "zeus_controller/catkin_generated/ordered_paths.cmake"
-<<<<<<< HEAD
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel/share/ms_pkg/cmake/ms_pkg-msg-paths.cmake"
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/CMakeLists.txt"
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/CMakeLists.txt"
@@ -32,10 +31,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/src/service_scripts/TTSServiceServer_script.py"
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/src/test.py"
   "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller/CMakeLists.txt"
-=======
-  "/home/sj/Desktop/2024_ZEUS/catkin_ws/src/CMakeLists.txt"
-  "/home/sj/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller/CMakeLists.txt"
->>>>>>> 6535e9b93b832376daa2b8fd13e71f0c69797878
   "/opt/ros/noetic/share/actionlib/cmake/actionlib-msg-extras.cmake"
   "/opt/ros/noetic/share/actionlib/cmake/actionlibConfig-version.cmake"
   "/opt/ros/noetic/share/actionlib/cmake/actionlibConfig.cmake"
