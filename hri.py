@@ -69,7 +69,6 @@ class HRI:
         self.audio_stream = sd.InputStream(samplerate = 44100, channels=1,dtype='float32', callback = self._micCallback)
        
 
-
     def _HRICommandCallback(self, msg):
         print(msg.data, self.is_mic_open)
         if msg.data == 'o' and not(self.is_mic_open):
@@ -97,9 +96,6 @@ class HRI:
             # self.audio_stream = sd.InputStream(samplerate = 44100, channels=1,dtype='float32', callback = self._micCallback)
 
             
-
-
-
     def _micCallback(self, indata, frames, time, status):
         self.recording_buffer.append(indata.copy())
 
@@ -148,27 +144,31 @@ class HRI:
             print("tts failed")
             print(tts_result)
         
-        user_answer = self._checkUsersAnswer()
+        user_answer = self._checkUsersAnswer(0)
         print("user answer", user_answer)
-        if user_answer:
-            order_ment = f"{recommand_menu}를 제조하겠습니다"
-
-            ####여기에 로봇한테 주문 넣는 명령어 들어감
-            self.orderPubblisher.publish(recommand_menu)
-            ####
-        
+        if user_answer ==1:
+            robot_ment = f"{recommand_menu}를 제조하겠습니다"
+            self.orderPubblisher.publish(recommand_menu) #<=== Agent에게 제조할 메뉴 보냄
+        elif user_answer == 0:
+            robot_ment = "'좋아' '싫어'로 대답하라고 좆간아"
         else:
-            order_ment = "다른게 필요하면 말씀해주세요"
+            robot_ment = "싫으면 뭐 어쩔 수 없죠 ㅠㅠ"
 
-        tts_result = self.TTSService_rq(order_ment).result
+        tts_result = self.TTSService_rq(robot_ment).result
+
         if not tts_result:
             print("tts failed")
             print(tts_result)
         return
         
     
-    def _checkUsersAnswer(self):
-        cheking_ment = "추천하신 메뉴가 마음에 드시면 '좋아' 라고 대답해주세요."
+    def _checkUsersAnswer(self, recurrent_stack):
+        print(recurrent_stack)
+        
+        if recurrent_stack == 5:
+            return 0
+        
+        cheking_ment = "추천하신 메뉴가 마음에 드시면 '좋아', 싫으면 '싫어'라고 대답해주세요."
         tts_result = self.TTSService_rq(cheking_ment).result
         if not tts_result:
             print("tts failed")
@@ -186,17 +186,11 @@ class HRI:
         stt_result = self.STTService_rq(self.user_answer_mp3).result
         print("user answer stt:", stt_result)
         cheking_result = self.TFService_rq(stt_result, "check_answer").result
-        
+
+        if cheking_result ==0:
+            cheking_result = self._checkUsersAnswer(recurrent_stack+1)
+
         return cheking_result
-
-
-
-
-
-
-
-
-
 
 
 

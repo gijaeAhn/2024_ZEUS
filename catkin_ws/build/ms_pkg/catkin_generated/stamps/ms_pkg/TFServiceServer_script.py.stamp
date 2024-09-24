@@ -33,16 +33,18 @@ def TFServiceCallback(req):
     
     
     elif req.mode == "check_answer":
-        check_flag = False
-        for word in config["checking_wordset"]:
-            if word in user_sentence:
-                check_flag = True
-                break
-        if check_flag:
-            return TF_serviceResponse(1)
-        else:
-            return TF_serviceResponse(0)
-
+    
+        #사용자 응답중 특정 단어를 검출해 yes 인지 no 인지 판단
+        
+        for yes_word in config["checking_wordset"]["positive_wordset"]:
+            if word in yes_word:
+                return TF_serviceResponse(1)
+    
+        for no_word in config["checking_wordset"]["negative_wordset"]:
+            if no_word in user_sentence:
+                return TF_serviceResponse(1)
+            
+        return TF_serviceResponse(0)
     
 
 def openTFServiceServer():

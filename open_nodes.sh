@@ -1,2 +1,1 @@
-terminator
-roscore
+tmux

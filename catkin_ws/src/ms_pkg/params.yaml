@@ -5,9 +5,13 @@ recommand_wordset:
   - "배고프다"
 
 cheking_wordset:
-  - "응"
-  - "예"
-  - "그래"
-  - "사과"
-  - "추천"
-  - "좋아"
+ 
+    positive_wordset:
+    - '좋아'
+    - '응'
+    - '예'
+    
+    negative_wordset:
+    - '싫어'
+    - '별로야'
+    
