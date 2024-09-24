@@ -39,17 +39,10 @@ class FSM() :
     
     def handleEvent(self,event) :
 
-<<<<<<< HEAD
-        if event in self.stateTable_[self.state]:
-            new_state = self.stateTable_[self.state][event]
-            print(f"Transitioning from {self.state} to {new_state} on event '{event}'")
-            self.state = new_state
-=======
         if event in self._stateTable[self._state]:
             new_state = self._stateTable[self._state][event]
             print(f"Transitioning from {self._state} to {new_state} on event '{event}'")
             self._state = new_state
->>>>>>> 6535e9b93b832376daa2b8fd13e71f0c69797878
         else:
             print(f"Failed to handle '{event}' in state '{self._state}'")
 
