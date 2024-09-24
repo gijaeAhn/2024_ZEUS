@@ -6,12 +6,12 @@
 
 #IncludeRegexTransform: 
 
-/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller/src/zeus_controller.cpp
-/usr/local/webots/include/controller/cpp/webots/Robot.hpp
+/home/sj/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller/src/zeus_controller.cpp
+webots/Robot.hpp
 -
-/usr/local/webots/include/controller/cpp/webots/Motor.hpp
+webots/Motor.hpp
 -
-/usr/local/webots/include/controller/cpp/webots/PositionSensor.hpp
+webots/PositionSensor.hpp
 -
 ros/ros.h
 -

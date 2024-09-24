@@ -1,3 +1,13 @@
+import sys
+import os
+
+home_dir = os.path.expanduser('~')
+
+sys.path.append(os.path.join(home_dir, 'Desktop/2024_ZEUS/'))
+
+
+
+
 from abc          import ABC, abstractmethod
 from .fsm         import FSM
 from .endeffector import endEffector
@@ -5,15 +15,16 @@ from .tts         import TTS
 
 import rospy
 
+from config.config import *
+
 
 
 
 class Agent(ABC):
 
-    # def __init__(self,name):
-        # self._name = name
+
     def __init__(self):
-        # self._name = name
+        
 
         # Init Pose should be updated (in config)
         self._initPose = None
@@ -25,11 +36,11 @@ class Agent(ABC):
         # self._EE = endEffector()
 
 
-        self.rate1 = rospy.Rate(10)
+        self.rateFast = rospy.Rate(WebotsConfig.LONG_SLEEP)
         
-        self.rate2 = rospy.Rate(20)
+        self.rateNormal = rospy.Rate(WebotsConfig.NORMAL_SLEEP)
 
-        self.rate3 = rospy.Rate(30)
+        self.rateSlow = rospy.Rate(WebotsConfig.SHORT_SLEEP)
 
 
         self._curJoint = None
@@ -40,7 +51,7 @@ class Agent(ABC):
 
         self._commandTrans = None
 
-        self._tts = TTS()
+        # self._tts = TTS()
 
 
 

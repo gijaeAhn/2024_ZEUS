@@ -1,6 +1,6 @@
-2024_ZEUS
+##2024_ZEUS
 
-Setup Guide
+#Setup Guide
 
 1. Install ROS Noetic (Ubuntu 20.04) & CUDA (Optional)
 - Follow the official instructions to install ROS Noetic: http://wiki.ros.org/noetic/Installation/Ubuntu
@@ -23,8 +23,11 @@ Setup Guide
 4. Build Catkin Workspace (ROS Packages)
 - To build your ROS packages, run the following command in the root of your project:
   bash ./build_catkin.sh
-
+- Webots Header Path issue!!!
+  
 5. Install Pybind Library
+- Set your pybind_DIR depends on your python version
+  Example : set(pybind11_DIR /home/sj/.local/lib/python3.8/site-packages/pybind11/share/cmake/pybind11)
 - Install the Pybind library needed for Python-C++ bindings:
   bash ./install_pybind.sh
 
@@ -43,3 +46,13 @@ Setup Guide
 
 7. Update Dependencies
 - Keep track of your dependencies by updating the relevant .txt file. This file should contain a list of the required packages for the project.
+
+Style Guide
+
+1. Ros Topic Namespace Rule
+- Topics which are shared both by real and webots 
+  - /zeus/'topicName'
+- Topics only for real
+  - /zeus/real/'topicName'
+- Topics only for webots
+  - /zeus/webots/'topicName'

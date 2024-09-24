@@ -1,4 +1,4 @@
-#!/home/sjlab3090/anaconda3/bin/python3
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Software License Agreement (BSD License)
@@ -268,7 +268,11 @@ if __name__ == '__main__':
 
         if not args.local:
             # environment at generation time
+<<<<<<< HEAD
             CMAKE_PREFIX_PATH = r'/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel;/opt/ros/noetic'.split(';')
+=======
+            CMAKE_PREFIX_PATH = r'/opt/ros/noetic'.split(';')
+>>>>>>> 6535e9b93b832376daa2b8fd13e71f0c69797878
         else:
             # don't consider any other prefix path than this one
             CMAKE_PREFIX_PATH = []

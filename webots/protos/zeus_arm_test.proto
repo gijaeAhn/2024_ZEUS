@@ -16,7 +16,7 @@ PROTO zeus_arm_test [
     children [
       Transform {
         translation 0 0 0 
-        rotation 0 0 1 -1.57079632679
+        rotation 0 0 1 3.14159265359
         children [
           Solid {
             translation 0 0 0

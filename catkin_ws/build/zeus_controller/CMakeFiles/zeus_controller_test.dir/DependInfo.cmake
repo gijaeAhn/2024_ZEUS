@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller/src/zeus_controller_test.cpp" "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller/CMakeFiles/zeus_controller_test.dir/src/zeus_controller_test.cpp.o"
+  "/home/sj/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller/src/zeus_controller_test.cpp" "/home/sj/Desktop/2024_ZEUS/catkin_ws/build/zeus_controller/CMakeFiles/zeus_controller_test.dir/src/zeus_controller_test.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
