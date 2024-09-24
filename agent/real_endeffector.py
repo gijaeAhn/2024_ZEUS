@@ -8,7 +8,10 @@ class realEE(endEffector) :
     
     def __init__(self) :
 
+        self._state = 'open'
         self._eeCommandPub = rospy.Publisher('/zeus/real/eeCommand',String,queue_size=10)
+        
+        
          
     def open(self) :
         msg = String('open')

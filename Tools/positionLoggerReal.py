@@ -29,15 +29,10 @@ class positionLogger :
     def __init__(self):
 
         keyListener               =      keyboard.Listener(on_press= self.on_press, on_release= self.on_release)
-
         keyListener.start()
 
-        self._savedTransform      =      None
-
-        # self._transSub            =      rospy.Subscriber("/zeus/webots/realTF", tfMessage, self._transSubCallback)
-
-        self._moveCommandPub      =      rospy.Publisher("/zeus/real/simpleMoveCommand",String, queue_size= 10)
-
+        self._moveCommandPub      =      rospy.Publisher("/zeus/real/simpleMoveCommand" ,String, queue_size= 1)
+        self._gripperPub      =      rospy.Publisher("/zeus/real/gripperCommand", String, queue_size=1)
 
     def on_press(self,key) :
         try :
@@ -45,21 +40,14 @@ class positionLogger :
         except :
             key_str = '{0}'.format(key)
 
-        self._moveCommandPub.publish(key_str)
+        if key_str in ('w', 'a', 's', 'd', 'q', 'e', 'i', '0', '1', '2', '3', '4'):
+            self._moveCommandPub.publish(key_str)
+        elif key_str in ('x', 'c'):
+            self._gripperPub.publish(key_str)
 
     def on_release(self,key):
         if key == keyboard.Key.esc:
             return False    
-
-
-    # def _transSubCallback(self,data):
-    #     tr = TfMessgaeToTransform(Msg)
-    #     self._savedTransform = tr
-
-    def _getPosition(self,Transform):
-        self._savedTransform = Transform
-    
-
 
 
 

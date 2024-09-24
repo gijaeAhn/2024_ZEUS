@@ -3,9 +3,14 @@
 // ------------------------------- //
 
 // WEBOTS INCLUDE //
-#include "/usr/local/webots/include/controller/cpp/webots/Robot.hpp"
-#include "/usr/local/webots/include/controller/cpp/webots/Motor.hpp"
-#include "/usr/local/webots/include/controller/cpp/webots/PositionSensor.hpp"
+// #include "/usr/local/webots/include/controller/cpp/webots/Robot.hpp"
+// #include "/usr/local/webots/include/controller/cpp/webots/Motor.hpp"
+// #include "/usr/local/webots/include/controller/cpp/webots/PositionSensor.hpp"
+
+#include <webots/Robot.hpp>
+#include <webots/Motor.hpp>
+#include <webots/PositionSensor.hpp>
+
 // -------------- //
 
 // ROS INCLUDE //
@@ -79,6 +84,7 @@ class zeusController : public webots::Robot {
 
                 ros::spinOnce(); // Handle ROS events
                 webotsControlFunc(); 
+            }
         } 
             
         

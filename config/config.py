@@ -4,8 +4,6 @@ import os
 home_dir = os.path.expanduser('~')
 
 sys.path.append(os.path.join(home_dir, 'Desktop/2024_ZEUS/'))
-
-
 from lib.zeus_kinematics import *
 import math
 
@@ -13,10 +11,7 @@ PI = 3.14159265359
 SQRT2 = math.sqrt(2)
 RAD_TO_DEG = 180.0/PI
 
-
-
 # Webots Config
-
 class WebotsConfig :
 
     TIME_STEP = 0.01
@@ -129,7 +124,7 @@ class realConfig :
     ROTATE_DIRECTION = [1.0, -1.0, -1.0, 1.0, -1.0, 1.0]
 
    
-#------------- For Webots Position Logger -------------
+#------------- For Real Position Logger -------------
     smallCommandStep = 0.01
     bigCommandStep   = 0.1
 
@@ -188,6 +183,8 @@ class realConfig :
 
     menuList = ['A', 'B', 'C', 'D', 'E']
 
+
+    #OFFSET Unit : Meter
     menuOffset = {
     'A': [0, 0, 0],
     'B': [0, 0, 0],
@@ -200,11 +197,3 @@ class realConfig :
 
 
 
-
-
-
-
-
-
-
-# class RealConfig :
