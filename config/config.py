@@ -125,8 +125,8 @@ class realConfig :
 
    
 #------------- For Real Position Logger -------------
-    smallCommandStep = 0.01
-    bigCommandStep   = 0.1
+    smallCommandStep = 0.005
+    bigCommandStep   = 0.01
 
 # -----------------------------------------------------
 
@@ -139,10 +139,6 @@ class realConfig :
     toolOffsetX = 0.0
     toolOffsetZ = 0.0
     
-
-    initPoseA = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-    initPoseT = Transform().rotateY(-PI/2).translateX(upperArmLength).translateX(foreArmLength).translateY(-wrist1Length).translateX(wrist2Length)
-
     defaultAngleVelocity = [2.0,2.0,2.0,2.0,2.0,2.0]
 
     
@@ -156,41 +152,42 @@ class realConfig :
 # ----------- 1. Pose represented in angle(degree) ----
 
 # ----------- 2. Pose represented in Transfomr Matrix -
-
-    # ----- These values will gonna change
-    pose1A   = [10,10,10,10,10,10]   
-
-    pose2A   = [20,20,20,20,20,20]
-
-    pose3A   = [20,20,20,20,20,20]
-
-    pose4A   = [20,20,20,20,20,20]
-
-
-
-    startPoseT = Transform().translateZ(0.4).translateX(0.3).rotateY(PI/2)
-
-    startPoseA = ARM6_kinematics_inverse_arm(startPoseT,initPoseA)
-
-    dispensorT = Transform()
-
-    shakingT = Transform()
     
-    servicePositionT = Transform()
+    initPoseA = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
+    initPoseT = Transform().rotateY(-PI/2).translateX(upperArmLength).translateX(foreArmLength).translateY(-wrist1Length).translateX(wrist2Length)
+    startPoseT       = Transform().translateZ(0.3).translateX(0.3).rotateY(PI/2)
+    barPoseT         = Transform().rotateZ(PI/2).translateZ(0.3).translateX(0.3).rotateY(PI/2)
+    shakingT         = Transform().rotateZ(PI).translateZ(0.3).translateX(0.3).rotateY(PI/2)
+    servicePositionT = Transform().rotateZ(-PI/2).translateZ(0.4).translateX(0.3).rotateY(PI/2)
 
 #--------------------------------------------------------
+    # Robot Orig = {0.1, 0.1, 0.0152}
+    # Plate Offset = 0.0152
 
     menuList = ['A', 'B', 'C', 'D', 'E']
+
+    toProfile = 0.75 
+    disOffset = 0.086
+    plateOffset = 0.0152
+    toolOffsetZ = 0.068
+    toolOffsetX = 0.068
+    disFromOrig = toProfile - disOffset - toolOffsetZ
+
+    # Distance from Z = 0.3 
+    goUP1 = 0.118 - plateOffset - toolOffsetX
+    goUP2 = 0.018
+    goFront = disFromOrig - barPoseT.getVal(1,3)
+
 
 
     #OFFSET Unit : Meter
     menuOffset = {
-    'A': [0, 0, 0],
-    'B': [0, 0, 0],
-    'C': [0, 0, 0],
-    'D': [0, 0, 0],
-    'E': [0, 0, 0]
+    'A': [goFront, 0, goUP1, goUP2],
+    'B': [goFront, 0, goUP1, goUP2],
+    'C': [goFront, 0, goUP1, goUP2],
+    'D': [goFront, 0, goUP1, goUP2],
+    'E': [goFront, 0, goUP1, goUP2]
     }
 
     pourAngle = PI * 0.666

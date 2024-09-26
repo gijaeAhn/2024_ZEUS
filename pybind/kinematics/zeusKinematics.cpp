@@ -176,6 +176,7 @@ ARM6_kinematics_inverse_arm(Transform trArm, const std::vector<double> qOrg) {
 
         if (iter == MAX_ITER && errorNorm > errorThreshold) {
             printf("Failure: IK did not converge within %zu iterations. Final error norm: %f\n", MAX_ITER, errorNorm);
+            return qOrg;
         }
     }
 

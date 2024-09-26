@@ -45,13 +45,9 @@ class realAgent(Agent):
         self._curTrans = self._initTrans
         self._commandJoint = self._curJoint
         self._eeController = realEE()
-
-
         self._jointVelocity = realConfig.defaultAngleVelocity
 
-       
-
-
+    
         #----- Publisher
         self._realJointCommandPub          = rospy.Publisher('/zeus/real/jointCommand'             ,  JointTrajectory    , queue_size = 1             )  
         self._realFSMPub                   = rospy.Publisher('/zeus/fsm'                           ,  String             , queue_size = 1             )
@@ -70,10 +66,7 @@ class realAgent(Agent):
         self._fsm.handleEvent("hri_start")
         self._fsm.handleEvent("get_menu")
 
-
         rospy.spin()
-
-
 
 
 # ---------------- Thread Functions ------------------
@@ -122,9 +115,25 @@ class realAgent(Agent):
                 self._moveZ(-realConfig.smallCommandStep)
             elif command == 'i' :
                 self.movePoseT(realConfig.startPoseT)
+            elif command == 'o' :
+                self.movePoseT(realConfig.barPoseT)
             elif command == '0' :
                 angle = [0,0,0,0,0,0]
                 self.movePoseA(angle)
+
+            elif command == 'g' :
+                self._moveY(realConfig.menuOffset['A'][0])
+            elif command == 'h' :
+                self._moveZ(realConfig.menuOffset['A'][2])
+            elif command == 'j' :
+                self._moveZ(realConfig.menuOffset['A'][3])
+            elif command == 'k' :
+                self._moveZ(-(realConfig.menuOffset['A'][2] + realConfig.menuOffset['A'][3]))
+
+
+
+
+
         elif scale == 'big' :
             if command == 'w' :
                 self._moveX(realConfig.bigCommandStep)
@@ -140,6 +149,11 @@ class realAgent(Agent):
                 self._moveZ(-realConfig.bigCommandStep)
             elif command == 'i' :
                 self.movePoseT(realConfig.startPoseT)
+            elif command == 'o' :
+                self.movePoseT(realConfig.barPoseT)
+            elif command == '0' :
+                angle = [0,0,0,0,0,0]
+                self.movePoseA(angle)
 
     def _eeControlCallback(self,command) :
         
@@ -156,6 +170,8 @@ class realAgent(Agent):
     def _makeMenu(self,menu):
 
         self.movePoseA(realConfig.pose2A)
+        self.rateSlow.sleep()
+
         print("Arrived at the dispensor")
         self.rateNormal.sleep()
 
@@ -163,86 +179,105 @@ class realAgent(Agent):
         if self._EE.getState != 'open':
             print("EE is closed")
             self._EE.open()
+        self.rateNormal.sleep()
 
-        if menu == realConfig.menuList[0]:
-            # Key characters should be replaced with actual menu name
-            # Moving sequence should be y - x - z || z - x - y 
-            self._moveY(realConfig.menuOffset['A'][1])
-            self._moveX(realConfig.menuOffset['A'][0])
-            self._moveZ(realConfig.menuOffset['A'][2])
+        if not self._fsm.getState() == 'moving':
+            print("Current State is not Moving Quit!!!")
+        else :        
+            if menu == realConfig.menuList[0]:
+                # Key characters should be replaced with actual menu name
+                # Moving sequence should be y - x - z || z - x - y 
+                self._moveY(realConfig.menuOffset['A'][1])
+                self._moveX(realConfig.menuOffset['A'][0])
+                self._moveZ(realConfig.menuOffset['A'][2])
+                self.rateNormal.sleep()
+                # Move backward
+                self._moveZ(-realConfig.menuOffset['A'][2])
+                self._moveX(-realConfig.menuOffset['A'][0])
+                self._moveY(-realConfig.menuOffset['A'][1])
+            elif menu == realConfig.menuList[1]:
+                self._moveY(realConfig.menuOffset['B'][1])
+                self._moveX(realConfig.menuOffset['B'][0])
+                self._moveZ(realConfig.menuOffset['B'][2])
+                self.rateSlow.sleep()
+                self._moveZ(-realConfig.menuOffset['B'][2])
+                self._moveX(-realConfig.menuOffset['B'][0])
+                self._moveY(-realConfig.menuOffset['B'][1])
+            elif menu == realConfig.menuList[2]:
+                self._moveY(realConfig.menuOffset['C'][1])
+                self._moveX(realConfig.menuOffset['C'][0])
+                self._moveZ(realConfig.menuOffset['C'][2])
+                self.rateSlow.sleep()
+                self._moveZ(-realConfig.menuOffset['C'][2])
+                self._moveX(-realConfig.menuOffset['C'][0])
+                self._moveY(-realConfig.menuOffset['C'][1])
+            elif menu == realConfig.menuList[3]:
+                self._moveY(realConfig.menuOffset['D'][1])
+                self._moveX(realConfig.menuOffset['D'][0])
+                self._moveZ(realConfig.menuOffset['D'][2])
+                self.rateSlow.sleep()
+                self._moveZ(-realConfig.menuOffset['D'][2])
+                self._moveX(-realConfig.menuOffset['D'][0])
+                self._moveY(-realConfig.menuOffset['D'][1])
+            elif menu == realConfig.menuList[4]:
+                self._moveY(realConfig.menuOffset['E'][1])
+                self._moveX(realConfig.menuOffset['E'][0])
+                self._moveZ(realConfig.menuOffset['E'][2])
+                self.rateSlow.sleep()
+                self._moveZ(-realConfig.menuOffset['E'][2])
+                self._moveX(-realConfig.menuOffset['E'][0])
+                self._moveY(-realConfig.menuOffset['E'][1])
             self.rateNormal.sleep()
-            # Move backward
-            self._moveZ(-realConfig.menuOffset['A'][2])
-            self._moveX(-realConfig.menuOffset['A'][0])
-            self._moveY(-realConfig.menuOffset['A'][1])
-        elif menu == realConfig.menuList[1]:
-            self._moveY(realConfig.menuOffset['B'][1])
-            self._moveX(realConfig.menuOffset['B'][0])
-            self._moveZ(realConfig.menuOffset['B'][2])
+
+            print("Success to get base bevarge\n")
+
+            self._EE.close()
             self.rateNormal.sleep()
-            self._moveZ(-realConfig.menuOffset['B'][2])
-            self._moveX(-realConfig.menuOffset['B'][0])
-            self._moveY(-realConfig.menuOffset['B'][1])
-        elif menu == realConfig.menuList[2]:
-            self._moveY(realConfig.menuOffset['C'][1])
-            self._moveX(realConfig.menuOffset['C'][0])
-            self._moveZ(realConfig.menuOffset['C'][2])
+            self.movePoseT(realConfig.shakingT)
             self.rateNormal.sleep()
-            self._moveZ(-realConfig.menuOffset['C'][2])
-            self._moveX(-realConfig.menuOffset['C'][0])
-            self._moveY(-realConfig.menuOffset['C'][1])
-        elif menu == realConfig.menuList[3]:
-            self._moveY(realConfig.menuOffset['D'][1])
-            self._moveX(realConfig.menuOffset['D'][0])
-            self._moveZ(realConfig.menuOffset['D'][2])
+            print("Arrvied at the Shaking Position")
+
+            if self._EE.getState != 'closed':
+                print("EE is opened")
+                return
+
+            self._shake()
             self.rateNormal.sleep()
-            self._moveZ(-realConfig.menuOffset['D'][2])
-            self._moveX(-realConfig.menuOffset['D'][0])
-            self._moveY(-realConfig.menuOffset['D'][1])
-        elif menu == realConfig.menuList[4]:
-            self._moveY(realConfig.menuOffset['E'][1])
-            self._moveX(realConfig.menuOffset['E'][0])
-            self._moveZ(realConfig.menuOffset['E'][2])
-            self.rateNormal.sleep()
-            self._moveZ(-realConfig.menuOffset['E'][2])
-            self._moveX(-realConfig.menuOffset['E'][0])
-            self._moveY(-realConfig.menuOffset['E'][1])
-        
-        print("Success to get base bevarge\n")
-
-        self._EE.close()
-
-        self.movePoseA(realConfig.pose3A)
-
-        print("Arrvied at the Shaking Position")
-
-        if self._EE.getState != 'closed':
-            print("EE is opened")
-            return
-
-        self._shake()
-
-        print("Shaking Done\n")
+            print("Shaking Done\n")
 
 
     def _shake(self):
         self._fsm.handleEvent('shake')
-        self._fsm.handleEvent('finish_shake')
+
+        if not self._fsm.getState() == 'shaking':
+            print("Current State is not Shaking Quit!!!")
+        else :
+
+            # Shaking Implementation Required :
 
 
-    def _hereYouare(self):
-        self.movePoseA(realConfig.pose4A)
-        sentence = 'Here you are'
-        self._speak(sentence)
-        self._EE.open()
-        self._pour()
-        self._fsm.handleEvent('serve_menu')
 
-    
+            # --------------------------------
+
+            self._fsm.handleEvent('finish_shake')
+
     def _pour(self):
         self._rotateZ(realConfig.pourAngle) 
         self.rateSlow.sleep()
         self.rateNormal.sleep()
+
+    def _hereYouare(self):
+        if not self._fsm.getState() == 'moving':
+            print("Current State is not Moving Quit!!!")
+        else :   
+            self.movePoseT(realConfig.servicePositionT)
+            sentence = 'Here you are'
+            self._speak(sentence)
+            self._EE.open()
+            self.rateFast.sleep()
+
+            self._pour()
+            self._fsm.handleEvent('serve_menu')
 
 
 # --------------- Base Action ------------------------

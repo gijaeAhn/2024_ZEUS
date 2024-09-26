@@ -10,8 +10,8 @@ class DynamixelControlNode:
         rospy.init_node('dynamixel_control_node', anonymous=True)
 
         self.DEVICENAME = rospy.get_param('~devicename', '/dev/ttyUSB0')
-        self.BAUDRATE = rospy.get_param('~baudrate', 57600)
-        self.DXL_ID = rospy.get_param('~dynamixel_id', 1)
+        self.BAUDRATE = rospy.get_param('~baudrate', 4000000)
+        self.DXL_ID = rospy.get_param('~dynamixel_id', 0)
         self.PROTOCOL_VERSION = 2.0
 
         # Control Table ADDR
@@ -57,13 +57,13 @@ class DynamixelControlNode:
 
     def control_mode_callback(self, msg):
         mode_str = msg.data.strip()
-        if mode_str == 'open':
+        if mode_str == 'x':
             self.set_operating_mode(self.OP_MODE_POSITION)
             rospy.loginfo("Switched to Position Control Mode")
             # Example: Move to a specific position
-            goal_position = 2048  # Middle position for a Dynamixel with 4096 positions
+            goal_position = 1024  # Middle position for a Dynamixel with 4096 positions
             self.write4ByteTxRx(self.ADDR_GOAL_POSITION, goal_position)
-        elif mode_str == 'close':
+        elif mode_str == 'c':
             DIRECTION_CORRECTION_VAL = -1
             self.set_operating_mode(self.OP_MODE_TORQUE)
             rospy.loginfo("Switched to Torque Control Mode")
