@@ -65,26 +65,13 @@ class WebotsConfig :
 
 # ----------- 2. Pose represented in Transfomr Matrix -
 
-    # ----- These values will gonna change
-    pose1A   = [10,10,10,10,10,10]   
-
-    pose2A   = [20,20,20,20,20,20]
-
-    pose3A   = [20,20,20,20,20,20]
-
-    pose4A   = [20,20,20,20,20,20]
-
-    pose5A   = [20,20,20,20,20,20]
-
-    pose6A   = [20,20,20,20,20,20]
-
     startPoseT = Transform().translateZ(0.4).translateX(0.3).rotateY(PI/2)
-
-    startPoseA = ARM6_kinematics_inverse_arm(startPoseT,initPoseA)
 
     dispensorT = Transform()
 
     shakingT = Transform()
+
+    greetT = Transform()
     
     servicePositionT = Transform()
 
@@ -101,6 +88,11 @@ class WebotsConfig :
     }
 
     pourAngle = PI * 0.666
+
+
+
+
+# ----------------------------------Real----------------------------------------------------------------------
 
 
 class realConfig :
@@ -123,25 +115,18 @@ class realConfig :
 
     ROTATE_DIRECTION = [1.0, -1.0, -1.0, 1.0, -1.0, 1.0]
 
-   
-#------------- For Real Position Logger -------------
-    smallCommandStep = 0.005
-    bigCommandStep   = 0.01
-
-# -----------------------------------------------------
-
     baseLength     = 0.145
     upperArmLength = 0.49
     foreArmLength  = 0.37
     wrist1Length   = 0.1
     wrist2Length   = 0.065
-
-    toolOffsetX = 0.0
-    toolOffsetZ = 0.0
-    
+        
     defaultAngleVelocity = [2.0,2.0,2.0,2.0,2.0,2.0]
 
-    
+   
+#------------- For Real Position Logger -------------
+    smallCommandStep = 0.005
+    bigCommandStep   = 0.01
 
 # ----------- PREDEFINED POSITIONS  -------------------
 
@@ -155,17 +140,16 @@ class realConfig :
     
     initPoseA = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-    initPoseT = Transform().rotateY(-PI/2).translateX(upperArmLength).translateX(foreArmLength).translateY(-wrist1Length).translateX(wrist2Length)
+    initPoseT        = Transform().rotateY(-PI/2).translateX(upperArmLength).translateX(foreArmLength).translateY(-wrist1Length).translateX(wrist2Length)
     startPoseT       = Transform().translateZ(0.3).translateX(0.3).rotateY(PI/2)
     barPoseT         = Transform().rotateZ(PI/2).translateZ(0.3).translateX(0.3).rotateY(PI/2)
     shakingT         = Transform().rotateZ(PI).translateZ(0.3).translateX(0.3).rotateY(PI/2)
-    servicePositionT = Transform().rotateZ(-PI/2).translateZ(0.4).translateX(0.3).rotateY(PI/2)
+    servicePositionT = Transform().rotateZ(-PI/2).translateZ(0.3).translateX(0.3).rotateY(PI/2)
 
-#--------------------------------------------------------
+#--------------- For Menu -----------------------------------------
     # Robot Orig = {0.1, 0.1, 0.0152}
     # Plate Offset = 0.0152
-
-    menuList = ['A', 'B', 'C', 'D', 'E']
+    # OFFSET Unit : Meter 
 
     toProfile = 0.75 
     disOffset = 0.086
@@ -174,20 +158,29 @@ class realConfig :
     toolOffsetX = 0.068
     disFromOrig = toProfile - disOffset - toolOffsetZ
 
-    # Distance from Z = 0.3 
+    # Distance from Z = 0.3
     goUP1 = 0.118 - plateOffset - toolOffsetX
     goUP2 = 0.018
     goFront = disFromOrig - barPoseT.getVal(1,3)
 
+    # ----------------------------------------------
+    # Menu Setup
+    menuList = ['1', '2', '3', '4', '5','6']
+    menuComponent = {
+        '1' : ['A','B'],
+        '2' : ['A','C'],
+        '3' : ['A','D'],
+        '4' : ['B','C'],
+        '5' : ['B','D'],
+        '6' : ['C','D']
+    }
 
-
-    #OFFSET Unit : Meter
-    menuOffset = {
-    'A': [goFront, 0, goUP1, goUP2],
-    'B': [goFront, 0, goUP1, goUP2],
-    'C': [goFront, 0, goUP1, goUP2],
-    'D': [goFront, 0, goUP1, goUP2],
-    'E': [goFront, 0, goUP1, goUP2]
+    componentOffset = {
+    'A': [ 0,goFront, goUP1, goUP2],
+    'B': [ 0,goFront, goUP1, goUP2],
+    'C': [ 0,goFront, goUP1, goUP2],
+    'D': [ 0,goFront, goUP1, goUP2],
+    'E': [ 0,goFront, goUP1, goUP2]
     }
 
     pourAngle = PI * 0.666
