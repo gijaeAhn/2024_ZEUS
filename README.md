@@ -1,6 +1,6 @@
-###2024_ZEUS
+# 2024_ZEUS
 
-##Setup Guide
+## Setup Guide
 
 1. Install ROS Noetic (Ubuntu 20.04) & CUDA (Optional)
 - Follow the official instructions to install ROS Noetic: http://wiki.ros.org/noetic/Installation/Ubuntu
@@ -50,8 +50,9 @@
 ```bash
     sudo apt-get install tmux
 ```
+---
 
-##Style Guide
+## Style Guide
 
 1. Ros Topic Namespace Rule
 - Topics which are shared both by real and webots 
