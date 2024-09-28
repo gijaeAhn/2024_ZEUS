@@ -21,7 +21,7 @@
     <!-- STT<=Speech To Text -->
     <node pkg="ms_pkg" type="STTServiceServer_script.py" name="STTServiceServerNode" output="screen">
         <param name="service_name" value="$(arg STT_SN)"/>
-        <param name="weight_type" value="medium"/>
+        <param name="weight_type" value="large"/>
         <param name="device" value="$(arg device)"/>
     </node>
 

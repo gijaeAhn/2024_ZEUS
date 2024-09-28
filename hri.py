@@ -72,16 +72,18 @@ class HRI:
         self.recording_buffer = []
         self.is_mic_open = False
         self.audio_stream = sd.InputStream(samplerate = 44100, channels=1,dtype='float32', callback = self._micCallback)
+        self.last_action = "x"
        
 
     def _HRICommandCallback(self, msg): #누른 키에 따라서 대화처리 및 주문 처리
         print(msg.data, self.is_mic_open)
         key_str = msg.data
-        if (key_str == 'x' or key_str=='c') and not(self.is_mic_open):
+        if (key_str == "open" and not(self.is_mic_open)):
             print("마이크를 활성화 합니다")
             print("녹음시작")
             
             self.is_mic_open = True
+            self.last_action = key_str
             self.audio_stream.start()
             
         
@@ -97,10 +99,12 @@ class HRI:
             
             self.recording_buffer.clear()
             print("open event loop")
+            
             if key_str == 'x':
                 self._processVoiceInput()
             
             elif key_str == 'c':
+                print("here2")
                 self._processOrderInput()
             print("close event loop")
             # self.audio_stream = sd.InputStream(samplerate = 44100, channels=1,dtype='float32', callback = self._micCallback)
@@ -141,17 +145,18 @@ class HRI:
         else:
             user_answer = self._checkUsersAnswer(0, cheking_ment = f"말씀하신 메뉴가 {self.menuList[tf_result]}이 맞다면 '좋아' 아니면 '싫어'로 대답해 주세요.")
 
-            if user_answer:
+            if user_answer==1:
                 _ = self.TTSService_rq(f"{self.menuList[tf_result]}를 제조하겠습니다.").result
                 self.orderPubblisher.publish(self.menuList[tf_result])
                 print("debug:" ,"success to send order to robot agent")
     
-            else:
-                _ = self.TTSService_rq("아무거나 쳐먹어").result      
-    
+            elif user_answer ==-1:
+                _ = self.TTSService_rq("싫으면 어쩔수 없지").result      
+            
+            elif user_answer ==-1:
+                _ = self.TTSService_rq("어쩌하는거지?").result      
 
-        
-    
+
     def _getMenuFromFace(self):
         guide_message = "네 메뉴를 추천해 드리겠습니다. 카메라를 봐주시겠어요?"
         # guide_message = "카메라 봐라"
@@ -221,7 +226,7 @@ class HRI:
         cheking_result = self.TFService_rq(stt_result, "check_answer").result
 
         if cheking_result ==0:
-            cheking_result = self._checkUsersAnswer(recurrent_stack+1)
+            cheking_result = self._checkUsersAnswer(recurrent_stack+1, cheking_ment)
 
         return cheking_result
 

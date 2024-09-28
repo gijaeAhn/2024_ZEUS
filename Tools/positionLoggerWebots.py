@@ -42,7 +42,7 @@ class positionLogger :
 
         self._HRICommandPub       =      rospy.Publisher("HRICommand", String, queue_size=1) #modified by ms
 
-        
+        self.input_lock           =      False
 
     def on_press(self,key) :
             try :
@@ -50,6 +50,7 @@ class positionLogger :
             except :
                 key_str = '{0}'.format(key)
             
+            # "z" isuser exit state toggle button 
             if key_str == 'z':
                 if self.exist_user == True:
                     print("user left our bar")
@@ -59,21 +60,26 @@ class positionLogger :
                 return
 
 
-            
-            if (key_str == 'x' or key_str == 'c') and self.exist_user:
-                self._HRICommandPub.publish(key_str)
-            else:
-                self._moveCommandPub.publish(key_str)
-            
+            if self.exist_user: # 유저가 있는상태에서 
+                if (key_str == 'x' or key_str == 'c') and not self.input_lock:
+                    self.input_lock = not self.input_lock
+                    self._HRICommandPub.publish("open")
             return
 
 
         # self._moveCommandPub.publish(key_str)
 
     def on_release(self,key):
-        # if key == keyboard.Key.esc:
-        #     return False    
-        pass
+        try :
+            key_str = '{0}'.format(key.char)
+        except :
+            key_str = '{0}'.format(key)
+
+        if self.input_lock:
+            self.input_lock = not self.input_lock
+            self._HRICommandPub.publish(key_str)
+
+        
 
 
     def _transSubCallback(self,data):

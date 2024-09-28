@@ -5,8 +5,6 @@ import rospy
 from ms_pkg.srv import LLMC_service, LLMC_serviceResponse
 from custom_utils import EasyLogger as EL
 
-import transformers
-import torch
 
 node_name = "LLMCServiceServerNode"
 rospy.init_node(node_name)
@@ -15,48 +13,72 @@ config['prompt'] = rospy.get_param("~sys_prompt", default='')
 config['service_name'] = rospy.get_param("~service_name", default="LLMCService")
 el = EL(node_name, config)
 
+from openai import OpenAI
 
-model_id = "MLP-KTLim/llama-3-Korean-Bllossom-8B"
+class Chatbot:
 
-pipeline = transformers.pipeline(
-    "text-generation",
-    model=model_id,
-    model_kwargs={"torch_dtype": torch.float16},
-    device_map="auto",
-)
+    def __init__(self):
+        
+        self.client = OpenAI()
+        self.introduction = """You will be provided with customer service quries. Your name is "Cyber". You are a bartender. 
+              customer wants to talk with you and want feel empathy. Moreover, the customer will order a cocktail.
+              you have to receive order and have an emotional conversation with the customer. 
+              Here is the reference for your job.
+                  - if the customer just says hi, then you have to introduce yourself. like this. "Hi my name is Cyber, a bartender. What should I do for you?"
+                  if not, if the customer says about his feeling, then you should have a conversation with sympathy and talk very kindly. 
+                  - if the customer wants conversation, please have a conversation very kindly. 
+                  - if the customer want you to recommend a menu, you have to recommend a cocktail within  the menu.
+                  Menu list : 
+                    Gin tonic, Margarita, martini, mojito, french75, sexonthebeach, bluehawaian, white russian
+                  - if the customer wants to know menu, please say these 8 menus.
+                  - please answer in 3 senteces. not too long
+                  - please Answer every sentences in korean!
+                  """
+        
+        self.messages =[
+            {
+                "role": "system",
+                "content": f"{self.introduction}"
+            }
+        ]
 
-pipeline.model.eval()
+        
+    def chat(self, input):
+        self.temp_input = input
+        self.input = {
+            "role": "user",
+            "content": f"{self.temp_input}"
+        }
+        self.messages.append(self.input)
+        
+        self.completion = self.client.chat.completions.create(
+            model = 'gpt-4o-mini',
+            messages=self.messages,
+            max_tokens=100
+        )
+        self.temp_output = self.completion.choices[0].message.content
+        
+        self.output = {
+            "role": "assistant",
+            "content": f"{self.temp_output}"
+        }
+        
+        self.messages.append(self.output)  #ouput history 추가-
+        
+      
+        
+        
+        return self.temp_output
+
+gpt = Chatbot()
 
 
 
 def LLMCServieCallback(req):
-    messages = [
-        {"role": "system", "content": f"{config['prompt']}"},
-        {"role": "user", "content": f"{req.user_text}"}
-    ]
+    user_text = req.user_text
+    llm_converstaion_result = gpt.chat(user_text)
 
-    prompt = pipeline.tokenizer.apply_chat_template(
-        messages, 
-        tokenize=False, 
-        add_generation_prompt=True
-        )
-
-    terminators = [
-        pipeline.tokenizer.eos_token_id,
-        pipeline.tokenizer.convert_tokens_to_ids("<|eot_id|>")
-    ]
-
-    outputs = pipeline(
-        prompt,
-        max_new_tokens=2048,
-        eos_token_id=terminators,
-        do_sample=True,
-        temperature=0.6,
-        top_p=0.9
-    )
-
-    llm_answer = outputs[0]["generated_text"][len(prompt):]
-    return LLMC_serviceResponse(llm_answer)
+    return LLMC_serviceResponse(llm_converstaion_result)
 
 
 def openLLMCServiceServer():
