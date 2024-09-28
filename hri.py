@@ -104,7 +104,7 @@ class HRI:
                 self._processVoiceInput()
             
             elif key_str == 'c':
-                print("here2")
+               
                 self._processOrderInput()
             print("close event loop")
             # self.audio_stream = sd.InputStream(samplerate = 44100, channels=1,dtype='float32', callback = self._micCallback)
