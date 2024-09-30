@@ -103,10 +103,6 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/ms_pkg" TYPE PROGRAM FILES "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg/catkin_generated/installspace/input_handler.py")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/ms_pkg" TYPE PROGRAM FILES "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg/catkin_generated/installspace/STTServiceServer_script.py")
 endif()
 
@@ -123,10 +119,17 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/ms_pkg" TYPE PROGRAM FILES "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg/catkin_generated/installspace/test.py")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/ms_pkg" TYPE PROGRAM FILES "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg/catkin_generated/installspace/gui_fsm.py")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ms_pkg" TYPE FILE FILES "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/launch/UserInterface.launch")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/ms_pkg" TYPE PROGRAM FILES "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/build/ms_pkg/catkin_generated/installspace/gui_tester.py")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ms_pkg" TYPE FILE FILES
+    "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/launch/OpenGUI.launch"
+    "/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/ms_pkg/launch/UserInterface.launch"
+    )
 endif()
 

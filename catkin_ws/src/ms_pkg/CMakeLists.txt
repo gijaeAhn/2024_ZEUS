@@ -166,12 +166,13 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   src/service_scripts/FERServiceServer_script.py
-  src/input_handler.py
+  # src/input_handler.py
   src/service_scripts/STTServiceServer_script.py
   src/service_scripts/TFServiceServer_script.py
   src/service_scripts/LLMCServiceServer_script.py
   src/service_scripts/TTSServiceServer_script.py
-  src/test.py
+  src/gui_fsm.py
+  src/gui_tester.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -198,6 +199,7 @@ catkin_install_python(PROGRAMS
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 install(FILES
+  launch/OpenGUI.launch
   launch/UserInterface.launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

@@ -51,7 +51,7 @@ class HRI:
 
 
         self._HRICommandSub = rospy.Subscriber('HRICommand', String, self._HRICommandCallback)
-
+        self.gui_CommandPub = rospy.Publisher("gui_state_topic", String)
         rospy.loginfo("Checking for service's activation")
         rospy.wait_for_service(config['STT'])
         rospy.wait_for_service(config['FER'])
@@ -79,6 +79,7 @@ class HRI:
         print(msg.data, self.is_mic_open)
         key_str = msg.data
         if (key_str == "open" and not(self.is_mic_open)):
+            self.gui_CommandPub.publish("listening")#<=Sending Signal to GUI Interface
             print("마이크를 활성화 합니다")
             print("녹음시작")
             
@@ -90,6 +91,7 @@ class HRI:
         elif (key_str == 'x' or key_str == 'c') and self.is_mic_open:
             print("녹음끝")
             print("마이크를 비활성화 합니다")
+            self.gui_CommandPub.publish("idle")#<=Sending Signal to GUI Interface
             self.is_mic_open = False
             self.audio_stream.stop()
             
@@ -124,8 +126,9 @@ class HRI:
             self._getMenuFromFace()
         else:
             llm_answer = self.LLMCservice_rq(stt_result).model_text
+            self.gui_CommandPub.publish("speaking")
             tts_result = self.TTSService_rq(llm_answer).result
-
+            self.gui_CommandPub.publish("idle")
             if not tts_result:
                 print("tts failed")
                 print(tts_result)
@@ -136,17 +139,20 @@ class HRI:
         tf_result =  self.TFService_rq(stt_result, "order").result
 
         if not tf_result:
+            self.gui_CommandPub.publish("speaking")#<=Sending Signal to GUI Interface
             tts_result = self.TTSService_rq("죄송합니다. 말씀을 잘 못알아 듣겠습니다.").result
-
+            self.gui_CommandPub.publish("idle")#<=Sending Signal to GUI Interface
             if not tts_result:
                 print("tts failed")
                 print(tts_result)
           
         else:
             user_answer = self._checkUsersAnswer(0, cheking_ment = f"말씀하신 메뉴가 {self.menuList[tf_result]}이 맞다면 '좋아' 아니면 '싫어'로 대답해 주세요.")
-
+            self.gui_CommandPub.publish("speaking")#<=Sending Signal to GUI Interface
             if user_answer==1:
+                
                 _ = self.TTSService_rq(f"{self.menuList[tf_result]}를 제조하겠습니다.").result
+                
                 self.orderPubblisher.publish(self.menuList[tf_result])
                 print("debug:" ,"success to send order to robot agent")
     
@@ -155,12 +161,14 @@ class HRI:
             
             elif user_answer ==-1:
                 _ = self.TTSService_rq("어쩌하는거지?").result      
-
+            self.gui_CommandPub.publish("idle")#<=Sending Signal to GUI Interface
 
     def _getMenuFromFace(self):
+        self.gui_CommandPub.publish("speaking")#<=Sending Signal to GUI Interface
         guide_message = "네 메뉴를 추천해 드리겠습니다. 카메라를 봐주시겠어요?"
         # guide_message = "카메라 봐라"
         tts_result = self.TTSService_rq(guide_message).result
+        self.gui_CommandPub.publish("idle")#<=Sending Signal to GUI Interface
         if not tts_result:
             print(tts_result)
         fer_score = self.FERService_rq().result
@@ -176,6 +184,7 @@ class HRI:
         else:
             recommand_menu = self.menuList[2]
             expression = "행복"
+        self.gui_CommandPub.publish("speaking")#<=Sending Signal to GUI Interface
 
         recommand_ment = f"표정을 보아하니 기분이 {expression}해 보이시는군요, 이럴 때는 {recommand_menu}가 어울리죠!"
         # recommand_ment = "뻑"
@@ -183,6 +192,7 @@ class HRI:
         if not tts_result:
             print("tts failed")
             print(tts_result)
+        self.gui_CommandPub.publish("idle")#<=Sending Signal to GUI Interface
         
         user_answer = self._checkUsersAnswer(0, cheking_ment="추천하신 메뉴가 마음에 드시면 '좋아', 싫으면 '싫어'라고 대답해주세요.")
         print("user answer", user_answer)
@@ -206,11 +216,13 @@ class HRI:
         # checking ment를 TTS로 말하고 응답이 negative인지 positive인지 여부를 최대 5회 까지 물어봄 positive:1, negative:-1, 확인불가:0 return 
         if recurrent_stack == 5:
             return 0
+        self.gui_CommandPub.publish("speaking")#<=Sending Signal to GUI Interface
         
         tts_result = self.TTSService_rq(cheking_ment).result
         if not tts_result:
             print("tts failed")
             print(tts_result)
+        self.gui_CommandPub.publish("listening")#<=Sending Signal to GUI Interface
         
         print("cheking user's answer")
         # time.sleep(0.1)
@@ -220,6 +232,7 @@ class HRI:
         self.recording_buffer.clear()
         print("recording finished")
         convert_wav_to_mp3(self.user_answer_wav, self.user_answer_mp3)
+        self.gui_CommandPub.publish("idle")#<=Sending Signal to GUI Interface
         
         stt_result = self.STTService_rq(self.user_answer_mp3).result
         print("user answer stt:", stt_result)

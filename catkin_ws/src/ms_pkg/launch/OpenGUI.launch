@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="ms_pkg" type="bartender_gui.py" name="GUI" output="screen">
+        <param name="image_path" value="$(find ms_pkg)/sample_images"/>
+    </node>
+</launch>
