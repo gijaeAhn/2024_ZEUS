@@ -8,7 +8,7 @@
 // 3. Yaw - Pitch - Pitch - Yaw - Pitch - Yaw
 // 4. Final Z axis > 0 
 
-bool show_debug=true;
+bool show_debug= false;
 
 double mod_angle(double q){
   if (q>PI) return q-2*PI;

@@ -73,6 +73,10 @@ def main():
     def trajectory_callback(data):
         global start_time
         cur_time = time.time()
+        print("Received comand message from PC")
+        ready_msg = Int32()
+        ready_msg.data = 0
+        pub_ready.publish(ready_msg)
         if cur_time - start_time < 1.0:
             print("EARLY MESSAGE...IGNORED!!!")
         else:
@@ -81,6 +85,7 @@ def main():
             print("Sending joint positions:", np_arr)
             msg = struct.pack("f", 0) + np_arr.tobytes()
             print("Sending message of length:", len(msg))
+            b_msg = msg
             try:
                 client_socket.sendall(msg)  # Send data to robot via port 5003
             except Exception as e:
@@ -167,6 +172,7 @@ def main():
                 elif header == 9:  # Ready message
                     print("Received ready message from robot")
                     ready_msg = Int32()
+                    ready_msg.data = 1
                     pub_ready.publish(ready_msg)
                 else:
                     print("Unknown header received on port 5004:", header)

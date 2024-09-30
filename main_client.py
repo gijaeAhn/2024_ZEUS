@@ -1,6 +1,8 @@
 import sys
 import os
+import time
 import threading
+
 
 home_dir = os.path.expanduser('~')
 
@@ -17,16 +19,19 @@ import numpy as np
 
 from geometry_msgs.msg import PoseStamped, Quaternion
 from sensor_msgs.msg import JointState 
-from std_msgs.msg import String
+from std_msgs.msg import String , Int32
 from sensor_msgs.msg import LaserScan, Image
 from std_msgs.msg import Header
 from trajectory_msgs.msg import JointTrajectory ,JointTrajectoryPoint
+
 # -----------------------------------------------
 
 from lib.zeus_kinematics import *
 
 from config.config import realConfig
 
+SHORT_SLEEP = 1
+LONG_SLEEP  = 5
 
 
 
@@ -38,6 +43,8 @@ class realAgent(Agent):
 
         Agent.__init__(self)
 
+        self._EE  = realEE()
+
         self._initJoint = realConfig.initPoseA
         self._initTrans = realConfig.initPoseT
         self._jointNames = realConfig.jointNameList
@@ -46,6 +53,7 @@ class realAgent(Agent):
         self._commandJoint = self._curJoint
         self._eeController = realEE()
         self._jointVelocity = realConfig.defaultAngleVelocity
+        self._robotReadyState = threading.Event()
 
     
         #----- Publisher
@@ -56,14 +64,20 @@ class realAgent(Agent):
         self._realSimpleMoveSub            = rospy.Subscriber('/zeus/real/simpleMoveCommand'       ,  String               , self._simpleMoveCallback        )
         self._realmenuSub                  = rospy.Subscriber('/zeus/real/menu'                    ,  String               , self._menuCallback              )
         self._jointSub                     = rospy.Subscriber('/zeus/real/joint'                   ,  JointTrajectory      , self._jointUpdateCallback       )
-
-        #----- Additional Threads
-        threading.Thread(target=self._publishFsmState,daemon=True).start()
-
+        self._robotReady                   = rospy.Subscriber('/zeus/real/move_ready'              ,  Int32                , self._readyCallback )
+        
+        
         # Temp to Skip HRI Section
         self._fsm.handleEvent("hri_start")
         self._fsm.handleEvent("get_menu")
+        self._robotReadyState.set()
+    
 
+        #----- Additional Threads
+        threading.Thread(target=self._publishFsmState,daemon=True).start()
+        threading.Thread(target=self._printingReadyState ,daemon= True).start()
+
+    
         # --- Run 
         rospy.spin()
 
@@ -76,12 +90,28 @@ class realAgent(Agent):
             stateMsg.data = self._fsm.getState()
             self._realFSMPub.publish(stateMsg)
             self.rateFast.sleep()
-
+    
+    def _printingReadyState(self) :
+        while not rospy.is_shutdown():
+            if self._robotReadyState.isSet() :
+                print("Robot Ready !")
+            else :
+                print("Robot not Ready !!!")
+            rospy.sleep(0.1)
 
 # --------------- Callback Functions -----------------
 
+    def _readyCallback(self,msg) :
+        ready = msg.data
+        if ready == 1 :
+            self._robotReadyState.set()
+        elif ready == 0 :
+            self._robotReadyState.clear()
+        else :
+            print("Wrong READY MSG!!!")
+
     def _menuCallback(self,menu):
-        self._fsm.handleEvent("get_menu")
+        # self._fsm.handleEvent("get_menu")
         self._makeMenu(menu)
         self._fsm.handleEvent("serve_menu")
         self._hereYouare()
@@ -94,8 +124,7 @@ class realAgent(Agent):
         self._curJoint = joint 
         self._curTrans = ARM6_kinematics_forward_armReal(joint)
         
-        # ---- Below is just for Debugging
-        #self._curTrans.printTransform(self._curTrans)
+        # self._curTrans.printTransform(self._curTrans)
     
     def _simpleMoveCallback(self,msg, scale = 'small') :
     
@@ -114,13 +143,23 @@ class realAgent(Agent):
                 self._moveZ(realConfig.smallCommandStep)
             elif command == 'e' :
                 self._moveZ(-realConfig.smallCommandStep)
-            elif command == 'i' :
-                self.movePoseT(realConfig.startPoseT)
-            elif command == 'o' :
-                self.movePoseT(realConfig.barPoseT)
+            
+            elif command == 'r' :
+                self._rotateZ(realConfig.pourAngle)
+            elif command == 't' :
+                self._rotateZ(-realConfig.pourAngle)
+            
             elif command == '0' :
                 angle = [0,0,0,0,0,0]
                 self.movePoseA(angle)
+            elif command == '1' :
+                self.movePoseT(realConfig.startPoseT)
+            elif command == '2' :
+                self.movePoseT(realConfig.barPoseT)
+            elif command == '3' :
+                self.movePoseT(realConfig.shakingT)
+            elif command == '4' :
+                self.movePoseT(realConfig.servicePositionT)
 
             # --- For Dispenser Test    
             elif command == 'g' :
@@ -161,58 +200,66 @@ class realAgent(Agent):
             self._closeEE()
         else :
             print("Wrong EE Command")
+    
+
         
 
 # ---------------- Real Action ---------------------
 
-    def _makeMenu(self,menu):
-        self.movePoseA(realConfig.pose2A)
-        print("Arrived at the dispensor")
+    def _makeMenu(self,msg):
+        print("Making Menu!!!")
+        menu = msg.data
+        self.movePoseT(realConfig.barPoseT)
         self.rateNormal.sleep()
+        print("Arrived at the dispensor")
+
 
         # Check EE is opened
-        if self._EE.getState != 'open':
+        if self._EE.getState() != 'open':
             print("EE is closed")
             self._EE.open()
             return
         self.rateNormal.sleep()
-
+        
         if not self._fsm.getState() == 'moving':
             print("Current State is not Moving Quit!!!")
             return
-        else :        
-            # Moving sequence should be (x) - (y) - (z) - (z) | (-z) - (x) - (z) - (z) - (-z) - (-y)
-            self._moveX(realConfig.componentOffset[realConfig.menuComponent[menu][0]][0])                
-            self._moveY(realConfig.componentOffset[realConfig.menuComponent[menu][0]][1])
-            self._moveZ(realConfig.componentOffset[realConfig.menuComponent[menu][0]][2])
-            self._moveZ(realConfig.componentOffset[realConfig.menuComponent[menu][0]][3])
-            self.rateSlow.sleep()
+        else :
+            first_comp = realConfig.menuComponent[menu][0]        
+            second_comp = realConfig.menuComponent[menu][1]
+            print(f"Component : {first_comp} {second_comp}")
+            # Moving sequence should be (y) - (x) - (z) - (z) | (-z) - (x) - (z) - (z) - (-z) - (-y)
+
+            print("Get First")
+            self._moveY(realConfig.componentOffset[first_comp][1])
+            self._moveX(realConfig.componentOffset[first_comp][0])                
+            self._moveZ(realConfig.componentOffset[first_comp][2])
+            self._moveZ(realConfig.componentOffset[first_comp][3])
+            rospy.sleep(10)
             # Second Element
-            self._moveZ(-( realConfig.componentOffset[realConfig.menuComponent[menu][0]][2] +
-                          realConfig.componentOffset[realConfig.menuComponent[menu][0]][3] ))  
-            self.rateNormal.sleep()
-            self._moveX(realConfig.componentOffset[realConfig.menuComponent[menu][1]][0] -
-                        realConfig.componentOffset[realConfig.menuComponent[menu][0]][0])
-            self._moveZ(realConfig.componentOffset[realConfig.menuComponent[menu][1]][2])
-            self._moveZ(realConfig.componentOffset[realConfig.menuComponent[menu][1]][3])
-            self.rateSlow.sleep()
-            self._moveZ(-( realConfig.componentOffset[realConfig.menuComponent[menu][1]][2] +
-                           realConfig.componentOffset[realConfig.menuComponent[menu][1]][3] ))
-            self.rateNormal.sleep()
-            self._moveY(-realConfig.componentOffset[realConfig.menuComponent[menu][1]][1])   # << Insert here if third or more elements is needed
-            self.rateNormal.sleep()
+            print("Get Second")
+            self._moveZ(-(realConfig.componentOffset[first_comp][2] + realConfig.componentOffset[first_comp][3])) 
+            print("moving Down") 
+            self._moveX(realConfig.componentOffset[second_comp][0] - realConfig.componentOffset[first_comp ][0])
+            self._moveZ(realConfig.componentOffset[second_comp][2])
+            self._moveZ(realConfig.componentOffset[second_comp][3])
+            rospy.sleep(10)
+            self._moveZ(-(realConfig.componentOffset[second_comp][2] + realConfig.componentOffset[second_comp][3] ))
+            print("moving Down") 
+            self._moveX(-realConfig.componentOffset[second_comp][0])
+            self._moveY(-realConfig.componentOffset[second_comp][1])   # << Insert here if third or next elements is needed
             print("Success to get base bevarge\n")
             # Now We get the componenets
 
-            self._EE.close()
-            self.rateNormal.sleep()
+            
             self.movePoseT(realConfig.shakingT)
-            self.rateNormal.sleep()
             print("Arrvied at the Shaking Position")
+            self.rateNormal.sleep()
+            self._EE.close()
 
-            if self._EE.getState != 'closed':
+            if self._EE.getState() != 'closed':
                 print("EE is opened")
-                return
+                self._EE.close()
 
             self._shake()
             self.rateNormal.sleep()
@@ -258,7 +305,7 @@ class realAgent(Agent):
 # --------------- Base Action ------------------------
 
     def movePoseA(self, Angle):
-
+        self._robotReadyState.wait()
         if not(self._fsm.getState() == "moving" or self._fsm.getState() == "shaking"):
             print('State is not Moiving : Quit!!!')
             return 
@@ -272,30 +319,34 @@ class realAgent(Agent):
         traj_msg = JointTrajectory()
         traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
         traj_point = JointTrajectoryPoint()
-        print(Angle)
         traj_point.positions = Angle
         traj_point.time_from_start = rospy.Duration(1.0)
         traj_msg.points.append(traj_point)
-        print(traj_msg.points[0].positions)
         self._realJointCommandPub.publish(traj_msg)
 
     def movePoseT(self,Transform):
+        self._robotReadyState.wait()
+        self.rateNormal.sleep()
         solvedAngle = ARM6_kinematics_inverse_arm(Transform,self._curJoint)
         self.movePoseA(solvedAngle)
 
     def _moveX(self,xDistance) :
+        self._robotReadyState.wait()
+        self.rateNormal.sleep()
         goalTrans = self._curTrans
-
         goalTrans = goalTrans.setVal(0,3,self._curTrans(0,3) + xDistance)
         self.movePoseT(goalTrans)
 
     def _moveY(self,yDistance) :
+        self._robotReadyState.wait
+        self.rateNormal.sleep()
         goalTrans = self._curTrans
-
         goalTrans = goalTrans.setVal(1,3,self._curTrans(1,3) + yDistance)
         self.movePoseT(goalTrans)
 
     def _moveZ(self,zDistance) :
+        self._robotReadyState.wait()
+        self.rateNormal.sleep()
         goalTrans = self._curTrans
         goalTrans = goalTrans.setVal(2,3,self._curTrans(2,3) + zDistance)
         self.movePoseT(goalTrans)
@@ -304,14 +355,20 @@ class realAgent(Agent):
 
 
     def _rotateX(self,xAngle)  :
+        self._robotReadyState.wait()
+        self.rateNormal.sleep()
         goalTrans = self._curTrans.rotateX(xAngle)
         self.movePoseT(goalTrans)
 
     def _rotateY(self,yAngle)  :
+        self._robotReadyState.wait()
+        self.rateNormal.sleep()
         goalTrans = self._curTrans.rotateY(yAngle)
         self.movePoseT(goalTrans)
 
     def _rotateZ(self,zAngle)  :
+        self._robotReadyState.wait()
+        self.rateNormal.sleep()
         goalTrans = self._curTrans.rotateZ(zAngle)
         self.movePoseT(goalTrans)
 

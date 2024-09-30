@@ -4,7 +4,7 @@
 
 1. Install ROS Noetic (Ubuntu 20.04) & CUDA (Optional)
 - Follow the official instructions to install ROS Noetic: http://wiki.ros.org/noetic/Installation/Ubuntu
-- Install CUDA if needed for your project (Optional, depending on GPU-related tasks).
+- Install CUDA if needed (Optional, depending on GPU-related tasks).
 
 2. Install Anaconda
 - Download and install Anaconda from Anaconda's official website: https://www.anaconda.com/products/distribution#download-section
@@ -23,7 +23,7 @@
 4. Build Catkin Workspace (ROS Packages)
 - To build your ROS packages, run the following command in the root of your project:
   bash ./build_catkin.sh
-- Webots Header Path issue!!!
+- Webots Header Path issue !!!
   
 5. Install Pybind Library
 - Set your pybind_DIR depends on your python version
@@ -49,6 +49,11 @@
 - Install Dependencies :
 ```bash
     sudo apt-get install tmux
+```
+
+8. Set UP for Dynamixel 
+```bash
+  sudo chmod a+rw /dev/ttyUSB0
 ```
 ---
 

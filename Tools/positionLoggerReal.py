@@ -42,9 +42,9 @@ class positionLogger :
         
         print(key_str)
 
-        if key_str in ('w', 'a', 's', 'd', 'q', 'e',     'o','g','h','j','k','i',      '0', '1', '2', '3', '4'):
+        if key_str in ('w', 'a', 's', 'd', 'q', 'e',     'g','h','k','i',      '0', '1', '2', '3', '4',     'r', 't'):
             self._moveCommandPub.publish(key_str)
-        elif key_str in ('x', 'c'):
+        elif key_str in ('x', 'z'):
             self._gripperPub.publish(key_str)
 
     def on_release(self,key):

@@ -35,11 +35,11 @@ class Agent(ABC):
         # self._EE = endEffector()
 
 
-        self.rateFast = rospy.Rate(WebotsConfig.LONG_SLEEP)
+        self.rateFast   = rospy.Rate(realConfig.SHORT_SLEEP)
         
-        self.rateNormal = rospy.Rate(WebotsConfig.NORMAL_SLEEP)
+        self.rateNormal = rospy.Rate(realConfig.NORMAL_SLEEP)
 
-        self.rateSlow = rospy.Rate(WebotsConfig.SHORT_SLEEP)
+        self.rateSlow   = rospy.Rate(realConfig.LONG_SLEEP)
 
 
         self._curJoint = None

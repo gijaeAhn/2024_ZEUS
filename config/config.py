@@ -15,9 +15,9 @@ RAD_TO_DEG = 180.0/PI
 class WebotsConfig :
 
     TIME_STEP = 0.01
-    SHORT_SLEEP  = 0.1
-    NORMAL_SLEEP = 1.0
-    LONG_SLEEP   = 10.0
+    SHORT_SLEEP  = 1.0
+    NORMAL_SLEEP = 0.5
+    LONG_SLEEP   = 0.1
 
     ROTATE_DIRECTION = [1.0, -1.0, -1.0, 1.0, -1.0, 1.0]
     
@@ -98,9 +98,10 @@ class WebotsConfig :
 class realConfig :
     
     TIME_STEP = 0.01
-    SHORT_SLEEP  = 0.1
-    NORMAL_SLEEP = 1.0
-    LONG_SLEEP   = 10.0
+    
+    SHORT_SLEEP  = 5.0
+    NORMAL_SLEEP = 0.5
+    LONG_SLEEP   = 0.1
     
  #------------ Robot ----------------------------------
 
@@ -176,11 +177,11 @@ class realConfig :
     }
 
     componentOffset = {
-    'A': [ 0,goFront, goUP1, goUP2],
-    'B': [ 0,goFront, goUP1, goUP2],
-    'C': [ 0,goFront, goUP1, goUP2],
-    'D': [ 0,goFront, goUP1, goUP2],
-    'E': [ 0,goFront, goUP1, goUP2]
+    'A': [ 0,    goFront, goUP1, goUP2],
+    'B': [ 0.15, goFront, goUP1, goUP2],
+    'C': [ 0.3,  goFront, goUP1, goUP2],
+    'D': [ 0.45, goFront, goUP1, goUP2],
+    'E': [ 0.6,  goFront, goUP1, goUP2]
     }
 
     pourAngle = PI * 0.666

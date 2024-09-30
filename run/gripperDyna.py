@@ -11,15 +11,16 @@ class DynamixelControlNode:
 
         self.DEVICENAME = rospy.get_param('~devicename', '/dev/ttyUSB0')
         self.BAUDRATE = rospy.get_param('~baudrate', 4000000)
-        self.DXL_ID = rospy.get_param('~dynamixel_id', 0)
+        self.DXL_ID = rospy.get_param('~dynamixel_id', 1)
         self.PROTOCOL_VERSION = 2.0
 
         # Control Table ADDR
-        self.ADDR_OP_MODE      = 11  
-        self.ADDR_TORQUE_ENABLE  = 64
-        self.ADDR_OPERATING_MODE = 11
-        self.ADDR_GOAL_POSITION  = 116
-        self.ADDR_GOAL_CURRENT   = 102
+        self.ADDR_OP_MODE           = 11  
+        self.ADDR_TORQUE_ENABLE     = 64
+        self.ADDR_OPERATING_MODE    = 11
+        self.ADDR_GOAL_POSITION     = 116
+        self.ADDR_GOAL_CURRENT      = 102
+        self.ADDR_PRESENT_POSITION  = 132
 
         # Data Byte Length
         self.LEN_GOAL_POSITION = 4
@@ -32,7 +33,6 @@ class DynamixelControlNode:
         self.TORQUE_ENABLE = 1
         self.TORQUE_DISABLE = 0
 
-        # Initialize PortHandler and PacketHandler
         self.portHandler = dxl.PortHandler(self.DEVICENAME)
         self.packetHandler = dxl.PacketHandler(self.PROTOCOL_VERSION)
 
@@ -50,7 +50,20 @@ class DynamixelControlNode:
 
         self.write1ByteTxRx(self.ADDR_TORQUE_ENABLE, self.TORQUE_ENABLE)
 
-        # Subscribe to the control mode topic
+
+        # ------------ Requires Initial encoder Reading -------------
+
+        result = self.read4ByteTxRx(self.ADDR_PRESENT_POSITION)
+        if result is not None:
+            self.initial_position = result
+            rospy.loginfo("Inital Encoder Position : %d", self.initial_position)
+        else:
+            rospy.logerr("Reading Encoder Failure.")
+            self.initial_position = 0 
+
+        self.initial_position = 2550 
+
+        # -----------------------------------------------------------
         rospy.Subscriber('/zeus/real/gripperCommand', String, self.control_mode_callback)
 
         rospy.loginfo("Dynamixel control node started")
@@ -58,17 +71,24 @@ class DynamixelControlNode:
     def control_mode_callback(self, msg):
         mode_str = msg.data.strip()
         if mode_str == 'x':
+            # DIRECTION_CORRECTION_VAL = -1
+            # DEGREE_PER_UNIT = 360.0 / 4096
+            # units_per_degree = 1 / DEGREE_PER_UNIT
+            # units_for_90_degrees =  DIRECTION_CORRECTION_VAL * int(units_per_degree * 90)
+            goal_position = self.initial_position 
+            # goal_position = (goal_position + 4096) % 4096
+
             self.set_operating_mode(self.OP_MODE_POSITION)
             rospy.loginfo("Switched to Position Control Mode")
-            # Example: Move to a specific position
-            goal_position = 1024  # Middle position for a Dynamixel with 4096 positions
             self.write4ByteTxRx(self.ADDR_GOAL_POSITION, goal_position)
-        elif mode_str == 'c':
+
+        elif mode_str == 'z':
             DIRECTION_CORRECTION_VAL = -1
             self.set_operating_mode(self.OP_MODE_TORQUE)
             rospy.loginfo("Switched to Torque Control Mode")
-            goal_current = 100  # Adjust as needed (-Current Limit ~ Current Limit)
+            goal_current = 30 * DIRECTION_CORRECTION_VAL  
             self.write2ByteTxRx(self.ADDR_GOAL_CURRENT, goal_current)
+
         else:
             rospy.logwarn("Received unknown mode: '%s'", mode_str)
 
@@ -100,6 +120,17 @@ class DynamixelControlNode:
             rospy.logerr("Write4ByteTxRx failed: %s", self.packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
             rospy.logerr("Write4ByteTxRx error: %s", self.packetHandler.getRxPacketError(dxl_error))
+    
+    def read4ByteTxRx(self, address):
+        result, dxl_comm_result, dxl_error = self.packetHandler.read4ByteTxRx(self.portHandler, self.DXL_ID, address)
+        if dxl_comm_result != dxl.COMM_SUCCESS:
+            rospy.logerr("Read4ByteTxRx failed: %s", self.packetHandler.getTxRxResult(dxl_comm_result))
+            return None
+        elif dxl_error != 0:
+            rospy.logerr("Read4ByteTxRx error: %s", self.packetHandler.getRxPacketError(dxl_error))
+            return None
+        else:
+            return result
 
     def close_port(self):
         self.write1ByteTxRx(self.ADDR_TORQUE_ENABLE, self.TORQUE_DISABLE)
