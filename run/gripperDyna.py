@@ -84,6 +84,16 @@ class DynamixelControlNode:
 
         elif mode_str == 'z':
             DIRECTION_CORRECTION_VAL = -1
+            
+            DEGREE_PER_UNIT = 360.0 / 4096
+            DEGREE = 88
+            units_per_degree = 1 / DEGREE_PER_UNIT
+            units_for_degrees =  DIRECTION_CORRECTION_VAL * int(units_per_degree * DEGREE)
+            goal_position = (self.initial_position + units_for_degrees) % 4096
+            self.set_operating_mode(self.OP_MODE_POSITION)
+            rospy.loginfo("Switched to Position Control Mode")
+            self.write4ByteTxRx(self.ADDR_GOAL_POSITION, goal_position)
+            rospy.sleep(0.5)
             self.set_operating_mode(self.OP_MODE_TORQUE)
             rospy.loginfo("Switched to Torque Control Mode")
             goal_current = 30 * DIRECTION_CORRECTION_VAL  

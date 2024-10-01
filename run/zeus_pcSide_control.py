@@ -73,19 +73,14 @@ def main():
     def trajectory_callback(data):
         global start_time
         cur_time = time.time()
-        print("Received comand message from PC")
-        ready_msg = Int32()
-        ready_msg.data = 0
-        pub_ready.publish(ready_msg)
+        print("Received command message from PC")
         if cur_time - start_time < 1.0:
             print("EARLY MESSAGE...IGNORED!!!")
         else:
-            print("Joint trajectory message!")
             np_arr = np.array(data.points[0].positions, dtype=np.float32)
-            print("Sending joint positions:", np_arr)
+            # print("Sending joint positions:", np_arr)
             msg = struct.pack("f", 0) + np_arr.tobytes()
-            print("Sending message of length:", len(msg))
-            b_msg = msg
+            # print("Sending message of length:", len(msg))
             try:
                 client_socket.sendall(msg)  # Send data to robot via port 5003
             except Exception as e:
@@ -159,7 +154,7 @@ def main():
                         print("Incorrect data size for joint positions")
                         continue
                     floats = struct.unpack('6f', data_5004[4:])
-                    print("Received joint values:", floats)
+                    # print("Received joint values:", floats)
                     # Publish these joint values to '/zeus/real/joint'
                     traj_msg = JointTrajectory()
                     traj_msg.header.stamp = rospy.Time.now()

@@ -99,9 +99,9 @@ class realConfig :
     
     TIME_STEP = 0.01
     
-    SHORT_SLEEP  = 5.0
-    NORMAL_SLEEP = 0.5
-    LONG_SLEEP   = 0.1
+    SHORT_SLEEP  = 2.0      # 0.4s
+    NORMAL_SLEEP = 1.0      # 1.0s
+    LONG_SLEEP   = 0.1      # 10.0s
     
  #------------ Robot ----------------------------------
 

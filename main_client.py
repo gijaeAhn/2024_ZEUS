@@ -54,6 +54,7 @@ class realAgent(Agent):
         self._eeController = realEE()
         self._jointVelocity = realConfig.defaultAngleVelocity
         self._robotReadyState = threading.Event()
+        self._robotReadyStateLock = threading.RLock()
 
     
         #----- Publisher
@@ -75,7 +76,7 @@ class realAgent(Agent):
 
         #----- Additional Threads
         threading.Thread(target=self._publishFsmState,daemon=True).start()
-        threading.Thread(target=self._printingReadyState ,daemon= True).start()
+        # threading.Thread(target=self._printingReadyState ,daemon= True).start()
 
     
         # --- Run 
@@ -104,9 +105,10 @@ class realAgent(Agent):
     def _readyCallback(self,msg) :
         ready = msg.data
         if ready == 1 :
-            self._robotReadyState.set()
-        elif ready == 0 :
-            self._robotReadyState.clear()
+            # self._robotReadyState.set()
+            print(f"Robot Ready Time    : {time.time()}")
+        # elif ready == 0 :
+        #     self._robotReadyState.clear()
         else :
             print("Wrong READY MSG!!!")
 
@@ -123,8 +125,10 @@ class realAgent(Agent):
         joint = [angle * direction for angle, direction in zip(joint, realConfig.ROTATE_DIRECTION)]
         self._curJoint = joint 
         self._curTrans = ARM6_kinematics_forward_armReal(joint)
+        self._robotReadyState.set()
+        print(f"Joint Callback Time : {time.time()}")
         
-        # self._curTrans.printTransform(self._curTrans)
+
     
     def _simpleMoveCallback(self,msg, scale = 'small') :
     
@@ -218,7 +222,9 @@ class realAgent(Agent):
         if self._EE.getState() != 'open':
             print("EE is closed")
             self._EE.open()
-            return
+            
+        # Temporary Cure : Check Code Required
+
         self.rateNormal.sleep()
         
         if not self._fsm.getState() == 'moving':
@@ -227,39 +233,61 @@ class realAgent(Agent):
         else :
             first_comp = realConfig.menuComponent[menu][0]        
             second_comp = realConfig.menuComponent[menu][1]
+            movingYtemp = 0.2
             print(f"Component : {first_comp} {second_comp}")
-            # Moving sequence should be (y) - (x) - (z) - (z) | (-z) - (x) - (z) - (z) - (-z) - (-y)
+            # Moving sequence should be (y) - (x) - (z) - (z) | (-z) - (x) - (z) - (z) - (-z) - (-x) - (-y)
 
             print("Get First")
+            self._moveX(realConfig.componentOffset[first_comp][0])
+            self.rateNormal.sleep()
             self._moveY(realConfig.componentOffset[first_comp][1])
-            self._moveX(realConfig.componentOffset[first_comp][0])                
+            self.rateNormal.sleep()
             self._moveZ(realConfig.componentOffset[first_comp][2])
+            self.rateNormal.sleep()
             self._moveZ(realConfig.componentOffset[first_comp][3])
-            rospy.sleep(10)
+            # self.rateSlow.sleep()
+            time.sleep(8)
             # Second Element
-            print("Get Second")
-            self._moveZ(-(realConfig.componentOffset[first_comp][2] + realConfig.componentOffset[first_comp][3])) 
-            print("moving Down") 
+           
+            self._moveZ(-(realConfig.componentOffset[first_comp][2] + realConfig.componentOffset[first_comp][3]))
+            self.rateNormal.sleep()
+            print("moving Down")
+
+            self._moveY(-movingYtemp)
+            self.rateNormal.sleep()
+            print("Get Second") 
             self._moveX(realConfig.componentOffset[second_comp][0] - realConfig.componentOffset[first_comp ][0])
+            self.rateNormal.sleep()
+            self._moveY(movingYtemp)
             self._moveZ(realConfig.componentOffset[second_comp][2])
+            self.rateNormal.sleep()
             self._moveZ(realConfig.componentOffset[second_comp][3])
-            rospy.sleep(10)
+            # self.rateSlow.sleep()
+            time.sleep(8)
             self._moveZ(-(realConfig.componentOffset[second_comp][2] + realConfig.componentOffset[second_comp][3] ))
-            print("moving Down") 
+            self.rateNormal.sleep()
+            print("moving Down")
+            self._moveY(-movingYtemp)
+            self.rateNormal.sleep() 
             self._moveX(-realConfig.componentOffset[second_comp][0])
-            self._moveY(-realConfig.componentOffset[second_comp][1])   # << Insert here if third or next elements is needed
+            self.rateNormal.sleep()
+            self._moveY(-realConfig.componentOffset[second_comp][1] + movingYtemp )
+            self.rateNormal.sleep()   # << Insert here if third or next elements is needed
             print("Success to get base bevarge\n")
             # Now We get the componenets
 
-            
-            self.movePoseT(realConfig.shakingT)
-            print("Arrvied at the Shaking Position")
             self.rateNormal.sleep()
             self._EE.close()
 
             if self._EE.getState() != 'closed':
                 print("EE is opened")
                 self._EE.close()
+            rospy.sleep(3)
+            
+            self.movePoseT(realConfig.shakingT)
+            print("Arrvied at the Shaking Position")
+            self.rateNormal.sleep()
+
 
             self._shake()
             self.rateNormal.sleep()
@@ -306,10 +334,10 @@ class realAgent(Agent):
 
     def movePoseA(self, Angle):
         self._robotReadyState.wait()
+        self._robotReadyState.clear()
         if not(self._fsm.getState() == "moving" or self._fsm.getState() == "shaking"):
             print('State is not Moiving : Quit!!!')
             return 
-
         if len(Angle) != realConfig.DOF:
             rospy.logerr("Incorrect number of angles provided. Expected {}, got {}.".format(realConfig.DOF, len(Angle)))
             return
@@ -323,30 +351,47 @@ class realAgent(Agent):
         traj_point.time_from_start = rospy.Duration(1.0)
         traj_msg.points.append(traj_point)
         self._realJointCommandPub.publish(traj_msg)
+            
+            
+            
 
     def movePoseT(self,Transform):
         self._robotReadyState.wait()
-        self.rateNormal.sleep()
         solvedAngle = ARM6_kinematics_inverse_arm(Transform,self._curJoint)
         self.movePoseA(solvedAngle)
 
+    def _moveXDevide(self, xDistance):
+        step_size = 0.15
+        threshold = 0.3
+        if abs(xDistance) >= threshold :
+            num_steps = int(abs(xDistance) // step_size)
+            remainder = abs(xDistance) % step_size
+            sign = 1 if xDistance > 0 else -1
+            for _ in range(num_steps):
+                self._moveX(sign * step_size)
+            if remainder > 0:
+                self._moveX(sign * remainder)
+        else:
+            self._moveX(xDistance)
+
+
     def _moveX(self,xDistance) :
+        print(f"Move Rel Start Time : {time.time()}")
         self._robotReadyState.wait()
-        self.rateNormal.sleep()
         goalTrans = self._curTrans
         goalTrans = goalTrans.setVal(0,3,self._curTrans(0,3) + xDistance)
         self.movePoseT(goalTrans)
 
     def _moveY(self,yDistance) :
-        self._robotReadyState.wait
-        self.rateNormal.sleep()
+        print(f"Move Rel Start Time : {time.time()}")
+        self._robotReadyState.wait()
         goalTrans = self._curTrans
         goalTrans = goalTrans.setVal(1,3,self._curTrans(1,3) + yDistance)
         self.movePoseT(goalTrans)
 
     def _moveZ(self,zDistance) :
+        print(f"Move Rel Start Time : {time.time()}")
         self._robotReadyState.wait()
-        self.rateNormal.sleep()
         goalTrans = self._curTrans
         goalTrans = goalTrans.setVal(2,3,self._curTrans(2,3) + zDistance)
         self.movePoseT(goalTrans)
@@ -355,21 +400,24 @@ class realAgent(Agent):
 
 
     def _rotateX(self,xAngle)  :
+        print(f"Move Rel Start Time : {time.time()}")
         self._robotReadyState.wait()
-        self.rateNormal.sleep()
-        goalTrans = self._curTrans.rotateX(xAngle)
+        goalTrans = self._curTrans
+        goalTrans = goalTrans.rotateX(xAngle)
         self.movePoseT(goalTrans)
 
     def _rotateY(self,yAngle)  :
+        print(f"Move Rel Start Time : {time.time()}")
         self._robotReadyState.wait()
-        self.rateNormal.sleep()
-        goalTrans = self._curTrans.rotateY(yAngle)
+        goalTrans = self._curTrans
+        goalTrans = goalTrans.rotateY(yAngle)
         self.movePoseT(goalTrans)
 
     def _rotateZ(self,zAngle)  :
+        print(f"Move Rel Start Time : {time.time()}")
         self._robotReadyState.wait()
-        self.rateNormal.sleep()
-        goalTrans = self._curTrans.rotateZ(zAngle)
+        goalTrans = self._curTrans
+        goalTrans = goalTrans.rotateZ(zAngle)
         self.movePoseT(goalTrans)
 
     def _openEE(self) :

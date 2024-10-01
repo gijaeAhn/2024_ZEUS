@@ -6,7 +6,7 @@ from std_msgs.msg import String
 
 class endEffector(ABC):
     def __init__(self):
-        self._lidState = "open"
+        self._lidState = "close"
 
     @abstractmethod
     def open(self) :
