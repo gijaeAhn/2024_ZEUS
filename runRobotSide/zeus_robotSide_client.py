@@ -78,14 +78,29 @@ def main():
             if header == 0:  # Joint command
                 if len(maindata) != 4*6:
                     print("Incorrect data size for joint command")
-		else :
-               	    msg = struct.unpack("6f", maindata)
+		        else :
+                    msg = struct.unpack("6f", maindata)
                     print("Joint command:", msg)
                     j1 = Joint(msg[0], msg[1], msg[2], msg[3], msg[4], msg[5])
                     rb.move(j1)
-	 	    rb.join()
+	 	            rb.join()
 
-            elif header == 1:  # Relative move command
+            elif header == 1:  # Joint Trajectory command
+                pointNum = 100
+                if len(maindata) != 4 * 6 * pointNum:
+                    print("Incorrect data size for relative move command")
+                    continue
+                msg = struct.unpack("600f", maindata)
+                print("Joint Trajectory command ")
+                for i in range(0, len(msg), 6):
+                    j = Joint(msg[0+i], msg[1+i], msg[2+i], msg[3+i], msg[4+i], msg[5+i])
+                    rb.move(j)
+                rb.join()
+                response = struct.pack("f", 9) + struct.pack("f", 1)
+                send_socket.sendall(response)        
+
+            elif header == 2:  # Relative move command
+                print("Deprecated : Rel Move")
                 if len(maindata) != 4*6:
                     print("Incorrect data size for relative move command")
                     continue
@@ -106,8 +121,6 @@ def main():
                 dout(48, '000')  # Reset register
             elif header == 6:
                 print("Motion param!")
-                # Add additional command handling here as necessary
-
 
             curPos = rb.getjnt().jnt2list()
             print("Current joint positions:", curPos)
@@ -115,7 +128,7 @@ def main():
             response = struct.pack("f", 9) + struct.pack("f", 1)
             try:
                 send_socket.sendall(msg)
-		time.sleep(0.1)
+		        time.sleep(0.1)
                 send_socket.sendall(response)
             except Exception as e:
                 print(e)

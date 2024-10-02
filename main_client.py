@@ -58,8 +58,10 @@ class realAgent(Agent):
 
     
         #----- Publisher
-        self._realJointCommandPub          = rospy.Publisher('/zeus/real/jointCommand'             ,  JointTrajectory    , queue_size = 1             )  
+        self._realJointCommandPub          = rospy.Publisher('/zeus/real/jointCommand'             ,  JointTrajectory    , queue_size = 1             )
+        self._realJointTrajCommandPub      = rospy.Publisher('/zeus/real/jointTrajectory'          ,  JointTrajectory    , queue_size = 1             )  
         self._realFSMPub                   = rospy.Publisher('/zeus/fsm'                           ,  String             , queue_size = 1             )
+        
         #----- Subscriber
         self._eeCommandSub                 = rospy.Subscriber('/zeus/real/eeCommand'               ,  String               , self._eeControlCallback         )
         self._realSimpleMoveSub            = rospy.Subscriber('/zeus/real/simpleMoveCommand'       ,  String               , self._simpleMoveCallback        )
