@@ -61,7 +61,7 @@ class realAgent(Agent):
         self._realJointCommandPub          = rospy.Publisher('/zeus/real/jointCommand'             ,  JointTrajectory    , queue_size = 1             )
         self._realJointTrajCommandPub      = rospy.Publisher('/zeus/real/jointTrajectory'          ,  JointTrajectory    , queue_size = 1             )  
         self._realFSMPub                   = rospy.Publisher('/zeus/fsm'                           ,  String             , queue_size = 1             )
-        
+
         #----- Subscriber
         self._eeCommandSub                 = rospy.Subscriber('/zeus/real/eeCommand'               ,  String               , self._eeControlCallback         )
         self._realSimpleMoveSub            = rospy.Subscriber('/zeus/real/simpleMoveCommand'       ,  String               , self._simpleMoveCallback        )
@@ -130,8 +130,6 @@ class realAgent(Agent):
         self._robotReadyState.set()
         print(f"Joint Callback Time : {time.time()}")
         
-
-    
     def _simpleMoveCallback(self,msg, scale = 'small') :
     
         command = msg.data        
@@ -207,7 +205,8 @@ class realAgent(Agent):
         else :
             print("Wrong EE Command")
     
-
+    def _bottleFlipCallback(self) :
+        
         
 
 # ---------------- Real Action ---------------------
@@ -295,7 +294,6 @@ class realAgent(Agent):
             self.rateNormal.sleep()
             self.movePoseT(realConfig.shakingT)
             print("Making Menu Done\n")
-
 
     def _shake(self):
         self._fsm.handleEvent('shake')
