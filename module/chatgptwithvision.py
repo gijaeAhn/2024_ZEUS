@@ -6,14 +6,14 @@ import requests
 
 class Vision_answer:
 
-    def __init__(self, breakthrough):
+    def __init__(self, key):
         print("vision model loading")
 
         self.model = "gpt-4o"
     
         self.headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {breakthrough}"
+            "Authorization": f"Bearer {key}"
 }
 
         self.messages = [
