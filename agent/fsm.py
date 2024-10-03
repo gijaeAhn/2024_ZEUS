@@ -2,9 +2,9 @@ class FSM() :
 
     def __init__(self):
         
+
         self._state = 'idle'
         self._stateTable = self._initializeStates()
-
 
     def _initializeStates(self) :
 
