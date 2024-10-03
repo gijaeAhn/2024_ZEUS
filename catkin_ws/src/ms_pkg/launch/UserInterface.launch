@@ -1,0 +1,50 @@
+<launch>
+    <!-- SN means Service Name -->
+    <arg name="device" value="cuda:0"/>
+    <arg name="STT_SN" value="STTService"/>
+    <arg name="LLMC_SN" value="LLMCService"/>
+    <arg name="TF_SN" value="TFService"/>
+    <arg name="FER_SN" value="FERService"/>
+    <arg name="TTS_SN" value="TTSService"/>
+
+
+    <rosparam file="$(find ms_pkg)/params.yaml" command="load"/>
+
+    
+    <!-- FER<=Facial Expresstion Recogniton -->
+    <node pkg="ms_pkg" type="FERServiceServer_script.py" name="FERServiceServerNode" output="screen">
+        <param name="service_name" value="$(arg FER_SN)"/>
+        <param name="weight_path" value="check_points/FER/learning_180.pt"/>
+        <param name="device" value="$(arg device)"/>
+    </node>
+    
+    
+    <!-- STT<=Speech To Text -->
+    <node pkg="ms_pkg" type="STTServiceServer_script.py" name="STTServiceServerNode" output="screen">
+        <param name="service_name" value="$(arg STT_SN)"/>
+        <param name="weight_type" value="large"/>
+        <param name="device" value="$(arg device)"/>
+    </node>
+
+
+    <!--TF<= Text Filtering  -->
+    <node pkg="ms_pkg" type="TFServiceServer_script.py" name="TFServiceServerNode" output="screen">
+        <param name="service_name" value="$(arg TF_SN)"/>
+        <!-- <param name="recommand_word_set" value="['추천', '제안', '잘나가는', '배고프다']"/> -->
+    </node>
+
+    <!--LLMC<= LLM Conversation  -->
+    <node pkg="ms_pkg" type="LLMCServiceServer_script.py" name="LLMCServiceServerNode" output="screen">
+        <param name="service_name" value="$(arg LLMC_SN)"/>
+        <param name="sys_prompt" value="너는 지금 술집여자야. 최대한 손님기분을 맞춰줘야해. 말은 최대한 짧게 해줘."/>
+    </node>
+
+    <!-- TTS<=TextToSpeech -->
+    <node pkg="ms_pkg" type="TTSServiceServer_script.py" name="TTSServiceServerNode" output="screen">
+        <param name="service_name" value="$(arg TTS_SN)"/>
+        <param name="language" value="ko"/>
+    </node>
+
+
+
+</launch>

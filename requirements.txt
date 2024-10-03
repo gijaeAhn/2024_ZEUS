@@ -8,3 +8,5 @@ pybind11
 pybind11-global
 scipy
 pynput
+whisper
+sounddevice
