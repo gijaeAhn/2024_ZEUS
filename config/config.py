@@ -168,7 +168,7 @@ class realConfig :
 
     # ----------------------------------------------
     # Menu Setup
-    menuList = ['1', '2', '3', '4', '5','6']
+    menuList = ['1', '2', '3', '4', '5', '6']
     menuComponent = {
         '1' : ['A','B'],
         '2' : ['A','C'],
@@ -179,11 +179,11 @@ class realConfig :
     }
 
     componentOffset = {
-    'A': [ 0,    goFront, goUP1, goUP2],
+    'A': [ 0.05,    goFront, goUP1, goUP2],
     'B': [ 0.15, goFront, goUP1, goUP2],
-    'C': [ 0.3,  goFront, goUP1, goUP2],
-    'D': [ 0.45, goFront, goUP1, goUP2],
-    'E': [ 0.6,  goFront, goUP1, goUP2]
+    'C': [ 0.25,  goFront, goUP1, goUP2],
+    'D': [ 0.35, goFront, goUP1, goUP2],
+    'E': [ 0.45,  goFront, goUP1, goUP2]
     }
 
     pourAngle = PI * 0.666

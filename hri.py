@@ -13,7 +13,7 @@ from ms_pkg.srv import TTS_service
 from ms_pkg.srv import IC_service
 from ms_pkg.srv import Greeting_service
 
-from config.config import WebotsConfig
+from config.config import WebotsConfig, realConfig
 
 import sounddevice as sd
 from scipy.io.wavfile import write
@@ -113,7 +113,7 @@ class Greeter:
 class HRI:
     def __init__(self):
         #file path variables
-        self.menuList = WebotsConfig.menuList
+        self.menuList = realConfig.menuList
 
         self.user_save_mp3 = os.path.expanduser("~/.temp_files/user_voice_command.mp3")
         self.user_save_wav = os.path.expanduser("~/.temp_files/user_voice_command.wav")
@@ -129,7 +129,7 @@ class HRI:
 
  
 
-        self.orderPubblisher = rospy.Publisher("/zeus/webots/menu", String, queue_size=1)
+        self.orderPubblisher = rospy.Publisher("/zeus/real/menu", String, queue_size=1)
 
 
         self.recording_buffer = []
@@ -175,9 +175,9 @@ class HRI:
             # self.audio_stream = sd.InputStream(samplerate = 44100, channels=1,dtype='float32', callback = self._micCallback)
 
             
+
     def _micCallback(self, indata, frames, time, status):
         self.recording_buffer.append(indata.copy())
-
 
 
 
@@ -196,12 +196,11 @@ class HRI:
             gui_CommandPub.publish("idle")
             if not tts_result:
                 print("tts failed")
-                print(tts_result)
-        
+                print(tts_result)     
 
     
     
-    def _processOrderInput(self):
+    def _processOrderInput(self): #direct order는 코드 변경 필요함 .
         stt_result = STTService_rq(self.user_save_mp3).result
         tf_result =  TFService_rq(stt_result, "order").result
 
@@ -230,7 +229,6 @@ class HRI:
                 _ = TTSService_rq("어쩌하는거지?").result      
             gui_CommandPub.publish("idle")#<=Sending Signal to GUI Interface
 
-    
     
     
     def _getMenuFromFace(self):

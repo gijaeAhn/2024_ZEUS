@@ -14,12 +14,12 @@ class realEE(endEffector) :
          
     def open(self) :
         self.setState('open')
-        msg = String('x')
+        msg = String('n')
         self._eeCommandPub.publish(msg)
 
     def close(self) : 
         self.setState('close')   
-        msg = String('z')
+        msg = String('m')
         self._eeCommandPub.publish(msg)
 
     def getState(self):

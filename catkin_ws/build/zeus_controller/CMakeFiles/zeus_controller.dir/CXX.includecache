@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/src/zeus_controller/src/zeus_controller.cpp
+webots/Robot.hpp
+-
+webots/Motor.hpp
+-
+webots/PositionSensor.hpp
+-
+ros/ros.h
+-
+sensor_msgs/JointState.h
+-
+iostream
+-
+chrono
+-
+math.h
+-
+array
+-
+map
+-
+memory
+-
+

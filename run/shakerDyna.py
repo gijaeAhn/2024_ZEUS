@@ -70,7 +70,7 @@ class DynamixelControlNode:
 
     def control_mode_callback(self, msg):
         mode_str = msg.data.strip()
-        if mode_str == 'x':
+        if mode_str == 'n':
             # DIRECTION_CORRECTION_VAL = -1
             # DEGREE_PER_UNIT = 360.0 / 4096
             # units_per_degree = 1 / DEGREE_PER_UNIT
@@ -82,7 +82,7 @@ class DynamixelControlNode:
             rospy.loginfo("Switched to Position Control Mode")
             self.write4ByteTxRx(self.ADDR_GOAL_POSITION, goal_position)
 
-        elif mode_str == 'z':
+        elif mode_str == 'm':
             DIRECTION_CORRECTION_VAL = -1
             
             DEGREE_PER_UNIT = 360.0 / 4096
