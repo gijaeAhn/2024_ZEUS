@@ -147,6 +147,8 @@ class realConfig :
     shakingT         = Transform().rotateZ(PI).translateZ(0.3).translateX(0.3).rotateY(PI/2)
     servicePositionT = Transform().rotateZ(-PI/2).translateZ(0.3).translateX(0.3).rotateY(PI/2)
 
+
+
 #--------------- For Menu -----------------------------------------
     # Robot Orig = {0.1, 0.1, 0.0152}
     # Plate Offset = 0.0152
@@ -185,6 +187,39 @@ class realConfig :
     }
 
     pourAngle = PI * 0.666
+
+    # For Bottle Flip
+    bottleGripZ = 0.227 + 0.07825 - plateOffset
+
+    # bfPosition1      = Transform().translateZ(0.3).translateY(0.1).translateX(0.3).rotateY(PI)
+    # bfPosition2      = Transform().translateZ(bottleGripZ).translateY(0.1).translateX(0.3).rotateY(PI)
+    # bfPosition3      = Transform().translateZ(0.2).translateY(0.1).translateX(0.2).rotateY(PI + PI/18.0)
+    # bfPosition4      = Transform().translateZ(0.55).translateY(0.1).translateX(0.3).rotateY(PI/2.0 + PI/18.0)
+
+    tempJointBF       = [0,0,0,0,0]
+
+    bottleGripPreZ    = 0.4
+    bottleGripOffset  = 0.005
+    bfPosition1       = Transform().translateZ(bottleGripPreZ).translateY(0.1).translateX(0.25).rotateY(PI)
+    bfPosition1A      = ARM6_kinematics_inverse_arm(bfPosition1,tempJointBF)
+
+    bfMovingDown      = -(bottleGripPreZ - bottleGripZ + bottleGripOffset)
+    bfMovingUp        = bottleGripPreZ - bottleGripZ + bottleGripOffset
+
+    bfPosition2A      = bfPosition1A
+    bfPosition3A      = ARM6_kinematics_inverse_arm(bfPosition1,tempJointBF) 
+    
+    bfPosition2A[1]  += PI/18.0
+    bfPosition2A[2]  += (PI/18.0) * 2
+    bfPosition2A[4]  -= (PI/18.0)
+
+    
+    bfPosition3A[1]  -= PI/18.0
+    bfPosition3A[2]  -= (PI/18.0) * 3
+    bfPosition3A[4]  -= (PI/18.0) * 4
+
+    # bfPosition4 = Transform().translateZ(bottleGripPreZ).translateY(0.1).translateX(0.25).rotateY(PI).translateZ( (bottleGripPreZ - bottleGripZ + bottleGripOffset)/2.0 )
+    # bfPosition5 = bfPosition4.translateZ( (bottleGripPreZ - bottleGripZ + bottleGripOffset)/2.0 )
 
 
 

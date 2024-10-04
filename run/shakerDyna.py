@@ -11,7 +11,7 @@ class DynamixelControlNode:
 
         self.DEVICENAME = rospy.get_param('~devicename', '/dev/ttyUSB0')
         self.BAUDRATE = rospy.get_param('~baudrate', 4000000)
-        self.DXL_ID = rospy.get_param('~dynamixel_id', 2)
+        self.DXL_ID = rospy.get_param('~dynamixel_id', 1)
         self.PROTOCOL_VERSION = 2.0
 
         # Control Table ADDR
@@ -61,7 +61,7 @@ class DynamixelControlNode:
             rospy.logerr("Reading Encoder Failure.")
             self.initial_position = 0 
 
-        self.initial_position = 2761
+        self.initial_position = 2550 
 
         # -----------------------------------------------------------
         rospy.Subscriber('/zeus/real/gripperCommand', String, self.control_mode_callback)
@@ -83,7 +83,7 @@ class DynamixelControlNode:
             self.write4ByteTxRx(self.ADDR_GOAL_POSITION, goal_position)
 
         elif mode_str == 'z':
-            DIRECTION_CORRECTION_VAL = 1
+            DIRECTION_CORRECTION_VAL = -1
             
             DEGREE_PER_UNIT = 360.0 / 4096
             DEGREE = 88
@@ -154,4 +154,3 @@ if __name__ == '__main__':
         pass
     finally:
         node.close_port()
- 

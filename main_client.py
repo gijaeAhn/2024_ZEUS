@@ -123,6 +123,7 @@ class realAgent(Agent):
     def _jointUpdateCallback(self,data):
         DEGREE_TO_RADIAN = 0.0174533
         joint = np.array(data.points[0].positions,dtype= np.float32).tolist()
+        print("Joint : ", joint)
         joint = [angle * DEGREE_TO_RADIAN for angle in joint]
         joint = [angle * direction for angle, direction in zip(joint, realConfig.ROTATE_DIRECTION)]
         self._curJoint = joint 
@@ -165,6 +166,17 @@ class realAgent(Agent):
             elif command == '4' :
                 self.movePoseT(realConfig.servicePositionT)
 
+
+            elif command == '5' :
+                self.movePoseT(realConfig.bfPosition1)
+            elif command == '6' :
+                self.movePoseA(realConfig.bfPosition2A)
+            elif command == '7' :
+                self.movePoseA(realConfig.bfPosition3A)
+            elif command == '8' :
+                self._moveZDevide(realConfig.bfMovingDown)
+
+
             # --- For Dispenser Test    
             elif command == 'g' :
                 self._moveY(realConfig.componentOffset['A'][1])
@@ -205,7 +217,7 @@ class realAgent(Agent):
         else :
             print("Wrong EE Command")
     
-    def _bottleFlipCallback(self) :
+    # def _bottleFlipCallback(self) :
         
         
 
@@ -373,6 +385,21 @@ class realAgent(Agent):
                 self._moveX(sign * remainder)
         else:
             self._moveX(xDistance)
+
+
+    def _moveZDevide(self, zDistance):
+        step_size = 0.01
+        threshold = 0.05
+        if abs(zDistance) >= threshold :
+            num_steps = int(abs(zDistance) // step_size)
+            remainder = abs(zDistance) % step_size
+            sign = 1 if zDistance > 0 else -1
+            for _ in range(num_steps):
+                self._moveZ(sign * step_size)
+            if remainder > 0:
+                self._moveZ(sign * remainder)
+        else:
+            self._moveZ(zDistance)        
 
 
     def _moveX(self,xDistance) :
