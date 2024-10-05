@@ -56,12 +56,13 @@ class MainWindow(QWidget):
         self.current_state = state
         if state == "idle":
             self.label.setPixmap(self.idle_img)
+        
         elif state == "speaking":
             self.label.setPixmap(self.speaking_img)
+        
         elif state == "listening":
             self.label.setPixmap(self.listening_img)
-        # elif state == "sad":
-        #     self.label.setPixmap(self.sad_img)
+
 
     def callback(self, topic):
         """ ROS 메시지를 수신했을 때 호출되는 콜백 함수 """
@@ -74,7 +75,7 @@ if __name__ == "__main__":
     window = MainWindow()
     window.resize(800, 600)
     window.show()
-    print("imhere")
+    
 
     # ROS 이벤트 루프 실행
     sys.exit(app.exec_())

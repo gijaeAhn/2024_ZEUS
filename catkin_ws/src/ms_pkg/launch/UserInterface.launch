@@ -44,7 +44,15 @@
         <param name="service_name" value="$(arg TTS_SN)"/>
         <param name="language" value="ko"/>
     </node>
+    
+    
+    <!--gui-->
+    <node pkg="ms_pkg" type="gui_fsm.py" name="gui_fsm" output="screen"></node>
 
+    <!-- camera capture node -->
+    <node pkg="ms_pkg" type="ICServiceServer_script.py" name="ICServiceNode" output="screen"></node>
+
+    <node pkg="ms_pkg" type="GreetingServiceServer_script.py" name="GreetingServiceNode" output="screen"></node>
 
 
 </launch>

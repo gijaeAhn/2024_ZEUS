@@ -36,7 +36,7 @@ def TFServiceCallback(req):
     elif req.mode == "check_answer":
     
         #사용자 응답중 특정 단어를 검출해 yes 인지 no 인지 판단
-        
+        print("here")
         for yes_word in config["checking_wordset"]["positive_wordset"]:
             if yes_word in user_sentence:
                 return TF_serviceResponse(1)
