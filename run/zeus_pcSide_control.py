@@ -11,21 +11,21 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from std_msgs.msg import Int32
 
 # Global variables for sockets
-server_socket = None  # For sending data to robot (port 5003)
-client_socket = None
+server_socket_5003 = None  # For sending data to robot (port 5003)
+client_socket_5003 = None
 server_socket_5004 = None  # For receiving data from robot (port 5004)
 client_socket_5004 = None
 start_time = None
 
 def signal_handler(signal, frame):
-    global server_socket, client_socket, server_socket_5004, client_socket_5004
+    global server_socket_5003, client_socket_5003, server_socket_5004, client_socket_5004
     print("Exiting!")
     rospy.signal_shutdown("break")
     
     # Close sockets on port 5003
     try:
-        client_socket.close()
-        server_socket.close()
+        client_socket_5003.close()
+        server_socket_5003.close()
         print("Closed sockets on port 5003")
     except Exception as e:
         print(f"Failed to close sockets on port 5003: {e}")
@@ -43,7 +43,7 @@ def signal_handler(signal, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 def main():
-    global server_socket, client_socket, server_socket_5004, client_socket_5004, start_time
+    global server_socket_5003, client_socket_5003, server_socket_5004, client_socket_5004, start_time
     start_time = time.time()
     
     rospy.init_node('zeuscontrol')
@@ -51,12 +51,12 @@ def main():
     zeus_joint_read = rospy.Publisher('/zeus/real/joint', JointTrajectory, queue_size=1)
 
     # Server socket for port 5003 (sending commands to robot)
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(('192.168.0.71', 5003))  # Bind to all interfaces
-    server_socket.listen(1)  # Wait for the robot to connect
+    server_socket_5003 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket_5003.bind(('192.168.0.71', 5003))  # Bind to all interfaces
+    server_socket_5003.listen(1)  # Wait for the robot to connect
     print('Waiting for connection on port 5003 (command socket)...')
-    client_socket, addr = server_socket.accept()  # Accept connection from robot
-    client_socket.settimeout(1)
+    client_socket_5003, addr = server_socket_5003.accept()  # Accept connection from robot
+    client_socket_5003.settimeout(1)
     print('Robot connected on port 5003:', addr)
 
     # Server socket for port 5004 (receiving joint data from robot)
@@ -82,7 +82,7 @@ def main():
             msg = struct.pack("f", 0) + np_arr.tobytes()
             # print("Sending message of length:", len(msg))
             try:
-                client_socket.sendall(msg)  # Send data to robot via port 5003
+                client_socket_5003.sendall(msg)  # Send data to robot via port 5003
             except Exception as e:
                 print("Error sending data to robot:", e)
 
@@ -98,11 +98,29 @@ def main():
             msg = struct.pack("f",1) + np_arr.tobytes()
             print(f"Sending message of length : {len(msg)}")
             try:
-                client_socket.sendall(msg)  # Send data to robot via port 5003
+                client_socket_5003.sendall(msg)  # Send data to robot via port 5003
             except Exception as e:
                 print("Error sending data to robot:", e)
-            
-        
+
+    def motionParam_callback(msg):
+        global start_time
+        cur_time = time.time()
+        print("Recieved Motion Param message from PC")
+        if cur_time - start_time < 1.0 :
+            print("EARLY MESSAGE...IGNORED!!!")
+        else :
+            paramType = msg.data
+            if paramType == 0 :   # Slow Motion Param
+                msg = struct.pack("f",3.0)
+                print(f"Sending message of length : {len(msg)}")
+            elif paramType == 1 : # Fast Motion Param
+                msg = struct.pack("f",4.0)
+                print(f"Sending message of length : {len(msg)}")
+            try :
+                client_socket_5003.sendall(msg)
+            except Exception as e :
+                print("Error sending data to robot:", e)
+
     @DeprecationWarning
     def relmove_callback(data):
         global start_time
@@ -116,7 +134,7 @@ def main():
             msg = struct.pack("f", 2) + np_arr.tobytes()
             print("Sending message of length:", len(msg))
             try:
-                client_socket.sendall(msg)  # Send data to robot via port 5003
+                client_socket_5003.sendall(msg)  # Send data to robot via port 5003
             except Exception as e:
                 print("Error sending data to robot:", e)
 
@@ -144,14 +162,14 @@ def main():
                 print("Unknown gripper command:", datavar)
                 return
             try:
-                client_socket.sendall(msg)  # Send data to robot via port 5003
+                client_socket_5003.sendall(msg)  # Send data to robot via port 5003
             except Exception as e:
                 print("Error sending data to robot:", e)
 
     # Subscribe to ROS topics
     rospy.Subscriber("/zeus/real/jointCommand"   , JointTrajectory, jointCommand_callback )
     rospy.Subscriber("/zeus/real/jointTrajectory", JointTrajectory, trajectory_callback   )
-    rospy.Subscriber("/zeus/real/fingerPositionCommand", JointTrajectory, relmove_callback)
+    rospy.Subscriber("/zeus/real/param"          , Int32          , motionParam_callback)
 
 
 

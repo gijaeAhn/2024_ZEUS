@@ -61,7 +61,14 @@ class DynamixelControlNode:
             rospy.logerr("Reading Encoder Failure.")
             self.initial_position = 0 
 
-        self.initial_position = 2761
+        self.initial_position = 1757
+
+
+        goal_position = self.initial_position 
+        # goal_position = (goal_position + 4096) % 4096
+        self.set_operating_mode(self.OP_MODE_POSITION)
+        rospy.loginfo("Switched to Position Control Mode")
+        self.write4ByteTxRx(self.ADDR_GOAL_POSITION, goal_position)
 
         # -----------------------------------------------------------
         rospy.Subscriber('/zeus/real/gripperCommand', String, self.control_mode_callback)
@@ -70,7 +77,8 @@ class DynamixelControlNode:
 
     def control_mode_callback(self, msg):
         mode_str = msg.data.strip()
-        if mode_str == 'x':
+        # OPEN
+        if mode_str == 'n':
             # DIRECTION_CORRECTION_VAL = -1
             # DEGREE_PER_UNIT = 360.0 / 4096
             # units_per_degree = 1 / DEGREE_PER_UNIT
@@ -81,12 +89,12 @@ class DynamixelControlNode:
             self.set_operating_mode(self.OP_MODE_POSITION)
             rospy.loginfo("Switched to Position Control Mode")
             self.write4ByteTxRx(self.ADDR_GOAL_POSITION, goal_position)
-
-        elif mode_str == 'z':
+        # CLOSE
+        elif mode_str == 'm':
             DIRECTION_CORRECTION_VAL = 1
             
             DEGREE_PER_UNIT = 360.0 / 4096
-            DEGREE = 88
+            DEGREE = 75
             units_per_degree = 1 / DEGREE_PER_UNIT
             units_for_degrees =  DIRECTION_CORRECTION_VAL * int(units_per_degree * DEGREE)
             goal_position = (self.initial_position + units_for_degrees) % 4096
@@ -96,7 +104,7 @@ class DynamixelControlNode:
             rospy.sleep(0.5)
             self.set_operating_mode(self.OP_MODE_TORQUE)
             rospy.loginfo("Switched to Torque Control Mode")
-            goal_current = 30 * DIRECTION_CORRECTION_VAL  
+            goal_current = 200 * DIRECTION_CORRECTION_VAL  
             self.write2ByteTxRx(self.ADDR_GOAL_CURRENT, goal_current)
 
         else:

@@ -37,14 +37,18 @@ def main():
     rb.open()
     IOinit(rb)
     data = Teachdata("teach_data")
+
     m = MotionParam(jnt_speed=25, pose_speed=30, overlap=3)
     rb.motionparam(m)
+    override1 = 70
+    override2 = 30
 
 
     recv_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     recv_socket.connect(('192.168.0.71', 5003)) 
     recv_socket.settimeout(1)
 
+    time.sleep(0.1)
 
     send_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     send_socket.connect(('192.168.0.71', 5004))  # Replace with Control PC's IP
@@ -111,16 +115,12 @@ def main():
                 send_socket.sendall(response)
 
             elif header == 3:
-                print("Gripper open!")
-                dout(50, '1')   # open gripper
+                print("Motion param Override! : ",override1)
+                rb.override(override1)
+            
             elif header == 4:
-                print("Gripper close!")
-                dout(48, '1')   # close gripper
-            elif header == 5:
-                print("Gripper clear!")
-                dout(48, '000')  # Reset register
-            elif header == 6:
-                print("Motion param!")
+                print("Motion param Override! : ",override2)
+                rb.override(override2)
 
             curPos = rb.getjnt().jnt2list()
             print("Current joint positions:", curPos)

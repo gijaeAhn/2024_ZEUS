@@ -61,6 +61,7 @@ class realAgent(Agent):
         self._realJointCommandPub          = rospy.Publisher('/zeus/real/jointCommand'             ,  JointTrajectory    , queue_size = 1             )
         self._realJointTrajCommandPub      = rospy.Publisher('/zeus/real/jointTrajectory'          ,  JointTrajectory    , queue_size = 1             )  
         self._realFSMPub                   = rospy.Publisher('/zeus/fsm'                           ,  String             , queue_size = 1             )
+        self._realMotionParamPub              = rospy.Publisher('/zeus/real/param'                    ,  Int32              , queue_size = 1             )
 
         #----- Subscriber
         self._eeCommandSub                 = rospy.Subscriber('/zeus/real/eeCommand'               ,  String               , self._eeControlCallback         )
@@ -169,13 +170,33 @@ class realAgent(Agent):
 
             elif command == '5' :
                 self.movePoseT(realConfig.bfPosition1)
+                self._openEE()
             elif command == '6' :
-                self.movePoseA(realConfig.bfPosition2A)
+                moveBig =0.18
+                self._moveZ(-moveBig)
+                self._moveZDevide(realConfig.bfMovingDown + moveBig)
+                rospy.sleep(0.2)
+                self._closeEE() 
             elif command == '7' :
-                self.movePoseA(realConfig.bfPosition3A)
+                self.movePoseT(realConfig.bfPosition1)
+                rospy.sleep(0.1)
+                self.movePoseA(realConfig.bfPosition2A)
             elif command == '8' :
-                self._moveZDevide(realConfig.bfMovingDown)
+                self.movePoseA(realConfig.bfPosition3A)
+            elif command == '9' :
+                self._motionFast()
+                rospy.sleep(1.0)
+                self.movePoseA(realConfig.bfPosition4A)
+                rospy.sleep(0.355)
+                self._openEE()
+                self._moitionSlow()
+                
 
+            # ---   Motion Param
+            elif command == 'o' :
+                self._moitionSlow()
+            elif command == 'p' :
+                self._motionFast()    
 
             # --- For Dispenser Test    
             elif command == 'g' :
@@ -364,9 +385,6 @@ class realAgent(Agent):
         traj_msg.points.append(traj_point)
         self._realJointCommandPub.publish(traj_msg)
             
-            
-            
-
     def movePoseT(self,Transform):
         self._robotReadyState.wait()
         solvedAngle = ARM6_kinematics_inverse_arm(Transform,self._curJoint)
@@ -386,10 +404,9 @@ class realAgent(Agent):
         else:
             self._moveX(xDistance)
 
-
     def _moveZDevide(self, zDistance):
         step_size = 0.01
-        threshold = 0.05
+        threshold = 0.03
         if abs(zDistance) >= threshold :
             num_steps = int(abs(zDistance) // step_size)
             remainder = abs(zDistance) % step_size
@@ -400,7 +417,6 @@ class realAgent(Agent):
                 self._moveZ(sign * remainder)
         else:
             self._moveZ(zDistance)        
-
 
     def _moveX(self,xDistance) :
         print(f"Move Rel Start Time : {time.time()}")
@@ -448,10 +464,24 @@ class realAgent(Agent):
         self.movePoseT(goalTrans)
 
     def _openEE(self) :
+        # self._robotReadyState.wait()
         self._eeController.open()
 
     def _closeEE(self) :
+        self._robotReadyState.wait()
         self._eeController.close()
+    
+    def _moitionSlow(self) :
+        motion_msg = Int32()
+        motion_msg.data = 0
+        self._realMotionParamPub.publish(motion_msg)
+
+    def _motionFast(self) :
+        motion_msg = Int32()
+        motion_msg.data = 1
+        self._realMotionParamPub.publish(motion_msg)
+
+
 
 
 # -------------- For Debug ------------------------------

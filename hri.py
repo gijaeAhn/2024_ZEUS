@@ -1,3 +1,4 @@
+
 import os, sys
 home_dir = os.path.expanduser('~')
 sys.path.append(os.path.expanduser("~/Desktop/2024_ZEUS/module"))
@@ -222,11 +223,11 @@ class HRI:
                 self.orderPubblisher.publish(self.menuList[tf_result])
                 print("debug:" ,"success to send order to robot agent")
     
-            elif user_answer ==-1:
-                _ = TTSService_rq("싫으면 어쩔수 없지").result      
+            elif user_answer == 0:
+                _ = TTSService_rq("죄송합니다. 말씀을 잘 못알아 들은것 같습니다.").result      
             
             elif user_answer ==-1:
-                _ = TTSService_rq("어쩌하는거지?").result      
+                _ = TTSService_rq("필요하신게 있으시면 다시 불러주세요").result      
             gui_CommandPub.publish("idle")#<=Sending Signal to GUI Interface
 
     
@@ -270,9 +271,9 @@ class HRI:
             robot_ment = f"{recommand_menu}를 제조하겠습니다"
             self.orderPubblisher.publish(recommand_menu) #<=== Agent에게 제조할 메뉴 보냄
         elif user_answer == 0:
-            robot_ment = "'좋아' '싫어'로 대답하라고 좆간아"
+            robot_ment = "죄송합니다. 말씀을 잘 못알아 들은것 같습니다."
         else:
-            robot_ment = "싫으면 뭐 어쩔 수 없죠 ㅠㅠ"
+            robot_ment = "필요하신게 있으시면 다시 불러주세요"
 
         tts_result = TTSService_rq(robot_ment).result
 
@@ -282,7 +283,6 @@ class HRI:
         return
         
     
-
     def _checkUsersAnswer(self, recurrent_stack, cheking_ment):
         # checking ment를 TTS로 말하고 응답이 negative인지 positive인지 여부를 최대 5회 까지 물어봄 positive:1, negative:-1, 확인불가:0 return 
         if recurrent_stack == 5:
