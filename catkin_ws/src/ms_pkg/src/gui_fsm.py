@@ -43,8 +43,8 @@ class MainWindow(QWidget):
     def load_images(self):
         """ 이미지 로드 """
         # self.sad_img = QPixmap(os.path.join(media_dir, "sad.jpg"))
-        self.listening_img = QPixmap(os.path.join(media_dir, "listen.jpg"))
-        self.speaking_img = QPixmap(os.path.join(media_dir, "speak2.jpg"))
+        self.listening_img = QPixmap(os.path.join(media_dir, "listen.png"))
+        self.speaking_img = QPixmap(os.path.join(media_dir, "speak.png"))
         
         self.idle_img = QPixmap(os.path.join(media_dir, "idle.png"))
 

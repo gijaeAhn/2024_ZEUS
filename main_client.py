@@ -107,30 +107,40 @@ class realAgent(Agent):
 
     def _readyCallback(self,msg) :
         ready = msg.data
-        if ready == 1 :
+        # if ready == 1 :
             # self._robotReadyState.set()
-            print(f"Robot Ready Time    : {time.time()}")
+            # print(f"Robot Ready Time    : {time.time()}")
+
         # elif ready == 0 :
         #     self._robotReadyState.clear()
-        else :
-            print("Wrong READY MSG!!!")
+        # else :
+        #     print("Wrong READY MSG!!!")
 
     def _menuCallback(self,menu):
         # self._fsm.handleEvent("get_menu")
         self._makeMenu(menu)
         self._fsm.handleEvent("serve_menu")
         self._hereYouare()
+        self._fsm.handleEvent("hri_start")
+        self._fsm.handleEvent("get_menu")
+        self._robotReadyState.set()
+        rospy.sleep(5)
+        self.movePoseT(realConfig.startPoseT)
+        self._fsm.handleEvent("hri_start")
+        self._fsm.handleEvent("get_menu")
+        self._robotReadyState.set()
+
         
     def _jointUpdateCallback(self,data):
         DEGREE_TO_RADIAN = 0.0174533
         joint = np.array(data.points[0].positions,dtype= np.float32).tolist()
-        print("Joint : ", joint)
+        # print("Joint : ", joint)
         joint = [angle * DEGREE_TO_RADIAN for angle in joint]
         joint = [angle * direction for angle, direction in zip(joint, realConfig.ROTATE_DIRECTION)]
         self._curJoint = joint 
         self._curTrans = ARM6_kinematics_forward_armReal(joint)
         self._robotReadyState.set()
-        print(f"Joint Callback Time : {time.time()}")
+        # print(f"Joint Callback Time : {time.time()}")
         
     def _simpleMoveCallback(self,msg, scale = 'small') :
     
@@ -175,21 +185,41 @@ class realAgent(Agent):
                 moveBig =0.18
                 self._moveZ(-moveBig)
                 self._moveZDevide(realConfig.bfMovingDown + moveBig)
-                rospy.sleep(0.2)
-                self._closeEE() 
-            elif command == '7' :
+                rospy.sleep(1)
+                self._closeEE()
+                rospy.sleep(1)
                 self.movePoseT(realConfig.bfPosition1)
                 rospy.sleep(0.1)
                 self.movePoseA(realConfig.bfPosition2A)
-            elif command == '8' :
+                rospy.sleep(1)
                 self.movePoseA(realConfig.bfPosition3A)
-            elif command == '9' :
+                rospy.sleep(1)
                 self._motionFast()
-                rospy.sleep(1.0)
+                rospy.sleep(13.0)
                 self.movePoseA(realConfig.bfPosition4A)
-                rospy.sleep(0.355)
+                # rospy.sleep(0.355)
+                time.sleep(0.355)
                 self._openEE()
                 self._moitionSlow()
+ 
+            # elif command == '7' :
+            #     self.movePoseT(realConfig.bfPosition1)
+            #     rospy.sleep(0.1)
+            #     self.movePoseA(realConfig.bfPosition2A)
+            elif command == '8' :
+                tempPrint1 = realConfig.bfPosition3A
+                self.movePoseA(tempPrint1)
+                print(tempPrint1)
+            elif command == '9' :
+                tempPrint2 = realConfig.bfPosition4A
+                self._motionFast()
+                rospy.sleep(13.0)
+                self.movePoseA(tempPrint2)
+                # rospy.sleep(0.355)
+                time.sleep(0.355)
+                self._openEE()
+                self._moitionSlow()
+                print(tempPrint2)
                 
 
             # ---   Motion Param

@@ -1,4 +1,4 @@
-
+#!/usr/bin/python
 import os, sys
 home_dir = os.path.expanduser('~')
 sys.path.append(os.path.expanduser("~/Desktop/2024_ZEUS/module"))
@@ -56,6 +56,14 @@ GreetingService_rq = rospy.ServiceProxy("GreetingService",Greeting_service)
 
 gui_CommandPub = rospy.Publisher("gui_state_topic", String, queue_size=1)
 
+menu_conversion_dict = {
+    '1': "실제칵테일1", 
+    '2': "실제칵테일2", 
+    '3': "실제칵테일3", 
+    '4': "실제칵테일4", 
+    '5': "실제칵테일5", 
+    '6': "실제칵테일6"
+}
 
 
 def convert_wav_to_mp3(wav_path, mp3_path):
@@ -83,7 +91,7 @@ class Greeter:
         cap_result = ICService_rq().result
         
         if cap_result:
-            vision_answer = GreetingService_rq("inference", os.path.join(home_dir, ".temp_files/captured_img.png"), "사진을 보고 사진에 있는사람에게 자연스럽게 인사해줘").result
+            vision_answer = GreetingService_rq("inference", os.path.join(home_dir, ".temp_files/captured_img.png"), "사진을 보고 사진에 있는사람에게 옷차림, 머리스타일, 인상(분위기)에대해 전반적으로 칭찬해줘").result
             print(vision_answer)
             
             gui_CommandPub.publish("speaking")
@@ -214,11 +222,11 @@ class HRI:
                 print(tts_result)
           
         else:
-            user_answer = self._checkUsersAnswer(0, cheking_ment = f"말씀하신 메뉴가 {self.menuList[tf_result]}이 맞다면 '좋아' 아니면 '싫어'로 대답해 주세요.")
+            user_answer = self._checkUsersAnswer(0, cheking_ment = f"말씀하신 메뉴가 {menu_conversion_dict[self.menuList[tf_result]]}이 맞다면 '좋아' 아니면 '싫어'로 대답해 주세요.")
             gui_CommandPub.publish("speaking")#<=Sending Signal to GUI Interface
             if user_answer==1:
                 
-                _ = TTSService_rq(f"{self.menuList[tf_result]}를 제조하겠습니다.").result
+                _ = TTSService_rq(f"{menu_conversion_dict[self.menuList[tf_result]]}를 제조하겠습니다.").result
                 
                 self.orderPubblisher.publish(self.menuList[tf_result])
                 print("debug:" ,"success to send order to robot agent")

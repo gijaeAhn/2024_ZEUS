@@ -208,7 +208,8 @@ class realConfig :
 
     bfPosition2A      = bfPosition1A.copy()
     bfPosition2A[0]   += (PI/18.0) * 4    
-    bfPosition2A[5]   += (PI/18.0) * 5
+    bfPosition2A[5]   += (PI/18.0) * 5 
+    bfPosition2A[5]   -= 0.06288061279
 
     bfPosition3A      = bfPosition2A.copy()
     bfPosition4A      = bfPosition2A.copy()
@@ -222,6 +223,12 @@ class realConfig :
     bfPosition4A[1]  -= (PI/18.0) * 5
     bfPosition4A[2]  -= (PI/18.0) * 5
     bfPosition4A[4]  -= (PI/18.0) * 8.5
+
+    # bfPosition4A      = bfPosition3A.copy()
+    
+    # bfPosition4A[1]  -= (PI/18.0) * 4
+    # bfPosition4A[2]  -= (PI/18.0) * 5
+    # bfPosition4A[4]  -= (PI/18.0) * 10
 
     # bfPosition4 = Transform().translateZ(bottleGripPreZ).translateY(0.1).translateX(0.25).rotateY(PI).translateZ( (bottleGripPreZ - bottleGripZ + bottleGripOffset)/2.0 )
     # bfPosition5 = bfPosition4.translateZ( (bottleGripPreZ - bottleGripZ + bottleGripOffset)/2.0 )

@@ -20,17 +20,11 @@ class Vision_answer:
              {"role": "system", 
              "content": [
                 {"type": "text", "text": """
-        You are a bartender.
-        you will be provided an image of customer.
-        You must  make a praise to the customer of the image about his outfit and appearances in detail. 
-        really deltailed praise is needed. Please refer color of customer's outfit, style and something element in face.
-                 
-        
-        
-        if the customer says he is not in a good mood, do not praise his outfit.
-        - please respond in Korean
-        - you must respond within 3 sentences
-        
+        당신의 이름은 "Cyber"입니다. 당신은 45살 바텐더입니다. 고객이 당신과 대화하고 싶어하며 감정적인 공감을 원합니다.
+    
+        당신은 첫번째로 이미지로 본 대상에 대한 칭찬을 해야합니다. 이미지속 대상이 특정되도록 자세히 묘사할 필요는 없어요. 상대방이 행복해할만한 말을 해주세요.         
+        칭찬이 끝난 후에는 자연스럽게 말을 이어 나갈 수 있도록 상대방에게 질문해야해요. 질문 내용은 당신이 바텐더라고 생각하고 일상적인 질문을 해주세요.
+         
         """}
             ]}
 
@@ -51,18 +45,9 @@ class Vision_answer:
             return base64.b64encode(image_file.read()).decode('utf-8')
  
 
-
-
-
-    def get_image(self,image_path):  ##
-
-
+    def get_image(self,image_path):  
         self.image = self.encode_image(image_path) 
-        
-        
-
         return self.image
-
 
     def Vision_chat(self):
 
@@ -94,18 +79,13 @@ class Vision_answer:
         self.payload = {
             "model": self.model,
             "messages": self.messages+self.vision,
-            "max_tokens": 100
+            "max_tokens": 500
 
         }
 
-
         self.history = {"role": "user", "content": self.user_prompt}
         self.history_messages.append(self.history)
-
-
-
-
-      
+   
         self.response = requests.post("https://api.openai.com/v1/chat/completions", headers=self.headers, json=self.payload)
         
         self.output = self.response.json()['choices'][0]['message']['content']
@@ -129,126 +109,3 @@ class Vision_answer:
 
 
  
-class Chatbot:
-    def __init__(self):
-        self.model="gpt-4o"
-        self.client = OpenAI()
-        print("chatbot model loading")
-        
-        self.messages = [
-        {"role": "system", "content": """
-
-        당신의 이름은 "Cyber"입니다. 당신은 바텐더입니다. 고객이 당신과 대화하고 싶어하며 감정적인 공감을 원합니다. 또한 고객은 칵테일을 주문할 것입니다. 당신은 주문을 받고 고객과 감정적인 대화를 나눠야 합니다.
-        
-        여기 당신의 역할을 위한 참고 사항이 있습니다:
-        고객이 대화를 원하면 매우 친절하게 대화를 나눠주세요.
-        고객이 메뉴 추천을 원하면, 메뉴에서 칵테일을 추천해주세요.
-        메뉴 목록과 인덱스는 다음과 같습니다:
-        
-        진토닉: index=1
-        
-        마가리타: index=2
-        
-        마티니: index=3
-        
-        모히또: index=4
-        
-        프렌치75: index=5
-        
-        섹스온더비치: index=6
-        
-        블루하와이안: index=7
-        
-        화이트러시안: index=8
-        
-        메뉴를 말할 때는 인덱스를 제외하고 이름만 말해주세요.
-        
-        고객이 메뉴를 알고 싶어하면, 이 8개의 메뉴를 말해주세요.
-             
-        
-        
-        답변은 3문장으로 해주세요. 너무 길지 않게.
-        
-        
-             
-        
-            """}
-            ]
-        
-    def load_history_messages(self, history_messages):
-
-
-        self.history_messages = history_messages
-        self.messages.extend(self.history_messages)
-        
-        return None
-
-    def chat(self, user_input):
-
-        print("chat 실행중")
-        self.user_prompt = user_input
-        self.request = {"role": "user", "content": self.user_prompt}
-        self.messages.append(self.request)
-
-
-        # print(self.messages)
-
-
-
-        
-        self.response = self.client.chat.completions.create(
-            model=self.model,
-            messages=self.messages,
-            max_tokens=100,
-        )
-
-
-
-
-
-        self.output = self.response.choices[0].message.content
-
-        print(f"Answer: {self.output}")
-
-
-        self.request = {"role": "assistant", "content": self.output}
-        self.messages.append(self.request)
-
-
-        return self.request
-
-
-
-
-
-# Function to encode the image
-
-
-if __name__ == "__main__":
-    vis = Vision_answer()
-
-    print("chatbot_called")
-    chatbot = Chatbot()
-
-    print("image_opening")
-   
-    vis.get_image('winter.jpg')
-
-    print("image_opened")
-   
-    print("chat_start")
-    vis.Vision_chat()
-    
-    history = vis.extract_history()
-
-
-    chatbot.load_history_messages(history)
-    
-
-
-  
-    while True:
-        
-        input_text = input("User:")
-        output_for_TTS = chatbot.chat(input_text)
-        
