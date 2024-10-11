@@ -71,11 +71,17 @@ class realAgent(Agent):
         self._jointSub                     = rospy.Subscriber('/zeus/real/joint'                   ,  JointTrajectory      , self._jointUpdateCallback       )
         self._robotReady                   = rospy.Subscriber('/zeus/real/move_ready'              ,  Int32                , self._readyCallback             )
         self._fsmHandlingSub               = rospy.Subscriber('/zeus/fsmHandling'                  ,  String               , self._fsmHandlingCallback       )
-        
+
+        # Check Robot is ON
+        self._robotReadyState.clear()
+        while (not self._robotReadyState.is_set()) :
+            print("Robot OFFLINE")
+            self._getJoint()
+            rospy.sleep(2)
+
         # Temp to Skip HRI Section
         self._fsm.handleEvent("hri_start")
         self._fsm.handleEvent("get_menu")
-        self._robotReadyState.set()
     
         #----- Additional Threads
         threading.Thread(target=self._publishFsmState,daemon=True).start()
@@ -188,25 +194,28 @@ class realAgent(Agent):
                 self.movePoseT(realConfig.bfPosition1)
                 self._openEE()
             elif command == '6' :
-                moveBig =0.18
-                self._moveZ(-moveBig)
-                self._moveZDevide(realConfig.bfMovingDown + moveBig)
-                rospy.sleep(1)
-                self._closeEE()
-                rospy.sleep(1)
-                self.movePoseT(realConfig.bfPosition1)
-                rospy.sleep(0.1)
-                self.movePoseA(realConfig.bfPosition2A)
-                rospy.sleep(1)
-                self.movePoseA(realConfig.bfPosition3A)
-                rospy.sleep(1)
-                self._motionFast()
-                rospy.sleep(13.0)
-                self.movePoseA(realConfig.bfPosition4A)
-                # rospy.sleep(0.355)
-                time.sleep(0.355)
-                self._openEE()
-                self._moitionSlow()
+                if self._curJoint == realConfig.bfPosition1A :
+                    moveBig =0.18
+                    self._moveZ(-moveBig)
+                    self._moveZDevide(realConfig.bfMovingDown + moveBig)
+                    rospy.sleep(1)
+                    self._closeEE()
+                    rospy.sleep(1)
+                    self.movePoseT(realConfig.bfPosition1)
+                    rospy.sleep(0.1)
+                    self.movePoseA(realConfig.bfPosition2A)
+                    rospy.sleep(1)
+                    self.movePoseA(realConfig.bfPosition3A)
+                    rospy.sleep(1)
+                    self._motionFast()
+                    rospy.sleep(13.0)
+                    self.movePoseA(realConfig.bfPosition4A)
+                    # rospy.sleep(0.355)
+                    time.sleep(0.355)
+                    self._openEE()
+                    self._moitionSlow()
+                else :
+                    print("Robot : Wrong Position")
  
             # elif command == '7' :
             #     self.movePoseT(realConfig.bfPosition1)
