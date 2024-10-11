@@ -45,46 +45,44 @@ class realAgent(Agent):
 
         self._EE  = realEE()
 
-        self._initJoint = realConfig.initPoseA
-        self._initTrans = realConfig.initPoseT
-        self._jointNames = realConfig.jointNameList
-        self._curJoint = self._initJoint
-        self._curTrans = self._initTrans
-        self._commandJoint = self._curJoint
-        self._eeController = realEE()
-        self._jointVelocity = realConfig.defaultAngleVelocity
-        self._robotReadyState = threading.Event()
-        self._robotReadyStateLock = threading.RLock()
+        self._initJoint                 = realConfig.initPoseA
+        self._initTrans                 = realConfig.initPoseT
+        self._jointNames                = realConfig.jointNameList
+        self._curJoint                  = self._initJoint
+        self._curTrans                  = self._initTrans
+        self._commandJoint              = self._curJoint
+        self._eeController              = realEE()
+        self._jointVelocity             = realConfig.defaultAngleVelocity
+        self._robotReadyState           = threading.Event()
+        self._robotReadyStateLock       = threading.RLock()
 
     
         #----- Publisher
-        self._realJointCommandPub          = rospy.Publisher('/zeus/real/jointCommand'             ,  JointTrajectory    , queue_size = 1             )
-        self._realJointTrajCommandPub      = rospy.Publisher('/zeus/real/jointTrajectory'          ,  JointTrajectory    , queue_size = 1             )  
-        self._realFSMPub                   = rospy.Publisher('/zeus/fsm'                           ,  String             , queue_size = 1             )
-        self._realMotionParamPub              = rospy.Publisher('/zeus/real/param'                    ,  Int32              , queue_size = 1             )
+        self._realJointCommandPub          = rospy.Publisher('/zeus/real/jointCommand'             ,  JointTrajectory    , queue_size = 1    )
+        self._realJointTrajCommandPub      = rospy.Publisher('/zeus/real/jointTrajectory'          ,  JointTrajectory    , queue_size = 1    )  
+        self._realFSMPub                   = rospy.Publisher('/zeus/fsm'                           ,  String             , queue_size = 1    )
+        self._realMotionParamPub           = rospy.Publisher('/zeus/real/param'                    ,  Int32              , queue_size = 1    )
+        self._getJointPub                  = rospy.Publisher('/zeus/real/getJoint'                 ,  Int32              , queue_size = 1    )
 
         #----- Subscriber
         self._eeCommandSub                 = rospy.Subscriber('/zeus/real/eeCommand'               ,  String               , self._eeControlCallback         )
         self._realSimpleMoveSub            = rospy.Subscriber('/zeus/real/simpleMoveCommand'       ,  String               , self._simpleMoveCallback        )
         self._realmenuSub                  = rospy.Subscriber('/zeus/real/menu'                    ,  String               , self._menuCallback              )
         self._jointSub                     = rospy.Subscriber('/zeus/real/joint'                   ,  JointTrajectory      , self._jointUpdateCallback       )
-        self._robotReady                   = rospy.Subscriber('/zeus/real/move_ready'              ,  Int32                , self._readyCallback )
-        
+        self._robotReady                   = rospy.Subscriber('/zeus/real/move_ready'              ,  Int32                , self._readyCallback             )
+        self._fsmHandlingSub               = rospy.Subscriber('/zeus/fsmHandling'                  ,  String               , self._fsmHandlingCallback       )
         
         # Temp to Skip HRI Section
         self._fsm.handleEvent("hri_start")
         self._fsm.handleEvent("get_menu")
         self._robotReadyState.set()
     
-
         #----- Additional Threads
         threading.Thread(target=self._publishFsmState,daemon=True).start()
         # threading.Thread(target=self._printingReadyState ,daemon= True).start()
 
-    
         # --- Run 
         rospy.spin()
-
 
 # ---------------- Thread Functions ------------------
 
@@ -105,16 +103,26 @@ class realAgent(Agent):
 
 # --------------- Callback Functions -----------------
 
+
+    def _fsmHandlingCallback(self, msg) :
+
+        event = msg.data
+        if event not in self.fsm.event:
+            print("Wrong Event!")
+        else :
+            print("Handling Event {}",event)
+            self._fsm.handleEvent(event)
+
     def _readyCallback(self,msg) :
         ready = msg.data
-        # if ready == 1 :
-            # self._robotReadyState.set()
-            # print(f"Robot Ready Time    : {time.time()}")
+        if ready == 1 :
+            self._robotReadyState.set()
+            print(f"Robot Ready Time    : {time.time()}")
 
-        # elif ready == 0 :
-        #     self._robotReadyState.clear()
-        # else :
-        #     print("Wrong READY MSG!!!")
+        elif ready == 0 :
+            self._robotReadyState.clear()
+        else :
+            print("Wrong READY MSG!!!")
 
     def _menuCallback(self,menu):
         # self._fsm.handleEvent("get_menu")
@@ -126,21 +134,19 @@ class realAgent(Agent):
         self._robotReadyState.set()
         rospy.sleep(5)
         self.movePoseT(realConfig.startPoseT)
-        self._fsm.handleEvent("hri_start")
-        self._fsm.handleEvent("get_menu")
-        self._robotReadyState.set()
+
 
         
     def _jointUpdateCallback(self,data):
         DEGREE_TO_RADIAN = 0.0174533
         joint = np.array(data.points[0].positions,dtype= np.float32).tolist()
-        # print("Joint : ", joint)
+        print("Joint : ", joint)
         joint = [angle * DEGREE_TO_RADIAN for angle in joint]
         joint = [angle * direction for angle, direction in zip(joint, realConfig.ROTATE_DIRECTION)]
         self._curJoint = joint 
         self._curTrans = ARM6_kinematics_forward_armReal(joint)
         self._robotReadyState.set()
-        # print(f"Joint Callback Time : {time.time()}")
+        print(f"Joint Callback Time : {time.time()}")
         
     def _simpleMoveCallback(self,msg, scale = 'small') :
     
@@ -312,7 +318,6 @@ class realAgent(Agent):
             # self.rateSlow.sleep()
             time.sleep(8)
             # Second Element
-           
             self._moveZ(-(realConfig.componentOffset[first_comp][2] + realConfig.componentOffset[first_comp][3]))
             self.rateNormal.sleep()
             print("moving Down")
@@ -351,7 +356,6 @@ class realAgent(Agent):
             self.movePoseT(realConfig.shakingT)
             print("Arrvied at the Shaking Position")
             self.rateNormal.sleep()
-
 
             self._shake()
             self.rateNormal.sleep()
@@ -511,6 +515,7 @@ class realAgent(Agent):
         motion_msg.data = 1
         self._realMotionParamPub.publish(motion_msg)
 
+    def _getJoint(self) :
 
 
 

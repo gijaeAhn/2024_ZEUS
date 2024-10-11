@@ -122,6 +122,9 @@ def main():
                 print("Motion param Override! : ",override2)
                 rb.override(override2)
 
+            elif header == 5:
+                print("Just Retunning Joint Position")   
+
             curPos = rb.getjnt().jnt2list()
             print("Current joint positions:", curPos)
             msg = struct.pack("f", 8) + struct.pack("6f", *curPos)

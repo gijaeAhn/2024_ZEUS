@@ -3,8 +3,9 @@ class FSM() :
     def __init__(self):
         
 
-        self._state = 'idle'
+        self._state      = 'idle'
         self._stateTable = self._initializeStates()
+        self._events     = ['hri_start','greet', 'finish_greet', 'speak', 'listen', 'get_menu', 'stop', 'shake','serve_menu', 'finish_shake'] 
 
     def _initializeStates(self) :
 

@@ -68,6 +68,22 @@ def main():
     client_socket_5004.settimeout(1)
     print('Robot connected on port 5004:', addr_5004)
 
+
+    def returnJoint_callback(data):
+        # Data is useless 
+        global start_time
+        cur_time = time.time()
+        print("Received JointCommand message from PC")
+        if cur_time - start_time < 1.0:
+            print("EARLY MESSAGE...IGNORED!!!")
+        else:
+            print("Retunning joint positions ")
+            msg = struct.pack("f", 5) 
+            # print("Sending message of length:", len(msg))
+            try:
+                client_socket_5003.sendall(msg)  # Send data to robot via port 5003
+            except Exception as e:
+                print("Error sending data to robot:", e)
     
 
     def jointCommand_callback(data):
@@ -169,7 +185,8 @@ def main():
     # Subscribe to ROS topics
     rospy.Subscriber("/zeus/real/jointCommand"   , JointTrajectory, jointCommand_callback )
     rospy.Subscriber("/zeus/real/jointTrajectory", JointTrajectory, trajectory_callback   )
-    rospy.Subscriber("/zeus/real/param"          , Int32          , motionParam_callback)
+    rospy.Subscriber("/zeus/real/param"          , Int32          , motionParam_callback  )
+    rospy.Subscriber("/zeus/real/getJoint"       , Int32          , returnJoint_callback  )
 
 
 
