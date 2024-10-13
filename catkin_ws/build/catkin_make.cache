@@ -1,2 +1,0 @@
-ms_pkg:zeus_controller
--DCATKIN_DEVEL_PREFIX=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/sjlab3090/Desktop/2024_ZEUS/catkin_ws/install -G Unix Makefiles
