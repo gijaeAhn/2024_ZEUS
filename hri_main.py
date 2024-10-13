@@ -66,7 +66,6 @@ gui = rospy.Publisher("gui_state_topic", String, queue_size=1)
 
 
 def detect_situation(text):
-    
     menu_flag = False 
     order_flag = False
     recommand_flag = False
@@ -129,11 +128,6 @@ class HRI_FSM:
 
     def act(self, msg):
         triggerd_data = int(msg.data)
-        print("################################")
-        print(self.state)
-        print(self.order_ready)
-        print(self.usr_text)
-        print("################################")
         
         if self.state == "initial" and triggerd_data == 0:
             self.act_on_initial()
@@ -204,9 +198,8 @@ class HRI_FSM:
             return
 
         elif context == 0:
-
             self.missing_stack = (self.missing_stack +1)%3 #3번 실패하면 다시 idle 상태로 
-            
+    
             if self.missing_stack%3 != 0:
                 gui.publish("speaking")
                 _ = TTSService_rq(f"죄송합니다. 답변을 잘 못알아들은것 같은데 '좋아', '싫어'로 다시 말씀해 주시겠어요?")
@@ -219,16 +212,13 @@ class HRI_FSM:
                 self.order_ready = None
                 self.state = "idle"
                 gui.publish("idle")
-
             return
-
 
         elif context == -1:
             gui.publish("speaking")
             _ = TTSService_rq(f"죄송합니다. 필요하신게 있으시면 다시 불러주세요.")
             self.state = "idle"
             gui.publish("idle")
-
             return
 
 

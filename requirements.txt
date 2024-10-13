@@ -10,3 +10,4 @@ scipy
 pynput
 whisper
 sounddevice
+google
