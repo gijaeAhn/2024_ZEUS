@@ -69,7 +69,7 @@ class realAgent(Agent):
         self._realSimpleMoveSub            = rospy.Subscriber('/zeus/real/simpleMoveCommand'       ,  String               , self._simpleMoveCallback        )
         self._realmenuSub                  = rospy.Subscriber('/zeus/real/menu'                    ,  String               , self._menuCallback              )
         self._jointSub                     = rospy.Subscriber('/zeus/real/joint'                   ,  JointTrajectory      , self._jointUpdateCallback       )
-        self._robotReady                   = rospy.Subscriber('/zeus/real/move_ready'              ,  Int32                , self._readyCallback             )
+        # self._robotReady                   = rospy.Subscriber('/zeus/real/move_ready'              ,  Int32                , self._readyCallback             )
         self._fsmHandlingSub               = rospy.Subscriber('/zeus/fsmHandling'                  ,  String               , self._fsmHandlingCallback       )
 
         # Check Robot is ON
@@ -120,13 +120,13 @@ class realAgent(Agent):
             print("Handling Event {}",event)
             self._fsm.handleEvent(event)
 
-    def _readyCallback(self,msg) :
-        ready = msg.data
-        if ready == 1 :
-            self._robotReadyState.set()
-            print(f"Robot Ready Time    : {time.time()}")
-        else :
-            print("Wrong READY MSG!!!")
+    # def _readyCallback(self,msg) :
+    #     ready = msg.data
+    #     if ready == 1 :
+            
+    #         print(f"Robot Ready Time    : {time.time()}")
+    #     else :
+    #         print("Wrong READY MSG!!!")
 
     def _jointUpdateCallback(self,data):
         DEGREE_TO_RADIAN = 0.0174533
@@ -137,6 +137,7 @@ class realAgent(Agent):
         self._curJoint = joint 
         self._curTrans = ARM6_kinematics_forward_armReal(joint)
         print(f"Joint Callback Time : {time.time()}")
+        self._robotReadyState.set()
 
     def _menuCallback(self,menu):
         # self._fsm.handleEvent("get_menu")

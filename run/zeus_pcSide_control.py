@@ -175,11 +175,11 @@ def main():
                     traj_point.time_from_start = rospy.Duration(0.0)
                     traj_msg.points.append(traj_point)
                     zeus_joint_read.publish(traj_msg)
-                elif header == 9:  # Ready message
-                    print("Received ready message from robot")
-                    ready_msg = Int32()
-                    ready_msg.data = 1
-                    pub_ready.publish(ready_msg)
+                # elif header == 9:  # Ready message
+                #     print("Received ready message from robot")
+                #     ready_msg = Int32()
+                #     ready_msg.data = 1
+                #     pub_ready.publish(ready_msg)
                 else:
                     print("Unknown header received on port 5004:", header)
         except socket.timeout:
