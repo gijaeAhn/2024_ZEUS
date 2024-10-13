@@ -10,51 +10,48 @@ from custom_utils import EasyLogger as EL
 node_name = "TFServiceServerNode"
 rospy.init_node(node_name)
 config = {}
-config["recommand_wordset"] = rospy.get_param("recommand_wordset", default=["추천"])
-config["checking_wordset"] = rospy.get_param("cheking_wordset", default=["좋아"])
-config["menu_set"] = rospy.get_param("menu_set", default=[""])
+config["menu_wordset"] = rospy.get_param("recommand_wordset", default=["추천"])
+config["recommand_wordset"] = rospy.get_param("cheking_wordset", default=["좋아"])
+config["order_wordset"] = rospy.get_param("menu_set", default=[""])
+
 config["service_name"] = rospy.get_param("~service_name", default="TFService")
 el = EL(node_name, config)
 
 
 def TFServiceCallback(req):
-    user_sentence = req.text
-    
-    if req.mode == "recommand":
-        recommand_flag = False
-        for word in config["recommand_wordset"]:
-            if word in user_sentence:
-                recommand_flag = True
-                break
-            
-        if recommand_flag:
-            return TF_serviceResponse(1)
-        else:
-            return TF_serviceResponse(0)
-    
-    
-    elif req.mode == "check_answer":
-    
-        #사용자 응답중 특정 단어를 검출해 yes 인지 no 인지 판단
-        print("here")
-        for yes_word in config["checking_wordset"]["positive_wordset"]:
-            if yes_word in user_sentence:
-                return TF_serviceResponse(1)
-    
-        for no_word in config["checking_wordset"]["negative_wordset"]:
-            if no_word in user_sentence:
-                return TF_serviceResponse(-1)
-            
-        return TF_serviceResponse(0)
-    
+    sentence = req.text
+    menu_flag = False 
+    order_flag = False
+    recommand_flag = False
 
-    elif req.mode == "order":
-        recommand_flag = False
-        for word in config["menu_set"]:
-            if word in user_sentence:
-                return TF_serviceResponse(1) 
-        
+    for w in config["order_wordset"]:
+        if w in sentence:
+            order_flag =True
+            break
+
+    for w in config["menu_wordset"]:
+        if w in sentence:
+            menu_flag = True
+            break
+    
+    for w in config["recommand_wordset"]:
+        if w in sentence:
+            recommand_flag = True
+            break
+
+    if menu_flag and recommand_flag:
+        return TF_serviceResponse(2) #메뉴를 추천시 2를 반환
+    
+    elif menu_flag and order_flag:
+        return TF_serviceResponse(1) #메뉴를 추천시 1을 반환
+    
+    else:
         return TF_serviceResponse(0)
+
+
+    
+    
+   
     
 
 def openTFServiceServer():

@@ -22,7 +22,6 @@ class TF_serviceRequest {
     if (initObj === null) {
       // initObj === null is a special case for deserialization where we don't initialize fields
       this.text = null;
-      this.mode = null;
     }
     else {
       if (initObj.hasOwnProperty('text')) {
@@ -31,12 +30,6 @@ class TF_serviceRequest {
       else {
         this.text = '';
       }
-      if (initObj.hasOwnProperty('mode')) {
-        this.mode = initObj.mode
-      }
-      else {
-        this.mode = '';
-      }
     }
   }
 
@@ -44,8 +37,6 @@ class TF_serviceRequest {
     // Serializes a message object of type TF_serviceRequest
     // Serialize message field [text]
     bufferOffset = _serializer.string(obj.text, buffer, bufferOffset);
-    // Serialize message field [mode]
-    bufferOffset = _serializer.string(obj.mode, buffer, bufferOffset);
     return bufferOffset;
   }
 
@@ -55,16 +46,13 @@ class TF_serviceRequest {
     let data = new TF_serviceRequest(null);
     // Deserialize message field [text]
     data.text = _deserializer.string(buffer, bufferOffset);
-    // Deserialize message field [mode]
-    data.mode = _deserializer.string(buffer, bufferOffset);
     return data;
   }
 
   static getMessageSize(object) {
     let length = 0;
     length += _getByteLength(object.text);
-    length += _getByteLength(object.mode);
-    return length + 8;
+    return length + 4;
   }
 
   static datatype() {
@@ -74,14 +62,13 @@ class TF_serviceRequest {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return 'c8972f6056255fe9b22ae3cd1d15f1ce';
+    return '74697ed3d931f6eede8bf3a8dfeca160';
   }
 
   static messageDefinition() {
     // Returns full string definition for message
     return `
     string text
-    string mode
     
     `;
   }
@@ -97,13 +84,6 @@ class TF_serviceRequest {
     }
     else {
       resolved.text = ''
-    }
-
-    if (msg.mode !== undefined) {
-      resolved.mode = msg.mode;
-    }
-    else {
-      resolved.mode = ''
     }
 
     return resolved;
@@ -184,6 +164,6 @@ class TF_serviceResponse {
 module.exports = {
   Request: TF_serviceRequest,
   Response: TF_serviceResponse,
-  md5sum() { return '248729ee8327b3251b6765c06dc48c85'; },
+  md5sum() { return '05354734935e371f83dc4d09f1c13d77'; },
   datatype() { return 'ms_pkg/TF_service'; }
 };

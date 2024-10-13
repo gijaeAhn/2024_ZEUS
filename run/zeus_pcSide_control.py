@@ -73,7 +73,7 @@ def main():
         # Data is useless 
         global start_time
         cur_time = time.time()
-        print("Received JointCommand message from PC")
+        print("Received getJoint message from PC")
         if cur_time - start_time < 1.0:
             print("EARLY MESSAGE...IGNORED!!!")
         else:
@@ -137,50 +137,6 @@ def main():
             except Exception as e :
                 print("Error sending data to robot:", e)
 
-    @DeprecationWarning
-    def relmove_callback(data):
-        global start_time
-        cur_time = time.time()
-        if cur_time - start_time < 1.0:
-            print("EARLY MESSAGE...IGNORED!!!")
-        else:
-            print("Relative movement message!")
-            np_arr = np.array(data.points[0].positions, dtype=np.float32)
-            print("Sending relative move positions:", np_arr)
-            msg = struct.pack("f", 2) + np_arr.tobytes()
-            print("Sending message of length:", len(msg))
-            try:
-                client_socket_5003.sendall(msg)  # Send data to robot via port 5003
-            except Exception as e:
-                print("Error sending data to robot:", e)
-
-    @DeprecationWarning
-    def gripper_callback(data):
-        global start_time
-        cur_time = time.time()
-        if cur_time - start_time < 1.0:
-            print("EARLY MESSAGE...IGNORED!!!")
-        else:
-            datavar = data.data
-            if datavar == 0:
-                print("Gripper open")
-                msg = struct.pack("f", 3)
-            elif datavar == 1:
-                print("Gripper close")
-                msg = struct.pack("f", 4)
-            elif datavar == 2:
-                print("Gripper clear")
-                msg = struct.pack("f", 5)
-            elif datavar == 3:
-                print("Motion param 1")
-                msg = struct.pack("f", 6)
-            else:
-                print("Unknown gripper command:", datavar)
-                return
-            try:
-                client_socket_5003.sendall(msg)  # Send data to robot via port 5003
-            except Exception as e:
-                print("Error sending data to robot:", e)
 
     # Subscribe to ROS topics
     rospy.Subscriber("/zeus/real/jointCommand"   , JointTrajectory, jointCommand_callback )
@@ -209,6 +165,7 @@ def main():
                     if len(data_5004) != 4 + 4*6:
                         print("Incorrect data size for joint positions")
                         continue
+                    print("Recived Joint message from Robot")
                     floats = struct.unpack('6f', data_5004[4:])
                     traj_msg = JointTrajectory()
                     traj_msg.header.stamp = rospy.Time.now()
@@ -226,12 +183,10 @@ def main():
                 else:
                     print("Unknown header received on port 5004:", header)
         except socket.timeout:
-            pass  # Expected due to timeout setting
+            pass  
         except Exception as e:
             print("Exception on client_socket_5004:", e)
 
-        # No need to handle data from port 5003 in the main loop since it's used for sending commands
-        # If you expect to receive acknowledgments or other messages from the robot on port 5003, you can add handling here
 
 if __name__ == '__main__':
     main()

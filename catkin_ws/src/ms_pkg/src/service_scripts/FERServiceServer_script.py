@@ -65,6 +65,8 @@ def FERServiceCallback(req):
         rospy.loginfo(result)
         rospy.loginfo("############in service#########")
         return FER_serviceResponse(float(result.cpu()))
+    else:
+        return FER_serviceResponse(-1.0)
 
 def OpenFERServiceServer():
    

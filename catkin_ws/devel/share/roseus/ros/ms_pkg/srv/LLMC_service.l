@@ -57,37 +57,37 @@
 
 (defclass ms_pkg::LLMC_serviceResponse
   :super ros::object
-  :slots (_model_text ))
+  :slots (_result ))
 
 (defmethod ms_pkg::LLMC_serviceResponse
   (:init
    (&key
-    ((:model_text __model_text) "")
+    ((:result __result) "")
     )
    (send-super :init)
-   (setq _model_text (string __model_text))
+   (setq _result (string __result))
    self)
-  (:model_text
-   (&optional __model_text)
-   (if __model_text (setq _model_text __model_text)) _model_text)
+  (:result
+   (&optional __result)
+   (if __result (setq _result __result)) _result)
   (:serialization-length
    ()
    (+
-    ;; string _model_text
-    4 (length _model_text)
+    ;; string _result
+    4 (length _result)
     ))
   (:serialize
    (&optional strm)
    (let ((s (if strm strm
               (make-string-output-stream (send self :serialization-length)))))
-     ;; string _model_text
-       (write-long (length _model_text) s) (princ _model_text s)
+     ;; string _result
+       (write-long (length _result) s) (princ _result s)
      ;;
      (if (null strm) (get-output-stream-string s))))
   (:deserialize
    (buf &optional (ptr- 0))
-   ;; string _model_text
-     (let (n) (setq n (sys::peek buf ptr- :integer)) (incf ptr- 4) (setq _model_text (subseq buf ptr- (+ ptr- n))) (incf ptr- n))
+   ;; string _result
+     (let (n) (setq n (sys::peek buf ptr- :integer)) (incf ptr- 4) (setq _result (subseq buf ptr- (+ ptr- n))) (incf ptr- n))
    ;;
    self)
   )
@@ -96,7 +96,7 @@
   :super ros::object
   :slots ())
 
-(setf (get ms_pkg::LLMC_service :md5sum-) "c855b39a90951aa6be44ba4ed4e45902")
+(setf (get ms_pkg::LLMC_service :md5sum-) "06454699f37ee48508b43358c9d71b7e")
 (setf (get ms_pkg::LLMC_service :datatype-) "ms_pkg/LLMC_service")
 (setf (get ms_pkg::LLMC_service :request) ms_pkg::LLMC_serviceRequest)
 (setf (get ms_pkg::LLMC_service :response) ms_pkg::LLMC_serviceResponse)
@@ -104,24 +104,24 @@
 (defmethod ms_pkg::LLMC_serviceRequest
   (:response () (instance ms_pkg::LLMC_serviceResponse :init)))
 
-(setf (get ms_pkg::LLMC_serviceRequest :md5sum-) "c855b39a90951aa6be44ba4ed4e45902")
+(setf (get ms_pkg::LLMC_serviceRequest :md5sum-) "06454699f37ee48508b43358c9d71b7e")
 (setf (get ms_pkg::LLMC_serviceRequest :datatype-) "ms_pkg/LLMC_serviceRequest")
 (setf (get ms_pkg::LLMC_serviceRequest :definition-)
       "string user_text
 ---
-string model_text
+string result
 ")
 
-(setf (get ms_pkg::LLMC_serviceResponse :md5sum-) "c855b39a90951aa6be44ba4ed4e45902")
+(setf (get ms_pkg::LLMC_serviceResponse :md5sum-) "06454699f37ee48508b43358c9d71b7e")
 (setf (get ms_pkg::LLMC_serviceResponse :datatype-) "ms_pkg/LLMC_serviceResponse")
 (setf (get ms_pkg::LLMC_serviceResponse :definition-)
       "string user_text
 ---
-string model_text
+string result
 ")
 
 
 
-(provide :ms_pkg/LLMC_service "c855b39a90951aa6be44ba4ed4e45902")
+(provide :ms_pkg/LLMC_service "06454699f37ee48508b43358c9d71b7e")
 
 

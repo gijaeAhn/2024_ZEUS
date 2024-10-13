@@ -31,19 +31,8 @@ signal.signal(signal.SIGINT, signal_handler)
 
 def main():
     global recv_socket, send_socket
+
     global rb
-    rb = i611Robot()
-    _BASE = Base()
-    rb.open()
-    IOinit(rb)
-    data = Teachdata("teach_data")
-
-    m = MotionParam(jnt_speed=25, pose_speed=30, overlap=3)
-    rb.motionparam(m)
-    override1 = 70
-    override2 = 30
-
-
     recv_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     recv_socket.connect(('192.168.0.71', 5003)) 
     recv_socket.settimeout(1)
@@ -51,8 +40,19 @@ def main():
     time.sleep(0.1)
 
     send_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    send_socket.connect(('192.168.0.71', 5004))  # Replace with Control PC's IP
+    send_socket.connect(('192.168.0.71', 5004))
     send_socket.settimeout(1)
+
+    rb = i611Robot()
+    _BASE = Base()
+    rb.open()
+    IOinit(rb)
+    data = Teachdata("teach_data")
+
+    m = MotionParam(jnt_speed=50, pose_speed=30, overlap=3)
+    rb.motionparam(m)
+    override1 = 80
+    override2 = 200
 
     count = 0
     debug_time = time.time()
@@ -82,12 +82,11 @@ def main():
             if header == 0:  # Joint command
                 if len(maindata) != 4*6:
                     print("Incorrect data size for joint command")
-		        else :
+		else :
                     msg = struct.unpack("6f", maindata)
                     print("Joint command:", msg)
                     j1 = Joint(msg[0], msg[1], msg[2], msg[3], msg[4], msg[5])
                     rb.move(j1)
-	 	            rb.join()
 
             elif header == 1:  # Joint Trajectory command
                 pointNum = 100
@@ -99,20 +98,6 @@ def main():
                 for i in range(0, len(msg), 6):
                     j = Joint(msg[0+i], msg[1+i], msg[2+i], msg[3+i], msg[4+i], msg[5+i])
                     rb.move(j)
-                rb.join()
-                response = struct.pack("f", 9) + struct.pack("f", 1)
-                send_socket.sendall(response)        
-
-            elif header == 2:  # Relative move command
-                print("Deprecated : Rel Move")
-                if len(maindata) != 4*6:
-                    print("Incorrect data size for relative move command")
-                    continue
-                msg = struct.unpack("6f", maindata)
-                print("Relative move command:", msg)
-                rb.relline(dx=msg[0]*1000, dy=msg[1]*1000, dz=msg[2]*1000)  # in millimeters
-                response = struct.pack("f", 9) + struct.pack("f", 1)
-                send_socket.sendall(response)
 
             elif header == 3:
                 print("Motion param Override! : ",override1)
@@ -125,14 +110,15 @@ def main():
             elif header == 5:
                 print("Just Retunning Joint Position")   
 
+	    rb.join()
             curPos = rb.getjnt().jnt2list()
-            print("Current joint positions:", curPos)
             msg = struct.pack("f", 8) + struct.pack("6f", *curPos)
             response = struct.pack("f", 9) + struct.pack("f", 1)
             try:
                 send_socket.sendall(msg)
-		        time.sleep(0.1)
+	        time.sleep(0.1)
                 send_socket.sendall(response)
+		print("One Loop Finished")
             except Exception as e:
                 print(e)
 

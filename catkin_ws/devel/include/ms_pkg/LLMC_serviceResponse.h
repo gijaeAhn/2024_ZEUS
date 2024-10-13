@@ -24,17 +24,17 @@ struct LLMC_serviceResponse_
   typedef LLMC_serviceResponse_<ContainerAllocator> Type;
 
   LLMC_serviceResponse_()
-    : model_text()  {
+    : result()  {
     }
   LLMC_serviceResponse_(const ContainerAllocator& _alloc)
-    : model_text(_alloc)  {
+    : result(_alloc)  {
   (void)_alloc;
     }
 
 
 
-   typedef std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>> _model_text_type;
-  _model_text_type model_text;
+   typedef std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>> _result_type;
+  _result_type result;
 
 
 
@@ -65,7 +65,7 @@ return s;
 template<typename ContainerAllocator1, typename ContainerAllocator2>
 bool operator==(const ::ms_pkg::LLMC_serviceResponse_<ContainerAllocator1> & lhs, const ::ms_pkg::LLMC_serviceResponse_<ContainerAllocator2> & rhs)
 {
-  return lhs.model_text == rhs.model_text;
+  return lhs.result == rhs.result;
 }
 
 template<typename ContainerAllocator1, typename ContainerAllocator2>
@@ -122,12 +122,12 @@ struct MD5Sum< ::ms_pkg::LLMC_serviceResponse_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "4ff994df74a709b17eb907236c109202";
+    return "c22f2a1ed8654a0b365f1bb3f7ff2c0f";
   }
 
   static const char* value(const ::ms_pkg::LLMC_serviceResponse_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x4ff994df74a709b1ULL;
-  static const uint64_t static_value2 = 0x7eb907236c109202ULL;
+  static const uint64_t static_value1 = 0xc22f2a1ed8654a0bULL;
+  static const uint64_t static_value2 = 0x365f1bb3f7ff2c0fULL;
 };
 
 template<class ContainerAllocator>
@@ -146,7 +146,7 @@ struct Definition< ::ms_pkg::LLMC_serviceResponse_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "string model_text\n"
+    return "string result\n"
 ;
   }
 
@@ -165,7 +165,7 @@ namespace serialization
   {
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
-      stream.next(m.model_text);
+      stream.next(m.result);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER
@@ -184,8 +184,8 @@ struct Printer< ::ms_pkg::LLMC_serviceResponse_<ContainerAllocator> >
 {
   template<typename Stream> static void stream(Stream& s, const std::string& indent, const ::ms_pkg::LLMC_serviceResponse_<ContainerAllocator>& v)
   {
-    s << indent << "model_text: ";
-    Printer<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>::stream(s, indent + "  ", v.model_text);
+    s << indent << "result: ";
+    Printer<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>::stream(s, indent + "  ", v.result);
   }
 };
 

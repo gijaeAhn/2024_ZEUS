@@ -86,6 +86,7 @@ class realAgent(Agent):
         #----- Additional Threads
         threading.Thread(target=self._publishFsmState,daemon=True).start()
         # threading.Thread(target=self._printingReadyState ,daemon= True).start()
+        print("Robot Start")
 
         # --- Run 
         rospy.spin()
@@ -124,25 +125,9 @@ class realAgent(Agent):
         if ready == 1 :
             self._robotReadyState.set()
             print(f"Robot Ready Time    : {time.time()}")
-
-        elif ready == 0 :
-            self._robotReadyState.clear()
         else :
             print("Wrong READY MSG!!!")
 
-    def _menuCallback(self,menu):
-        # self._fsm.handleEvent("get_menu")
-        self._makeMenu(menu)
-        self._fsm.handleEvent("serve_menu")
-        self._hereYouare()
-        self._fsm.handleEvent("hri_start")
-        self._fsm.handleEvent("get_menu")
-        self._robotReadyState.set()
-        rospy.sleep(5)
-        self.movePoseT(realConfig.startPoseT)
-
-
-        
     def _jointUpdateCallback(self,data):
         DEGREE_TO_RADIAN = 0.0174533
         joint = np.array(data.points[0].positions,dtype= np.float32).tolist()
@@ -151,8 +136,21 @@ class realAgent(Agent):
         joint = [angle * direction for angle, direction in zip(joint, realConfig.ROTATE_DIRECTION)]
         self._curJoint = joint 
         self._curTrans = ARM6_kinematics_forward_armReal(joint)
-        self._robotReadyState.set()
         print(f"Joint Callback Time : {time.time()}")
+
+    def _menuCallback(self,menu):
+        # self._fsm.handleEvent("get_menu")
+        self._makeMenu(menu)
+        self._fsm.handleEvent("serve_menu")
+        self._hereYouare()
+        self._fsm.handleEvent("hri_start")
+        self._fsm.handleEvent("get_menu")
+        rospy.sleep(5)
+        self.movePoseT(realConfig.startPoseT)
+
+
+        
+
         
     def _simpleMoveCallback(self,msg, scale = 'small') :
     
@@ -194,28 +192,28 @@ class realAgent(Agent):
                 self.movePoseT(realConfig.bfPosition1)
                 self._openEE()
             elif command == '6' :
-                if self._curJoint == realConfig.bfPosition1A :
-                    moveBig =0.18
-                    self._moveZ(-moveBig)
-                    self._moveZDevide(realConfig.bfMovingDown + moveBig)
-                    rospy.sleep(1)
-                    self._closeEE()
-                    rospy.sleep(1)
-                    self.movePoseT(realConfig.bfPosition1)
-                    rospy.sleep(0.1)
-                    self.movePoseA(realConfig.bfPosition2A)
-                    rospy.sleep(1)
-                    self.movePoseA(realConfig.bfPosition3A)
-                    rospy.sleep(1)
-                    self._motionFast()
-                    rospy.sleep(13.0)
-                    self.movePoseA(realConfig.bfPosition4A)
-                    # rospy.sleep(0.355)
-                    time.sleep(0.355)
-                    self._openEE()
-                    self._moitionSlow()
-                else :
-                    print("Robot : Wrong Position")
+                moveBig =0.18
+                self._moveZ(-moveBig)
+                # rospy.sleep(0.5)
+                print("Moving Z Devide : ",realConfig.bfMovingDown + moveBig)
+                self._moveZDevide(realConfig.bfMovingDown + moveBig)
+                rospy.sleep(1)
+                self._closeEE()
+                rospy.sleep(1)
+                self.movePoseT(realConfig.bfPosition1)
+                rospy.sleep(0.1)
+                self.movePoseA(realConfig.bfPosition2A)
+                rospy.sleep(1)
+                self.movePoseA(realConfig.bfPosition3A)
+                rospy.sleep(1)
+                self._motionFast()
+                rospy.sleep(8.0)
+                self.movePoseA(realConfig.bfPosition4A)
+                rospy.sleep(0.395)
+                # time.sleep(0.355)
+                self._openEE()
+                self._moitionSlow()
+
  
             # elif command == '7' :
             #     self.movePoseT(realConfig.bfPosition1)
@@ -525,6 +523,9 @@ class realAgent(Agent):
         self._realMotionParamPub.publish(motion_msg)
 
     def _getJoint(self) :
+        getJoint_msg = Int32()
+        getJoint_msg.data =1
+        self._getJointPub.publish(getJoint_msg)
 
 
 

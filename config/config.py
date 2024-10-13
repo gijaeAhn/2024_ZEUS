@@ -226,7 +226,7 @@ class realConfig :
 
     # bfPosition4A      = bfPosition3A.copy()
     
-    # bfPosition4A[1]  -= (PI/18.0) * 4
+    # bfPosition4A[1]  -= (PI/18.0) * 6
     # bfPosition4A[2]  -= (PI/18.0) * 5
     # bfPosition4A[4]  -= (PI/18.0) * 10
 

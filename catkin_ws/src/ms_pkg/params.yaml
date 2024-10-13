@@ -3,19 +3,11 @@ recommand_wordset:
   - "제안"
   - "먹고싶어"
 
-cheking_wordset:
- 
-    positive_wordset:
-    - '좋아'
-    - '응'
-    - '예'
-    
-    negative_wordset:
-    - '싫어'
-    - '별로야'
+order_wordset:
+  - 준비
 
-menu_set:
+menu_wordset:
   - '깔루아밀크'
   - '미도리샤워'
-  - '마티니'    
+  - '마티니'
   - '아라이'

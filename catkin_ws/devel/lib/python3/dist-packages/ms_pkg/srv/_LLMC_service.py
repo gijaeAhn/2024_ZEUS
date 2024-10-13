@@ -135,12 +135,12 @@ import struct
 
 
 class LLMC_serviceResponse(genpy.Message):
-  _md5sum = "4ff994df74a709b17eb907236c109202"
+  _md5sum = "c22f2a1ed8654a0b365f1bb3f7ff2c0f"
   _type = "ms_pkg/LLMC_serviceResponse"
   _has_header = False  # flag to mark the presence of a Header object
-  _full_text = """string model_text
+  _full_text = """string result
 """
-  __slots__ = ['model_text']
+  __slots__ = ['result']
   _slot_types = ['string']
 
   def __init__(self, *args, **kwds):
@@ -151,7 +151,7 @@ class LLMC_serviceResponse(genpy.Message):
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       model_text
+       result
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -160,10 +160,10 @@ class LLMC_serviceResponse(genpy.Message):
     if args or kwds:
       super(LLMC_serviceResponse, self).__init__(*args, **kwds)
       # message fields cannot be None, assign default values for those that are
-      if self.model_text is None:
-        self.model_text = ''
+      if self.result is None:
+        self.result = ''
     else:
-      self.model_text = ''
+      self.result = ''
 
   def _get_types(self):
     """
@@ -177,7 +177,7 @@ class LLMC_serviceResponse(genpy.Message):
     :param buff: buffer, ``StringIO``
     """
     try:
-      _x = self.model_text
+      _x = self.result
       length = len(_x)
       if python3 or type(_x) == unicode:
         _x = _x.encode('utf-8')
@@ -201,9 +201,9 @@ class LLMC_serviceResponse(genpy.Message):
       start = end
       end += length
       if python3:
-        self.model_text = str[start:end].decode('utf-8', 'rosmsg')
+        self.result = str[start:end].decode('utf-8', 'rosmsg')
       else:
-        self.model_text = str[start:end]
+        self.result = str[start:end]
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -216,7 +216,7 @@ class LLMC_serviceResponse(genpy.Message):
     :param numpy: numpy python module
     """
     try:
-      _x = self.model_text
+      _x = self.result
       length = len(_x)
       if python3 or type(_x) == unicode:
         _x = _x.encode('utf-8')
@@ -241,9 +241,9 @@ class LLMC_serviceResponse(genpy.Message):
       start = end
       end += length
       if python3:
-        self.model_text = str[start:end].decode('utf-8', 'rosmsg')
+        self.result = str[start:end].decode('utf-8', 'rosmsg')
       else:
-        self.model_text = str[start:end]
+        self.result = str[start:end]
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -254,6 +254,6 @@ def _get_struct_I():
     return _struct_I
 class LLMC_service(object):
   _type          = 'ms_pkg/LLMC_service'
-  _md5sum = 'c855b39a90951aa6be44ba4ed4e45902'
+  _md5sum = '06454699f37ee48508b43358c9d71b7e'
   _request_class  = LLMC_serviceRequest
   _response_class = LLMC_serviceResponse

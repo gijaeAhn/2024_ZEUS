@@ -20,7 +20,7 @@ stt_model = whisper.load_model(config["weight_type"], device='cuda')
 
 def STTServiceCallback(req):
     file_path = req.file_path
-    result = stt_model.transcribe(file_path)
+    result = stt_model.transcribe(file_path, language="ko")
     rospy.loginfo(result)
     return STT_serviceResponse(result["text"])
 
