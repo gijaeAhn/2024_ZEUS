@@ -2,13 +2,14 @@
 .vscode/
 
 # Ignore catkin workspace build and development folders
-.catkin_ws/build/
-.catkin_ws/devel/
-.catkin_ws/.catkin_tools
-
+/catkin_ws/build/
+/catkin_ws/devel/
+/catkin_ws/.catkin_tools
 # Ignore compiled Python files and caches
 __pycache__/
 **/__pycache__/
 
 # Ignore compiled shared object files (e.g., from C/C++)
 *.so
+
+.thumbs/
