@@ -3,11 +3,14 @@ from pynput import keyboard
 import time
 import sounddevice as sd
 import numpy as np
+import cv2
 import os
 from scipy.io.wavfile import write
 
 import rospy
 from std_msgs.msg   import String
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
 from ms_pkg.srv import LLMC_service
 from ms_pkg.srv import STT_service
 from ms_pkg.srv import TF_service
@@ -44,13 +47,13 @@ config["FER"] = rospy.get_param("~FER_SN", default="FERService")
 config["TTS"] = rospy.get_param("~TTS_SN", default="TTSService")
 
 rospy.loginfo("Checking for service's activation")
-rospy.wait_for_service(config['STT'])
-rospy.wait_for_service(config['FER'])
-rospy.wait_for_service(config['LLMC'])
-rospy.wait_for_service(config['TF'])
-rospy.wait_for_service(config['TTS'])
-rospy.wait_for_service("ICService")
-rospy.wait_for_service("GreetingService")
+# rospy.wait_for_service(config['STT'])
+# rospy.wait_for_service(config['FER'])
+# rospy.wait_for_service(config['LLMC'])
+# rospy.wait_for_service(config['TF'])
+# rospy.wait_for_service(config['TTS'])
+# rospy.wait_for_service("ICService")
+# rospy.wait_for_service("GreetingService")
 rospy.loginfo("All required Services are activated")
 
 STTService_rq = rospy.ServiceProxy(config["STT"], STT_service)
@@ -58,7 +61,6 @@ TFService_rq = rospy.ServiceProxy(config["TF"], TF_service)
 FERService_rq = rospy.ServiceProxy(config["FER"], FER_service)
 LLMCservice_rq = rospy.ServiceProxy(config["LLMC"], LLMC_service)
 TTSService_rq = rospy.ServiceProxy(config["TTS"], TTS_service)
-ICService_rq = rospy.ServiceProxy("ICService", IC_service)
 GreetingService_rq = rospy.ServiceProxy("GreetingService",Greeting_service)
 
 
@@ -83,16 +85,16 @@ def detect_situation(text):
             target_menu = w
             break
     
-    for w in HRIConfig.recommand_wordset:
-        if w in text:
-            recommand_flag = True
-            break
+    # for w in HRIConfig.recommand_wordset:
+    #     if w in text:
+    #         recommand_flag = True
+    #         break
 
 
-    if menu_flag and recommand_flag:
-        return 2, target_menu #매뉴 추천시 2를 반환
+    # if menu_flag and recommand_flag:
+    #     return 2, target_menu #매뉴 추천시 2를 반환
     
-    elif menu_flag and order_flag:
+    if menu_flag and order_flag:
         return 1, target_menu #메뉴를 주문시 1을 반환
 
     else:
@@ -122,11 +124,17 @@ class HRI_FSM:
         self.history_load_pub = rospy.Publisher("chatbot_history_load_signal", String, queue_size=1)
         self.history_unload_pub = rospy.Publisher("chatbot_history_unload_siganl", String, queue_size=1)
 
+        
+        self.hri_finish_publisher = rospy.Publisher("hri/loopfinish", String, queue_size=1)
+
         self.order_ready = None
         self.mp3file_path = os.path.join(temp_file_path, "usr_voice.mp3")
         self.missing_stack = 0
 
+        self.bridge = CvBridge()
+
     def act(self, msg):
+        print("in act")
         triggerd_data = int(msg.data)
         
         if self.state == "initial" and triggerd_data == 0:
@@ -145,6 +153,8 @@ class HRI_FSM:
 
         elif self.state == "idle" and triggerd_data == 2:
             self.act_recommand_FER()
+        
+        self.hri_finish_publisher.publish()
 
     
     def act_on_initial(self):
@@ -152,19 +162,23 @@ class HRI_FSM:
 
         _ = TTSService_rq("어서오세요. 카메라를 봐주시겠어요?").result
         
-        gui.publish("idle")
+        
 
         time.sleep(0.5)
-        cap_result = ICService_rq().result
-        if cap_result:
-            vision_answer = GreetingService_rq("inference", os.path.join(home_dir, ".temp_files/captured_img.png"), "사진을 보고 사진에 있는사람에게 옷차림, 머리스타일, 인상(분위기)에대해 전반적으로 칭찬해줘").result
-            print(vision_answer)
-            gui.publish("speaking")
+        msg = rospy.wait_for_message('captured_img', Image, timeout=5)
+        cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+        cv2.imwrite(HRIConfig.greeting_image_path, cv_image)
         
-            _ = TTSService_rq(vision_answer).result
-            gui.publish("idle")
-            vision_model_history = GreetingService_rq("history", "", "").result
-            self.history_load_pub.publish(vision_model_history)
+ 
+        
+        vision_answer = GreetingService_rq("inference").result
+        print(vision_answer)
+        gui.publish("speaking")
+    
+        _ = TTSService_rq(vision_answer).result
+        gui.publish("idle")
+        vision_model_history = GreetingService_rq("history").result
+        self.history_load_pub.publish(vision_model_history)
         print("인사했다 치고")
         # _ = TTSService_rq("인사했다 치고").result
         
@@ -173,7 +187,7 @@ class HRI_FSM:
 
     def act_on_goodbye(self):
         gui.publish("speaking")
-
+        self.history_unload_pub.publish()
         _ = TTSService_rq("안녕히가세요").result
         gui.publish("idle")
 

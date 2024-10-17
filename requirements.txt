@@ -11,3 +11,4 @@ pynput
 whisper
 sounddevice
 google
+anthropic

@@ -3,29 +3,26 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from PyQt5 import uic
 from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+import cv2
+import numpy as np
 import rospy
 
 home_dir = os.path.expanduser('~')
-ws_dir = os.path.join(home_dir, "Desktop/2024_ZEUS")
+ws_dir = os.path.join(home_dir, "2024_ZEUS")
 media_dir = os.path.join(ws_dir, "media/face")
+ui_file_path = os.path.join(ws_dir, "media/ui/gui.ui")
 
-class MainWindow(QWidget):
+
+class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("ROS Image Subscriber")
-        
-        self.label = QLabel("Waiting for images...")
-        # self.label.setStyleSheet("background-color: orange;")
-        self.label.setScaledContents(True)  # QLabel에서 이미지 크기를 조정할 수 있도록 설정
-        self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # 크기 정책 설정
-        
-        # 레이아웃 설정
-        layout = QVBoxLayout()
-        layout.addWidget(self.label)
-        self.setLayout(layout)
 
-        self.sub = rospy.Subscriber("gui_state_topic", String, self.callback)
+        # .ui 파일을 로드 (파일 경로를 적절히 변경)
+        uic.loadUi(ui_file_path, self)
 
         self.current_state = "idle"
         self.load_images()
@@ -33,21 +30,45 @@ class MainWindow(QWidget):
         print("im here")
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.ros_spin)
-        self.timer.start(100)  # 100ms마다 호출
+        self.timer.start(33)  # 100ms마다 호출
+
+        self.state_sub = rospy.Subscriber("gui_state_topic", String, self.StateCallback)
+        self.img_sub = rospy.Subscriber("captured_img", Image, self.ImgCallback)
+        self.bridge = CvBridge()
+
 
     def ros_spin(self):
         rospy.rostime.wallsleep(0.01)  # 잠시 대기
         # rospy.spin_once()  # 한 번의 콜백 처리
 
-
     def load_images(self):
-        """ 이미지 로드 """
-        # self.sad_img = QPixmap(os.path.join(media_dir, "sad.jpg"))
-        self.listening_img = QPixmap(os.path.join(media_dir, "listen.png"))
-        self.speaking_img = QPixmap(os.path.join(media_dir, "speak.png"))
-        
-        self.idle_img = QPixmap(os.path.join(media_dir, "idle.png"))
+        self.listening_img = QPixmap(os.path.join(media_dir, "listen.jpg"))
+        self.speaking_img = QPixmap(os.path.join(media_dir, "speak.jpg"))
+        self.idle_img = QPixmap(os.path.join(media_dir, "idle.jpg"))
 
+    def StateCallback(self, topic):
+        """ ROS 메시지를 수신했을 때 호출되는 콜백 함수 """
+        state = topic.data
+        self.update_image(state)
+    
+    def ImgCallback(self, topic):
+        cv_image = self.bridge.imgmsg_to_cv2(topic, "bgr8")
+        q_img = self.cv2pix(cv_image)
+        self.update_user_image(q_img)
+
+    def cv2pix(self, cv):
+        rgb_image = cv2.cvtColor(cv, cv2.COLOR_BGR2RGB)
+        h, w, ch = rgb_image.shape
+        bytes_per_line = ch * w
+        q_image = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
+        
+        # QImage를 QPixmap으로 변환
+        return QPixmap.fromImage(q_image)
+
+
+    def update_user_image(self, qimg):
+        self.user_face_label.setPixmap(qimg)
+    
     def update_image(self, state):
         """ 상태에 따라 이미지 업데이트 """
         if state == self.current_state:
@@ -63,17 +84,20 @@ class MainWindow(QWidget):
         elif state == "listening":
             self.label.setPixmap(self.listening_img)
 
+    
 
-    def callback(self, topic):
-        """ ROS 메시지를 수신했을 때 호출되는 콜백 함수 """
-        state = topic.data
-        self.update_image(state)
+
+
+
+
+
+
 
 if __name__ == "__main__":
     rospy.init_node("gui_fsm")
     app = QApplication(sys.argv)
-    window = MainWindow()
-    window.resize(800, 600)
+    window = MyWindow()
+
     window.show()
     
 

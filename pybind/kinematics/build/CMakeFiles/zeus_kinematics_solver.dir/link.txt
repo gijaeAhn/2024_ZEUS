@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC  -flto -shared  -o zeus_kinematics_solver.cpython-38-x86_64-linux-gnu.so CMakeFiles/zeus_kinematics_solver.dir/zeusKinematics_pybind.cpp.o CMakeFiles/zeus_kinematics_solver.dir/zeusKinematics.cpp.o CMakeFiles/zeus_kinematics_solver.dir/Transform.cpp.o 

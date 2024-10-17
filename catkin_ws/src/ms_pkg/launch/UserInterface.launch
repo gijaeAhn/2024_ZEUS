@@ -50,7 +50,7 @@
     <node pkg="ms_pkg" type="gui_fsm.py" name="gui_fsm" output="screen"></node>
 
     <!-- camera capture node -->
-    <node pkg="ms_pkg" type="ICServiceServer_script.py" name="ICServiceNode" output="screen"></node>
+    <node pkg="ms_pkg" type="img_publisher.py" name="ImgCapturePublishNode" output="screen"></node>
 
     <node pkg="ms_pkg" type="GreetingServiceServer_script.py" name="GreetingServiceNode" output="screen"></node>
 

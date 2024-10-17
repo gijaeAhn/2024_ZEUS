@@ -29,6 +29,7 @@ from trajectory_msgs.msg import JointTrajectory ,JointTrajectoryPoint
 from lib.zeus_kinematics import *
 
 from config.config import realConfig
+from utils.interpolation import inter_solve
 
 SHORT_SLEEP = 1
 LONG_SLEEP  = 5
@@ -120,13 +121,6 @@ class realAgent(Agent):
             print("Handling Event {}",event)
             self._fsm.handleEvent(event)
 
-    # def _readyCallback(self,msg) :
-    #     ready = msg.data
-    #     if ready == 1 :
-            
-    #         print(f"Robot Ready Time    : {time.time()}")
-    #     else :
-    #         print("Wrong READY MSG!!!")
 
     def _jointUpdateCallback(self,data):
         DEGREE_TO_RADIAN = 0.0174533
@@ -136,7 +130,7 @@ class realAgent(Agent):
         joint = [angle * direction for angle, direction in zip(joint, realConfig.ROTATE_DIRECTION)]
         self._curJoint = joint 
         self._curTrans = ARM6_kinematics_forward_armReal(joint)
-        print(f"Joint Callback Time : {time.time()}")
+        print(f"Robot Ready Time    : {time.time()}")
         self._robotReadyState.set()
 
     def _menuCallback(self,menu):
@@ -149,10 +143,6 @@ class realAgent(Agent):
         rospy.sleep(5)
         self.movePoseT(realConfig.startPoseT)
 
-
-        
-
-        
     def _simpleMoveCallback(self,msg, scale = 'small') :
     
         command = msg.data        
@@ -192,34 +182,47 @@ class realAgent(Agent):
             elif command == '5' :
                 self.movePoseT(realConfig.bfPosition1)
                 self._openEE()
+
             elif command == '6' :
-                moveBig =0.18
-                self._moveZ(-moveBig)
-                # rospy.sleep(0.5)
-                print("Moving Z Devide : ",realConfig.bfMovingDown + moveBig)
-                self._moveZDevide(realConfig.bfMovingDown + moveBig)
-                rospy.sleep(1)
-                self._closeEE()
-                rospy.sleep(1)
-                self.movePoseT(realConfig.bfPosition1)
-                rospy.sleep(0.1)
-                self.movePoseA(realConfig.bfPosition2A)
-                rospy.sleep(1)
-                self.movePoseA(realConfig.bfPosition3A)
-                rospy.sleep(1)
-                self._motionFast()
-                rospy.sleep(8.0)
-                self.movePoseA(realConfig.bfPosition4A)
-                rospy.sleep(0.395)
-                # time.sleep(0.355)
-                self._openEE()
-                self._moitionSlow()
+                curPos =  self.copy_transform(self._curTrans)
+                tempPos = self.copy_transform(curPos)
+                tempPos.translateZ(realConfig.bfMovingDown)
+                self._interMove(curPos,tempPos)
+
+
+
+
+
+            # elif command == '6' :
+            #     moveBig =0.18
+            #     self._moveZ(-moveBig)
+            #     # rospy.sleep(0.5)
+            #     print("Moving Z Devide : ",realConfig.bfMovingDown + moveBig)
+            #     self._moveZDevide(realConfig.bfMovingDown + moveBig)
+            #     rospy.sleep(1)
+            #     self._closeEE()
+            #     rospy.sleep(1)
+            #     self.movePoseT(realConfig.bfPosition1)
+            #     rospy.sleep(0.1)
+            #     self.movePoseA(realConfig.bfPosition2A)
+            #     rospy.sleep(1)
+            #     self.movePoseA(realConfig.bfPosition3A)
+            #     rospy.sleep(1)
+            #     self._motionFast()
+            #     rospy.sleep(8.0)
+            #     self.movePoseA(realConfig.bfPosition4A)
+            #     rospy.sleep(0.395)
+            #     # time.sleep(0.355)
+            #     self._openEE()
+            #     self._moitionSlow()
 
  
             # elif command == '7' :
             #     self.movePoseT(realConfig.bfPosition1)
             #     rospy.sleep(0.1)
             #     self.movePoseA(realConfig.bfPosition2A)
+
+            
             elif command == '8' :
                 tempPrint1 = realConfig.bfPosition3A
                 self.movePoseA(tempPrint1)
@@ -481,6 +484,22 @@ class realAgent(Agent):
         goalTrans = goalTrans.setVal(2,3,self._curTrans(2,3) + zDistance)
         self.movePoseT(goalTrans)
 
+    def _interMove(self,trans1,trans2):
+        num_step = 100
+        result = inter_solve(trans1, trans2, num_step)  
+
+        traj_msg = JointTrajectory()
+        traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6'] 
+
+        for angles in result:
+            point = JointTrajectoryPoint()
+            point.positions = angles  
+            point.time_from_start = rospy.Duration(0)  
+            traj_msg.points.append(point)
+
+        self._realJointTrajCommandPub.publish(traj_msg)
+
+
     # ----------- Above Actions are Fully tested ----    
 
 
@@ -529,7 +548,6 @@ class realAgent(Agent):
         self._getJointPub.publish(getJoint_msg)
 
 
-
 # -------------- For Debug ------------------------------
 
     def printTrans(self) :
@@ -537,6 +555,14 @@ class realAgent(Agent):
 
     def printAngle(self) :
         print(self._curJoint)
+    
+    def copy_transform(original_transform):
+        new_transform = Transform()
+        for i in range(4):
+            for j in range(4):
+                value = original_transform.getVal(i, j)
+                new_transform.setVal(i, j, value)
+        return new_transform
 
 # --------------- Main ---------------------------------
 
