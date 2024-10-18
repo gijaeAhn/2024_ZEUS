@@ -1,6 +1,4 @@
 string action
-string image_path
-string user_prompt
 ---
 string result
 

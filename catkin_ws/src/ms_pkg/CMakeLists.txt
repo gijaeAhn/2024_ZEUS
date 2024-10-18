@@ -177,6 +177,7 @@ catkin_install_python(PROGRAMS
   src/gui_fsm.py
   src/gui_tester.py
   src/service_tester.py
+  src/img_publisher.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
