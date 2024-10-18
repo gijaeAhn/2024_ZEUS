@@ -36,13 +36,13 @@ tmux select-pane -t 4
 tmux send-keys "cd ~/Desktop/2024_ZEUS/tools" C-m
 tmux send-keys "python3 positionLoggerReal.py" C-m
 
-# tmux select-pane -t 5
-# tmux send-keys "cd ~/Desktop/2024_ZEUS/run" C-m
-# tmux send-keys "python3 shakerDyna.py" C-m
+ tmux select-pane -t 5
+ tmux send-keys "cd ~/Desktop/2024_ZEUS/run" C-m
+ tmux send-keys "python3 shakerDyna.py" C-m
 
-tmux select-pane -t 5
-tmux send-keys "cd ~/Desktop/2024_ZEUS/run" C-m
-tmux send-keys "python3 gripperDyna.py" C-m
+#tmux select-pane -t 5
+#tmux send-keys "cd ~/Desktop/2024_ZEUS/run" C-m
+#tmux send-keys "python3 gripperDyna.py" C-m
 
 tmux select-pane -t 6
 tmux send-keys "echo 'Pane 6: Additional commands can be run here'" C-m

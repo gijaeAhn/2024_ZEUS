@@ -147,6 +147,7 @@ class realConfig :
     shakingT         = Transform().rotateZ(PI).translateZ(0.3).translateX(0.3).rotateY(PI/2)
     servicePositionT = Transform().rotateZ(-PI/2).translateZ(0.3).translateX(0.3).rotateY(PI/2)
 
+    shakeType1 = os.path.join(os.path.expanduser('~'), "Desktop", "2024_ZEUS", "shake_traj", "shake1.txt")
 
 
 #--------------- For Menu -----------------------------------------
@@ -191,11 +192,6 @@ class realConfig :
     # For Bottle Flip
     bottleGripZ = 0.227 + 0.07925 - plateOffset
 
-    # bfPosition1      = Transform().translateZ(0.3).translateY(0.1).translateX(0.3).rotateY(PI)
-    # bfPosition2      = Transform().translateZ(bottleGripZ).translateY(0.1).translateX(0.3).rotateY(PI)
-    # bfPosition3      = Transform().translateZ(0.2).translateY(0.1).translateX(0.2).rotateY(PI + PI/18.0)
-    # bfPosition4      = Transform().translateZ(0.55).translateY(0.1).translateX(0.3).rotateY(PI/2.0 + PI/18.0)
-
     tempJointBF       = [0,0,0,0,0]
 
     bottleGripPreZ    = 0.5
@@ -216,21 +212,14 @@ class realConfig :
     
     bfPosition3A[1]  += (PI/18.0) * 3
     bfPosition3A[2]  += (PI/18.0) * 2
-    # bfPosition3A[4]  -= (PI/18.0) 
 
     bfPosition4A      = bfPosition3A.copy()
     
-    # bfPosition4A[1]  -= (PI/18.0) * 5
-    # bfPosition4A[2]  -= (PI/18.0) * 5
-    # bfPosition4A[4]  -= (PI/18.0) * 8.5
-
     bfPosition4A[1]  -= (PI/18.0) * 6
     bfPosition4A[2]  -= (PI/18.0) * 5
     bfPosition4A[4]  -= (PI/18.0) * 8.5
 
 
-    # bfPosition4 = Transform().translateZ(bottleGripPreZ).translateY(0.1).translateX(0.25).rotateY(PI).translateZ( (bottleGripPreZ - bottleGripZ + bottleGripOffset)/2.0 )
-    # bfPosition5 = bfPosition4.translateZ( (bottleGripPreZ - bottleGripZ + bottleGripOffset)/2.0 )
 
 
 

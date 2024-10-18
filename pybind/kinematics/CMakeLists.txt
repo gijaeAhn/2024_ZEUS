@@ -2,10 +2,11 @@ cmake_minimum_required(VERSION 3.16.3)
 
 project(zeus_pybind)
 
-
+set(HOME_DIR $ENV{HOME})
 
 #Set your pybind_DIR depends on your python version
-set(pybind11_DIR /home/sj/.local/lib/python3.8/site-packages/pybind11/share/cmake/pybind11)
+# set(pybind11_DIR cuuretnHomedirname?/.local/lib/python3.8/site-packages/pybind11/share/cmake/pybind11)
+set(pybind11_DIR "${HOME_DIR}/.local/lib/python${PYTHON_VERSION}/site-packages/pybind11/share/cmake/pybind11")
 
 
 find_package(pybind11 REQUIRED)

@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC  -flto -shared  -o transform.cpython-38-x86_64-linux-gnu.so CMakeFiles/transform.dir/Transform_pybind.cpp.o CMakeFiles/transform.dir/Transform.cpp.o 

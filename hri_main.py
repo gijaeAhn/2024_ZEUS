@@ -154,17 +154,17 @@ class HRI_FSM:
         
         gui.publish("idle")
 
-        time.sleep(0.5)
-        cap_result = ICService_rq().result
-        if cap_result:
-            vision_answer = GreetingService_rq("inference", os.path.join(home_dir, ".temp_files/captured_img.png"), "사진을 보고 사진에 있는사람에게 옷차림, 머리스타일, 인상(분위기)에대해 전반적으로 칭찬해줘").result
-            print(vision_answer)
-            gui.publish("speaking")
+        # time.sleep(0.5)
+        # cap_result = ICService_rq().result
+        # if cap_result:
+        #     vision_answer = GreetingService_rq("inference", os.path.join(home_dir, ".temp_files/captured_img.png"), "사진을 보고 사진에 있는사람에게 옷차림, 머리스타일, 인상(분위기)에대해 전반적으로 칭찬해줘").result
+        #     print(vision_answer)
+        #     gui.publish("speaking")
         
-            _ = TTSService_rq(vision_answer).result
-            gui.publish("idle")
-            vision_model_history = GreetingService_rq("history", "", "").result
-            self.history_load_pub.publish(vision_model_history)
+        #     _ = TTSService_rq(vision_answer).result
+        #     gui.publish("idle")
+        #     vision_model_history = GreetingService_rq("history", "", "").result
+        #     self.history_load_pub.publish(vision_model_history)
         print("인사했다 치고")
         # _ = TTSService_rq("인사했다 치고").result
         
@@ -184,6 +184,7 @@ class HRI_FSM:
     def act_get_input(self):
         stt_result = STTService_rq(self.mp3file_path).result
         self.usr_text = stt_result
+        print("usr::", self.usr_text)
 
 
     def act_check_answer(self):

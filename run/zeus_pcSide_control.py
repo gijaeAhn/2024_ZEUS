@@ -70,18 +70,19 @@ def main():
 
 
     def returnJoint_callback(data):
-        # Data is useless 
+        # Data is unused
         global start_time
         cur_time = time.time()
         print("Received getJoint message from PC")
         if cur_time - start_time < 1.0:
             print("EARLY MESSAGE...IGNORED!!!")
         else:
-            print("Retunning joint positions ")
-            msg = struct.pack("f", 5) 
-            # print("Sending message of length:", len(msg))
+            print("Returning joint positions")
+            data_payload = struct.pack("f", 5)
+            data_length = struct.pack('!I', len(data_payload))
+            msg = data_length + data_payload
             try:
-                client_socket_5003.sendall(msg)  # Send data to robot via port 5003
+                client_socket_5003.sendall(msg)
             except Exception as e:
                 print("Error sending data to robot:", e)
     
@@ -95,48 +96,65 @@ def main():
         else:
             np_arr = np.array(data.points[0].positions, dtype=np.float32)
             print("Sending joint positions:", np_arr)
-            msg = struct.pack("f", 0) + np_arr.tobytes()
-            # print("Sending message of length:", len(msg))
+            data_payload = struct.pack("f", 0) + np_arr.tobytes()
+            data_length = struct.pack('!I', len(data_payload))
+            msg = data_length + data_payload
+            print("Sending message of length:", len(msg))
             try:
-                client_socket_5003.sendall(msg)  # Send data to robot via port 5003
+                client_socket_5003.sendall(msg)
             except Exception as e:
                 print("Error sending data to robot:", e)
+
 
     def trajectory_callback(data):
         global start_time
         cur_time = time.time()
         print("Received Trajectory message from PC")
-        pointNum = 100
+        pointNum = len(data.points)
         if cur_time - start_time < 1.0:
             print("EARLY MESSAGE...IGNORED!!!")
-        else :
-            np_arr = np.array([val for i in range(pointNum) for val in data.points[i].position], dtype=np.float32)
-            msg = struct.pack("f",1) + np_arr.tobytes()
-            print(f"Sending message of length : {len(msg)}")
+        else:
+            np_arr = np.array([val for point in data.points for val in point.positions], dtype=np.float32)
+            data_payload = struct.pack("f", 1) + np_arr.tobytes()
+            data_length = struct.pack('!I', len(data_payload))
+            msg = data_length + data_payload
+            print(f"Sending message of length: {len(msg)} bytes")
+            for i in range(pointNum):
+                if i % 1 == 0:
+                    print(f"Step {i}: Joint positions = {data.points[i].positions}")
             try:
-                client_socket_5003.sendall(msg)  # Send data to robot via port 5003
+                client_socket_5003.sendall(msg)
             except Exception as e:
                 print("Error sending data to robot:", e)
+
+
+
 
     def motionParam_callback(msg):
         global start_time
         cur_time = time.time()
-        print("Recieved Motion Param message from PC")
-        if cur_time - start_time < 1.0 :
+        print("Received Motion Param message from PC")
+        if cur_time - start_time < 1.0:
             print("EARLY MESSAGE...IGNORED!!!")
-        else :
+        else:
             paramType = msg.data
-            if paramType == 0 :   # Slow Motion Param
-                msg = struct.pack("f",3.0)
-                print(f"Sending message of length : {len(msg)}")
-            elif paramType == 1 : # Fast Motion Param
-                msg = struct.pack("f",4.0)
-                print(f"Sending message of length : {len(msg)}")
-            try :
+            if paramType == 0:   # Slow Motion Param
+                data_payload = struct.pack("f", 3.0)
+                print("Sending slow motion parameter")
+            elif paramType == 1: # Fast Motion Param
+                data_payload = struct.pack("f", 4.0)
+                print("Sending fast motion parameter")
+            else:
+                print("Unknown motion parameter type:", paramType)
+                return  
+            data_length = struct.pack('!I', len(data_payload))
+            msg = data_length + data_payload
+            
+            print(f"Sending message of length: {len(msg)} bytes")
+            try:
                 client_socket_5003.sendall(msg)
-            except Exception as e :
+            except Exception as e:
                 print("Error sending data to robot:", e)
-
 
     # Subscribe to ROS topics
     rospy.Subscriber("/zeus/real/jointCommand"   , JointTrajectory, jointCommand_callback )
@@ -149,9 +167,8 @@ def main():
     debug_time = time.time()
     while not rospy.is_shutdown():
         time.sleep(0.02)
-        # Handle data from robot (port 5004)
         try:
-            data_5004 = client_socket_5004.recv(65535)  # Receive data from robot via port 5004
+            data_5004 = client_socket_5004.recv(65535)  
             if len(data_5004) == 0:
                 print("Connection Lost on port 5004!!")
                 rospy.signal_shutdown("break")
@@ -159,7 +176,6 @@ def main():
                 server_socket_5004.close()
                 sys.exit(0)
             else:
-                # Process data from robot
                 header = struct.unpack('f', data_5004[0:4])[0]
                 if header == 8:  # Joint positions
                     if len(data_5004) != 4 + 4*6:
@@ -175,11 +191,6 @@ def main():
                     traj_point.time_from_start = rospy.Duration(0.0)
                     traj_msg.points.append(traj_point)
                     zeus_joint_read.publish(traj_msg)
-                # elif header == 9:  # Ready message
-                #     print("Received ready message from robot")
-                #     ready_msg = Int32()
-                #     ready_msg.data = 1
-                #     pub_ready.publish(ready_msg)
                 else:
                     print("Unknown header received on port 5004:", header)
         except socket.timeout:

@@ -96,7 +96,7 @@ class DynamixelControlNode:
             rospy.sleep(0.5)
             self.set_operating_mode(self.OP_MODE_TORQUE)
             rospy.loginfo("Switched to Torque Control Mode")
-            goal_current = 30 * DIRECTION_CORRECTION_VAL  
+            goal_current = 200 * DIRECTION_CORRECTION_VAL  
             self.write2ByteTxRx(self.ADDR_GOAL_CURRENT, goal_current)
 
         else:
