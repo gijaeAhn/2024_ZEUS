@@ -17,12 +17,10 @@ def print_transform(transform, label=None):
         print(f"Transform {label}:")
     else:
         print("Transform:")
-    # Extract the matrix elements
     matrix = [[transform.getVal(i, j) for j in range(4)] for i in range(4)]
-    # Print the matrix
     for row in matrix:
         print(' '.join(f"{val: .4f}" for val in row))
-    print()  # Empty line for spacing
+    print()  
 
 
 def interpolate_transforms(trans1, trans2, steps):
@@ -30,7 +28,6 @@ def interpolate_transforms(trans1, trans2, steps):
     def transform_from_quatp(quatp):
         q = quatp[:4]  
         p = quatp[4:]  
-
         w, x, y, z = q
         tx, ty, tz = p
 
@@ -58,7 +55,6 @@ def interpolate_transforms(trans1, trans2, steps):
 
         return t
 
-
     quatp1 = Transform.to_quatp(trans1)
     quatp2 = Transform.to_quatp(trans2)
 
@@ -82,29 +78,20 @@ def interpolate_transforms(trans1, trans2, steps):
     slerp = Slerp(key_times, key_rots)
 
     interp_times = np.linspace(0, 1, steps + 1)
-
     rotations_interp = slerp(interp_times)
-
     positions_interp = np.outer(1 - interp_times, p1) + np.outer(interp_times, p2)
-
     transforms = []
 
     for i in range(steps + 1):
         q_interp_scipy = rotations_interp[i].as_quat()
-
         q_interp = np.array([q_interp_scipy[3], q_interp_scipy[0], q_interp_scipy[1], q_interp_scipy[2]])
-
         p_interp = positions_interp[i]
-
         quatp_interp = np.concatenate((q_interp, p_interp))
-
         trans_interp = transform_from_quatp(quatp_interp.tolist())
-
         transforms.append(trans_interp)
         # print_transform(trans_interp, label=f"Step {i}")
 
     return transforms
-
 
 def solveAngle(transforms):
     returnAngles = []
@@ -122,7 +109,6 @@ def solveAngle(transforms):
     
     return returnAngles
 
-
 def inter_solve(trans1,trans2,NUM_STEP) :
 
     transforms = interpolate_transforms(trans1,trans2,NUM_STEP)
@@ -130,21 +116,13 @@ def inter_solve(trans1,trans2,NUM_STEP) :
 
     return solvedAngle
 
-
-
-
 def main():
     trans1 = realConfig.bfPosition1
     trans2 = Transform.trcopy(trans1)  
-
     trans2.translateZ(realConfig.bfMovingDown)
-
     steps = 100  
-
     transforms = interpolate_transforms(trans1, trans2, steps)
-
     solvedAngle = solveAngle(transforms)
-
 
 if __name__ == "__main__":
     main()

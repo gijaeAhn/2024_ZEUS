@@ -9,7 +9,7 @@ import math
 
 PI = 3.14159265359
 SQRT2 = math.sqrt(2)
-RAD_TO_DEG = 180.0/PI
+RAD_TO_DEG = 57.2957795131
 
 # Webots Config
 class WebotsConfig :
@@ -145,7 +145,8 @@ class realConfig :
     startPoseT       = Transform().translateZ(0.3).translateX(0.3).rotateY(PI/2)
     barPoseT         = Transform().rotateZ(PI/2).translateZ(0.3).translateX(0.3).rotateY(PI/2)
     shakingT         = Transform().rotateZ(PI).translateZ(0.3).translateX(0.3).rotateY(PI/2)
-    servicePositionT = Transform().rotateZ(-PI/2).translateZ(0.3).translateX(0.3).rotateY(PI/2)
+    servicePositionT = Transform.trcopy(shakingT)
+    servicePositionT = servicePositionT.traslateZ(0.2).translateY(-0.1)
 
     shakeType1 = os.path.join(os.path.expanduser('~'), "Desktop", "2024_ZEUS", "shake_traj", "shake1.txt")
 
@@ -153,7 +154,18 @@ class realConfig :
 #--------------- For Menu -----------------------------------------
     # Robot Orig = {0.1, 0.1, 0.0152}
     # Plate Offset = 0.0152
-    # OFFSET Unit : Meter 
+    # Unit : Meter 
+
+    # Menu Setup
+    menuList = ['1', '2', '3', '4', '5', '6']
+    menuComponent = {
+        '1' : ['A','B'],
+        '2' : ['A','C'],
+        '3' : ['A','D'],
+        '4' : ['B','C'],
+        '5' : ['B','D'],
+        '6' : ['C','D']
+    }
 
     toProfile = 0.75 
     disOffset = 0.086
@@ -167,29 +179,17 @@ class realConfig :
     goUP2 = 0.018
     goFront = disFromOrig - barPoseT.getVal(1,3)
 
-    # ----------------------------------------------
-    # Menu Setup
-    menuList = ['1', '2', '3', '4', '5', '6']
-    menuComponent = {
-        '1' : ['A','B'],
-        '2' : ['A','C'],
-        '3' : ['A','D'],
-        '4' : ['B','C'],
-        '5' : ['B','D'],
-        '6' : ['C','D']
-    }
-
     componentOffset = {
     'A': [ 0.05,    goFront, goUP1, goUP2],
-    'B': [ 0.15, goFront, goUP1, goUP2],
-    'C': [ 0.25,  goFront, goUP1, goUP2],
-    'D': [ 0.35, goFront, goUP1, goUP2],
-    'E': [ 0.45,  goFront, goUP1, goUP2]
+    'B': [ 0.15,    goFront, goUP1, goUP2],
+    'C': [ 0.25,    goFront, goUP1, goUP2],
+    'D': [ 0.35,    goFront, goUP1, goUP2],
+    'E': [ 0.45,    goFront, goUP1, goUP2]
     }
 
     pourAngle = PI * 0.666
 
-    # For Bottle Flip
+    # -------------- For Bottle Flip ------------------
     bottleGripZ = 0.227 + 0.07925 - plateOffset
 
     tempJointBF       = [0,0,0,0,0]
@@ -199,8 +199,8 @@ class realConfig :
     bfPosition1       = Transform().translateZ(bottleGripPreZ).translateY(0.1).translateX(0.25).rotateY(PI)
     bfPosition1A      = ARM6_kinematics_inverse_arm(bfPosition1,tempJointBF)
 
-    bfMovingDown      = -(bottleGripPreZ - bottleGripZ + bottleGripOffset)
-    bfMovingUp        = bottleGripPreZ - bottleGripZ + bottleGripOffset
+    bfMovingUp        =  bottleGripPreZ - bottleGripZ + bottleGripOffset
+    bfMovingDown      = -bfMovingUp
 
     bfPosition2A      = bfPosition1A.copy()
     bfPosition2A[0]   += (PI/18.0) * 4    
@@ -208,17 +208,14 @@ class realConfig :
     bfPosition2A[5]   -= 0.06288061279
 
     bfPosition3A      = bfPosition2A.copy()
-    bfPosition4A      = bfPosition2A.copy()
-    
     bfPosition3A[1]  += (PI/18.0) * 3
     bfPosition3A[2]  += (PI/18.0) * 2
 
     bfPosition4A      = bfPosition3A.copy()
-    
     bfPosition4A[1]  -= (PI/18.0) * 6
     bfPosition4A[2]  -= (PI/18.0) * 5
     bfPosition4A[4]  -= (PI/18.0) * 8.5
-
+    # -------------------------------------------------
 
 
 

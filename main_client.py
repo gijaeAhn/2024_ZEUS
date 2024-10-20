@@ -3,14 +3,8 @@ import os
 import time
 import threading
 
-
 home_dir = os.path.expanduser('~')
-
 sys.path.append(os.path.join(home_dir, 'Desktop/2024_ZEUS/'))
-
-
-from agent.agent import Agent
-from agent.real_endeffector import realEE
 
 import rospy
 import numpy as np
@@ -26,17 +20,12 @@ from trajectory_msgs.msg import JointTrajectory ,JointTrajectoryPoint
 
 # -----------------------------------------------
 
+from agent.agent import Agent
+from agent.real_endeffector import realEE
 from lib.zeus_kinematics import *
-
 from config.config import realConfig
 from utils.interpolation import inter_solve
 from utils.traj_processing import dataTrajectory
-
-SHORT_SLEEP = 1
-LONG_SLEEP  = 5
-
-
-
 
 
 class realAgent(Agent):
@@ -71,7 +60,6 @@ class realAgent(Agent):
         self._realSimpleMoveSub            = rospy.Subscriber('/zeus/real/simpleMoveCommand'       ,  String               , self._simpleMoveCallback        )
         self._realmenuSub                  = rospy.Subscriber('/zeus/real/menu'                    ,  String               , self._menuCallback              )
         self._jointSub                     = rospy.Subscriber('/zeus/real/joint'                   ,  JointTrajectory      , self._jointUpdateCallback       )
-        # self._robotReady                   = rospy.Subscriber('/zeus/real/move_ready'              ,  Int32                , self._readyCallback             )
         self._fsmHandlingSub               = rospy.Subscriber('/zeus/fsmHandling'                  ,  String               , self._fsmHandlingCallback       )
 
         # Check Robot is ON
@@ -137,11 +125,12 @@ class realAgent(Agent):
     def _menuCallback(self,menu):
         # self._fsm.handleEvent("get_menu")
         self._makeMenu(menu)
-        self._fsm.handleEvent("serve_menu")
         self._hereYouare()
+        # Ordered Task End
+        rospy.sleep(5)
+
         self._fsm.handleEvent("hri_start")
         self._fsm.handleEvent("get_menu")
-        rospy.sleep(5)
         self.movePoseT(realConfig.startPoseT)
 
     def _simpleMoveCallback(self,msg, scale = 'small') :
@@ -184,70 +173,46 @@ class realAgent(Agent):
                 self.movePoseT(realConfig.bfPosition1)
                 self._openEE()
 
+
             elif command == '6' :
-                curPos =  Transform.trcopy(realConfig.bfPosition1)  
-                tempPos = Transform.trcopy(curPos)  
-                print("Cur Pose : ")
-                curPos.printTransform(curPos)
+                moveBig =0.18
+                self._moveZ(-moveBig)
+                print("Moving Z Devide : ",realConfig.bfMovingDown + moveBig)
+                self._moveZDevide(realConfig.bfMovingDown + moveBig)
+                rospy.sleep(1)
+                self._closeEE()
+                rospy.sleep(1)
+                self.movePoseT(realConfig.bfPosition1)
+                rospy.sleep(0.1)
+                self.movePoseA(realConfig.bfPosition2A)
+                rospy.sleep(1)
+                self.movePoseA(realConfig.bfPosition3A)
+                rospy.sleep(1)
+                self._motionFast()
+                rospy.sleep(8.0)
+                self.movePoseA(realConfig.bfPosition4A)
+                rospy.sleep(0.355)
+                # time.sleep(0.355)
+                self._openEE()
+                self._moitionSlow()
+
+            # ------- Check Traj Command
+            # elif command == '6' :
+            #     curPos =  Transform.trcopy(realConfig.bfPosition1)  
+            #     tempPos = Transform.trcopy(curPos)  
+            #     print("Cur Pose : ")
+            #     curPos.printTransform(curPos)
                 
-                print()
-                tempPos.setVal(2,3,tempPos(2,3) + realConfig.bfMovingDown)
-                print("Temp Pose : ")
-                tempPos.printTransform(tempPos)
-                print()
-                self._interMove(curPos,tempPos)
+            #     print()
+            #     tempPos.setVal(2,3,tempPos(2,3) + realConfig.bfMovingDown)
+            #     print("Temp Pose : ")
+            #     tempPos.printTransform(tempPos)
+            #     print()
+            #     self._interMove(curPos,tempPos)
+            # ---------------------------------------------
 
             elif command == '7' :
                 self._shakingTraj(1)
-
-
-
-
-            # elif command == '6' :
-            #     moveBig =0.18
-            #     self._moveZ(-moveBig)
-            #     # rospy.sleep(0.5)
-            #     print("Moving Z Devide : ",realConfig.bfMovingDown + moveBig)
-            #     self._moveZDevide(realConfig.bfMovingDown + moveBig)
-            #     rospy.sleep(1)
-            #     self._closeEE()
-            #     rospy.sleep(1)
-            #     self.movePoseT(realConfig.bfPosition1)
-            #     rospy.sleep(0.1)
-            #     self.movePoseA(realConfig.bfPosition2A)
-            #     rospy.sleep(1)
-            #     self.movePoseA(realConfig.bfPosition3A)
-            #     rospy.sleep(1)
-            #     self._motionFast()
-            #     rospy.sleep(8.0)
-            #     self.movePoseA(realConfig.bfPosition4A)
-            #     rospy.sleep(0.395)
-            #     # time.sleep(0.355)
-            #     self._openEE()
-            #     self._moitionSlow()
-
- 
-            # elif command == '7' :
-            #     self.movePoseT(realConfig.bfPosition1)
-            #     rospy.sleep(0.1)
-            #     self.movePoseA(realConfig.bfPosition2A)
-
-            
-            # elif command == '8' :
-            #     tempPrint1 = realConfig.bfPosition3A
-            #     self.movePoseA(tempPrint1)
-            #     print(tempPrint1)
-            # elif command == '9' :
-            #     tempPrint2 = realConfig.bfPosition4A
-            #     self._motionFast()
-            #     rospy.sleep(13.0)
-            #     self.movePoseA(tempPrint2)
-            #     # rospy.sleep(0.355)
-            #     time.sleep(0.355)
-            #     self._openEE()
-            #     self._moitionSlow()
-            #     print(tempPrint2)
-                
 
             # ---   Motion Param
             elif command == 'o' :
@@ -255,7 +220,7 @@ class realAgent(Agent):
             elif command == 'p' :
                 self._motionFast()    
 
-            # --- For Dispenser Test    
+            # --- For Dispenser Path Test    
             elif command == 'g' :
                 self._moveY(realConfig.componentOffset['A'][1])
             elif command == 'h' :
@@ -295,9 +260,6 @@ class realAgent(Agent):
         else :
             print("Wrong EE Command")
     
-    # def _bottleFlipCallback(self) :
-        
-        
 
 # ---------------- Real Action ---------------------
 
@@ -383,7 +345,7 @@ class realAgent(Agent):
             self.movePoseT(realConfig.shakingT)
             print("Making Menu Done\n")
 
-    def _shake(self):
+    def _shake(self,shakingType):
         self._fsm.handleEvent('shake')
 
         if not self._fsm.getState() == 'shaking':
@@ -391,9 +353,7 @@ class realAgent(Agent):
         else :
 
             # Shaking Implementation Required :
-
-
-
+            self._shakingTraj(shakingType)
             # --------------------------------
 
             self._fsm.handleEvent('finish_shake')
@@ -409,11 +369,10 @@ class realAgent(Agent):
             return
         else :   
             self.movePoseT(realConfig.servicePositionT)
-            sentence = 'Here you are'
+            sentence = 'Enjoy your drink'
             self._speak(sentence)
             self._EE.open()
             self.rateFast.sleep()
-
             self._pour()
             self._fsm.handleEvent('serve_menu')
 
@@ -495,6 +454,8 @@ class realAgent(Agent):
         self.movePoseT(goalTrans)
 
     def _interMove(self, trans1, trans2):
+        print(f"Inter Move Start Time : {time.time()}")
+        self._robotReadyState.wait()
         num_step = 16
         result = inter_solve(trans1, trans2, num_step)  
 
@@ -516,12 +477,11 @@ class realAgent(Agent):
         self._realJointTrajCommandPub.publish(traj_msg)
 
     def _shakingTraj(self, type) :
-
+        print(f"Shaking Start Time : {time.time()}")
+        self._robotReadyState.wait()
         shakeTrajec = None
-
         if type == 1 :
             shakeTrajec = dataTrajectory(realConfig.shakeType1)
-        
         self._realJointTrajCommandPub.publish(shakeTrajec)
 
 
@@ -581,14 +541,6 @@ class realAgent(Agent):
     def printAngle(self) :
         print(self._curJoint)
     
-    def copy_transform(self,original_transform):
-        new_transform = Transform()
-        for i in range(4):
-            for j in range(4):
-                value = original_transform.getVal(i, j)
-                new_transform.setVal(i, j, value)
-        return new_transform
-
 # --------------- Main ---------------------------------
 
 def main():
