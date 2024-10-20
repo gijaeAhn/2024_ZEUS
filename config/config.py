@@ -126,8 +126,8 @@ class realConfig :
 
    
 #------------- For Real Position Logger -------------
-    smallCommandStep = 0.005
-    bigCommandStep   = 0.01
+    smallCommandStep = 0.05
+    bigCommandStep   = 0.05
 
 # ----------- PREDEFINED POSITIONS  -------------------
 
@@ -146,7 +146,7 @@ class realConfig :
     barPoseT         = Transform().rotateZ(PI/2).translateZ(0.3).translateX(0.3).rotateY(PI/2)
     shakingT         = Transform().rotateZ(PI).translateZ(0.3).translateX(0.3).rotateY(PI/2)
     servicePositionT = Transform.trcopy(shakingT)
-    servicePositionT = servicePositionT.traslateZ(0.2).translateY(-0.1)
+    servicePositionT = servicePositionT.translateZ(0.2).translateY(-0.1)
 
     shakeType1 = os.path.join(os.path.expanduser('~'), "Desktop", "2024_ZEUS", "shake_traj", "shake1.txt")
 

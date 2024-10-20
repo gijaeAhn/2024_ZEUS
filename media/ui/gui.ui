@@ -33,10 +33,10 @@
    <widget class="QLabel" name="user_face_label">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>1020</y>
-      <width>381</width>
-      <height>291</height>
+      <x>200</x>
+      <y>1170</y>
+      <width>640</width>
+      <height>480</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -49,10 +49,10 @@
    <widget class="QLabel" name="subtitle_label">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>1020</y>
-      <width>481</width>
-      <height>291</height>
+      <x>80</x>
+      <y>1010</y>
+      <width>871</width>
+      <height>131</height>
      </rect>
     </property>
     <property name="text">

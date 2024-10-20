@@ -31,8 +31,9 @@ def dataTrajectory(shaketype):
                 rospy.logwarn("Invalid joint angle line: {}".format(line))
                 continue
             
-            Angle = [angle *  RAD_TO_DEG for angle in angles]
-            Angle = [angle * direction for angle, direction in zip(Angle, rotate_directions)]
+            # Angle = [angle *  RAD_TO_DEG for angle in angles]
+            # Angle = [angle * direction for angle, direction in zip(Angle, rotate_directions)]\
+            Angle = angles
             
             point = JointTrajectoryPoint()
             point.positions = Angle

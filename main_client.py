@@ -40,12 +40,14 @@ class realAgent(Agent):
         self._initTrans                 = realConfig.initPoseT
         self._jointNames                = realConfig.jointNameList
         self._curJoint                  = self._initJoint
+        self._robotJoint                = []
         self._curTrans                  = self._initTrans
         self._commandJoint              = self._curJoint
         self._eeController              = realEE()
         self._jointVelocity             = realConfig.defaultAngleVelocity
         self._robotReadyState           = threading.Event()
         self._robotReadyStateLock       = threading.RLock()
+    
 
     
         #----- Publisher
@@ -114,12 +116,13 @@ class realAgent(Agent):
     def _jointUpdateCallback(self,data):
         DEGREE_TO_RADIAN = 0.0174533
         joint = np.array(data.points[0].positions,dtype= np.float32).tolist()
-        print("Joint : ", joint)
+        print("Joint : ", " ".join(str(j) for j in joint))
+        self._robotJoint = joint
         joint = [angle * DEGREE_TO_RADIAN for angle in joint]
         joint = [angle * direction for angle, direction in zip(joint, realConfig.ROTATE_DIRECTION)]
         self._curJoint = joint 
         self._curTrans = ARM6_kinematics_forward_armReal(joint)
-        print(f"Robot Ready Time    : {time.time()}")
+        # print(f"Robot Ready Time    : {time.time()}")
         self._robotReadyState.set()
 
     def _menuCallback(self,menu):
@@ -221,14 +224,88 @@ class realAgent(Agent):
                 self._motionFast()    
 
             # --- For Dispenser Path Test    
+            # elif command == 'g' :
+            #     self._moveY(realConfig.componentOffset['A'][1])
+            # elif command == 'h' :
+            #     self._moveZ(realConfig.componentOffset['A'][2])
+            # elif command == 'j' :
+            #     self._moveZ(realConfig.componentOffset['A'][3])
+            # elif command == 'k' :
+            #     self._moveZ(-(realConfig.componentOffset['A'][2] + realConfig.componentOffset['A'][3]))
+
+            elif command == 'v' :
+                joint = self._robotJoint
+                joint[4] += 5
+                traj_msg = JointTrajectory()
+                traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+                traj_point = JointTrajectoryPoint()
+                traj_point.positions = joint
+                traj_point.time_from_start = rospy.Duration(1.0)
+                traj_msg.points.append(traj_point)
+                self._realJointCommandPub.publish(traj_msg)
+
+            elif command == 'b' :
+                joint = self._robotJoint
+                joint[5] += 5
+                traj_msg = JointTrajectory()
+                traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+                traj_point = JointTrajectoryPoint()
+                traj_point.positions = joint
+                traj_point.time_from_start = rospy.Duration(1.0)
+                traj_msg.points.append(traj_point)
+                self._realJointCommandPub.publish(traj_msg)
+
+            elif command == 'n' :
+                joint = self._robotJoint
+                joint[2] -= 5
+                traj_msg = JointTrajectory()
+                traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+                traj_point = JointTrajectoryPoint()
+                traj_point.positions = joint
+                traj_point.time_from_start = rospy.Duration(1.0)
+                traj_msg.points.append(traj_point)
+                self._realJointCommandPub.publish(traj_msg)
+    
+
+            elif command == 'f' :
+                joint = self._robotJoint
+                joint[4] -= 5
+                traj_msg = JointTrajectory()
+                traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+                traj_point = JointTrajectoryPoint()
+                traj_point.positions = joint
+                traj_point.time_from_start = rospy.Duration(1.0)
+                traj_msg.points.append(traj_point)
+                self._realJointCommandPub.publish(traj_msg)
+
             elif command == 'g' :
-                self._moveY(realConfig.componentOffset['A'][1])
+                joint = self._robotJoint
+                joint[5] -= 5
+                traj_msg = JointTrajectory()
+                traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+                traj_point = JointTrajectoryPoint()
+                traj_point.positions = joint
+                traj_point.time_from_start = rospy.Duration(1.0)
+                traj_msg.points.append(traj_point)
+                self._realJointCommandPub.publish(traj_msg)
+
             elif command == 'h' :
-                self._moveZ(realConfig.componentOffset['A'][2])
-            elif command == 'j' :
-                self._moveZ(realConfig.componentOffset['A'][3])
-            elif command == 'k' :
-                self._moveZ(-(realConfig.componentOffset['A'][2] + realConfig.componentOffset['A'][3]))
+                joint = self._robotJoint
+                joint[2] += 5
+                traj_msg = JointTrajectory()
+                traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+                traj_point = JointTrajectoryPoint()
+                traj_point.positions = joint
+                traj_point.time_from_start = rospy.Duration(1.0)
+                traj_msg.points.append(traj_point)
+                self._realJointCommandPub.publish(traj_msg)
+
+            
+
+
+
+
+
             # ----------------------
 
         elif scale == 'big' :
@@ -339,14 +416,18 @@ class realAgent(Agent):
             self.movePoseT(realConfig.shakingT)
             print("Arrvied at the Shaking Position")
             self.rateNormal.sleep()
-
-            self._shake()
-            self.rateNormal.sleep()
+            self._motionFast()
+            self._shake(1)
+            self._moitionSlow()
             self.movePoseT(realConfig.shakingT)
+            self.rateNormal.sleep()
+
             print("Making Menu Done\n")
 
     def _shake(self,shakingType):
+        self._robotReadyState.wait()
         self._fsm.handleEvent('shake')
+        
 
         if not self._fsm.getState() == 'shaking':
             print("Current State is not Shaking Quit!!!")
@@ -358,8 +439,10 @@ class realAgent(Agent):
 
             self._fsm.handleEvent('finish_shake')
             print("Shaking Done\n")
+        
 
     def _pour(self):
+        self._robotReadyState.wait()
         self._rotateZ(realConfig.pourAngle) 
         self.rateSlow.sleep()
 
@@ -370,7 +453,7 @@ class realAgent(Agent):
         else :   
             self.movePoseT(realConfig.servicePositionT)
             sentence = 'Enjoy your drink'
-            self._speak(sentence)
+            print(sentence)
             self._EE.open()
             self.rateFast.sleep()
             self._pour()
@@ -405,6 +488,7 @@ class realAgent(Agent):
         self.movePoseA(solvedAngle)
 
     def _moveXDevide(self, xDistance):
+        self._robotReadyState.wait()
         step_size = 0.15
         threshold = 0.3
         if abs(xDistance) >= threshold :
@@ -419,6 +503,7 @@ class realAgent(Agent):
             self._moveX(xDistance)
 
     def _moveZDevide(self, zDistance):
+        self._robotReadyState.wait()
         step_size = 0.01
         threshold = 0.03
         if abs(zDistance) >= threshold :
@@ -479,6 +564,7 @@ class realAgent(Agent):
     def _shakingTraj(self, type) :
         print(f"Shaking Start Time : {time.time()}")
         self._robotReadyState.wait()
+        self._robotReadyState.clear()
         shakeTrajec = None
         if type == 1 :
             shakeTrajec = dataTrajectory(realConfig.shakeType1)
@@ -518,11 +604,15 @@ class realAgent(Agent):
         self._eeController.close()
     
     def _moitionSlow(self) :
+        self._robotReadyState.wait()
+        self._robotReadyState.clear()
         motion_msg = Int32()
         motion_msg.data = 0
         self._realMotionParamPub.publish(motion_msg)
 
     def _motionFast(self) :
+        self._robotReadyState.wait()
+        self._robotReadyState.clear()
         motion_msg = Int32()
         motion_msg.data = 1
         self._realMotionParamPub.publish(motion_msg)
