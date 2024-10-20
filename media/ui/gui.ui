@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1356</width>
-    <height>1261</height>
+    <width>1080</width>
+    <height>1920</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>50</y>
-      <width>1261</width>
-      <height>851</height>
+      <x>70</x>
+      <y>80</y>
+      <width>900</width>
+      <height>900</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -33,8 +33,8 @@
    <widget class="QLabel" name="user_face_label">
     <property name="geometry">
      <rect>
-      <x>930</x>
-      <y>920</y>
+      <x>590</x>
+      <y>1020</y>
       <width>381</width>
       <height>291</height>
      </rect>
@@ -46,13 +46,26 @@
      <string/>
     </property>
    </widget>
+   <widget class="QLabel" name="subtitle_label">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>1020</y>
+      <width>481</width>
+      <height>291</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1356</width>
+     <width>1080</width>
      <height>20</height>
     </rect>
    </property>

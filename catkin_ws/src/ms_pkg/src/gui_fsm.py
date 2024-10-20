@@ -12,7 +12,7 @@ import numpy as np
 import rospy
 
 home_dir = os.path.expanduser('~')
-ws_dir = os.path.join(home_dir, "2024_ZEUS")
+ws_dir = os.path.join(home_dir, "Desktop/2024_ZEUS")
 media_dir = os.path.join(ws_dir, "media/face")
 ui_file_path = os.path.join(ws_dir, "media/ui/gui.ui")
 
@@ -23,7 +23,7 @@ class MyWindow(QMainWindow):
 
         # .ui 파일을 로드 (파일 경로를 적절히 변경)
         uic.loadUi(ui_file_path, self)
-
+        self.setupBasic()
         self.current_state = "idle"
         self.load_images()
         self.label.setPixmap(self.idle_img)
@@ -34,17 +34,22 @@ class MyWindow(QMainWindow):
 
         self.state_sub = rospy.Subscriber("gui_state_topic", String, self.StateCallback)
         self.img_sub = rospy.Subscriber("captured_img", Image, self.ImgCallback)
+        self.subtitle_sub = rospy.Subscriber("hri_subtitle", String, self.SubtitleCallback)
         self.bridge = CvBridge()
 
+    def setupBasic(self):
+        font = QFont("Arial", 12)
+        self.subtitle_label.setFont(font)
+        self.subtitle_label.setWordWrap(True)
 
     def ros_spin(self):
         rospy.rostime.wallsleep(0.01)  # 잠시 대기
         # rospy.spin_once()  # 한 번의 콜백 처리
 
     def load_images(self):
-        self.listening_img = QPixmap(os.path.join(media_dir, "listen.jpg"))
-        self.speaking_img = QPixmap(os.path.join(media_dir, "speak.jpg"))
-        self.idle_img = QPixmap(os.path.join(media_dir, "idle.jpg"))
+        self.listening_img = QPixmap(os.path.join(media_dir, "listen.jpg")).scaled(900, 900)
+        self.speaking_img = QPixmap(os.path.join(media_dir, "speak.jpg")).scaled(900, 900)
+        self.idle_img = QPixmap(os.path.join(media_dir, "idle.jpg")).scaled(900, 900)
 
     def StateCallback(self, topic):
         """ ROS 메시지를 수신했을 때 호출되는 콜백 함수 """
@@ -83,6 +88,9 @@ class MyWindow(QMainWindow):
         
         elif state == "listening":
             self.label.setPixmap(self.listening_img)
+
+    def SubtitleCallback(self, msg):
+        self.subtitle_label.setText(msg.data)
 
     
 

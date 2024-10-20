@@ -4,15 +4,21 @@ from std_msgs.msg import String
 
 from pynput import keyboard
 import sounddevice as sd
-import os
+import os, sys
 import numpy as np
 from scipy.io.wavfile import write
+from pydub import AudioSegment
 
 
 rospy.init_node("HRIinputHandler_Node")
 
 home_dir = os.path.expanduser("~")
-temp_file_path  = os.path.join(home_dir, ".temp_files")
+ws_dir = os.path.join(home_dir, "Desktop/2024_ZEUS")
+config_dir = os.path.join(ws_dir, "config")
+sys.path.append(ws_dir)
+
+
+from config.hri_config import HRIConfig
 
 
 
@@ -45,9 +51,6 @@ class HRIinputHandler:
         
         self.key_enable = True
         self.is_mic_open = False
-
-        self.temp_wav_path = os.path.join(temp_file_path, "usr_voice.wav")
-        self.temp_mp3_path = os.path.join(temp_file_path, 'usr_voice.mp3')
         
         self.q = inputQueue()
 
@@ -63,7 +66,6 @@ class HRIinputHandler:
 
             if key_str == 'x' and not self.is_mic_open:
                 self.is_mic_open = not self.is_mic_open
-                
                 self.audio_stream.start()
 
 
@@ -76,7 +78,6 @@ class HRIinputHandler:
                 key_str = '{0}'.format(key)
                 
             if self.q.isFull():
-                self.closeMic()
                 return
             else:
                 if key_str == "z":
@@ -105,12 +106,13 @@ class HRIinputHandler:
         self.is_mic_open = not self.is_mic_open
         recorded_data_arr =  np.concatenate(self.recording_buffer, axis=0)
 
-        write(self.temp_wav_path, 44100, recorded_data_arr)
+        write(HRIConfig.user_wav_path, 44100, recorded_data_arr)
         self.recording_buffer.clear()
         self.recording_buffer = []
-        os.system(f"rm {os.path.join(home_dir, '.temp_files/*.mp3')}")
-        os.system(f"ffmpeg -y -nostdin -i {self.temp_wav_path} {self.temp_mp3_path}")
-        
+
+        audio = AudioSegment.from_wav(HRIConfig.user_wav_path)
+        audio.export(HRIConfig.user_mp3_path, format="mp3")
+        print("handler:: 녹음완료")
 
     def enable_key(self):
         print("eneable key")

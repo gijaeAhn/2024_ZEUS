@@ -13,6 +13,7 @@ from cv_bridge import CvBridge
 import torch
 import time
 
+
 from ai_packages import FaceAligner
 from ai_packages import ARAIFER
 from custom_utils import EasyLogger as EL
@@ -39,19 +40,13 @@ fer_model.load_state_dict(ckpt)
 fer_model.eval()
 
 
-def captureImagefromCam():
-        time.sleep(0.5)
-        cap = cv2.VideoCapture(0)
-        ret, frame = cap.read()
-        cap.release()
-        return ret, frame
+
 
 
 def FERServiceCallback(req):
-    ret, frame = captureImagefromCam()
-    if not ret:
-        rospy.loginfo("Webcam doen't work!")
-        return FER_serviceResponse(-1.0)
+ 
+    frame = cv2.imread(os.path.join(os.path.expanduser("~"),".temp_files/fer_img.png"))
+ 
          
     
     facebool , aligned_face = face_aligner.get_aligned_face(frame)

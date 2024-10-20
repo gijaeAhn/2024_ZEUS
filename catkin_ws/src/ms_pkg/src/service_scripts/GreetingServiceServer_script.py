@@ -2,7 +2,7 @@ import os, sys
 import rospy
 
 home_dir = os.path.expanduser("~")
-ws_dir = os.path.join(home_dir, "2024_ZEUS")
+ws_dir = os.path.join(home_dir, "Desktop/2024_ZEUS")
 config_dir = os.path.join(ws_dir, "config")
 sys.path.append(config_dir)
 
@@ -26,7 +26,6 @@ class Vision_answer:
 
     def __init__(self):
         self.client = anthropic.Anthropic()
-        self.image1_media_type = "image/png"
         print("vision model loading")
         self.introduction = """ 
         <instructions>
@@ -68,7 +67,7 @@ class Vision_answer:
                                 "type": "image",
                                  "source": {
                                     "type": "base64",
-                                    "media_type": self.image1_media_type,
+                                    "media_type": "image/png",
                                     "data": captured_img,
                                 },
                             },
