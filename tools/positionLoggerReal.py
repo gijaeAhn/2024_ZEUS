@@ -57,7 +57,7 @@ class positionLogger :
             key_str = '{0}'.format(key)
         
         print(key_str)
-
+        
         if key_str in ('w', 'a', 's', 'd', 'q', 'e',     'v','b','n','f','g','h',      '0', '1', '2', '3', '4', '5', '6', '7', '8','9',    'r', 't',     'o','p'):
             self._moveCommandPub.publish(key_str)
         elif key_str in ('n', 'm'): #n => open, m => close

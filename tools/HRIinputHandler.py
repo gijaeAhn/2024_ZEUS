@@ -26,21 +26,33 @@ class inputQueue:
     def __init__(self):
         self.is_full = False
         self.fsm_trigger = rospy.Publisher("hri_trigger", String, queue_size=1)
-        self.hri_finish_listener = rospy.Subscriber('hri/loopfinish', String, callback=self.openQueue)
+        self.hri_finish_listener = rospy.Subscriber("hri/loopfinish", String, callback=self.openQueue)
+        self.force_order_listener = rospy.Subscriber("hri/force_order", String, callback=self.reset_count)
+
+        self.miss_count = 0
+        self.max_miss =5
     
     def insert():
         pass
 
     def openQueue(self, msg):
+        self. miss_count = (self.miss_count+1) % 5 
         self.is_full = False
     
     def isFull(self,):
         return self.is_full
-    
+
     def push(self, s):
-        print(f"trigger_{s}")
-        self.fsm_trigger.publish(s)
-        self.is_full = True
+        if self.miss_count != self.max_miss-1:
+            print(f"trigger_{s}")
+            self.fsm_trigger.publish(s)
+            self.is_full = True
+        else:
+            self.fsm_trigger.publish('miss')
+            self.is_full = True
+
+    def reset_count(self, msg):
+        self.miss_count = 0
 
 
 
@@ -51,10 +63,8 @@ class HRIinputHandler:
         
         self.key_enable = True
         self.is_mic_open = False
-        
         self.q = inputQueue()
 
-        
         self.enable_key()
 
        

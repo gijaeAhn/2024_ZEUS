@@ -195,7 +195,6 @@ class realAgent(Agent):
                 rospy.sleep(8.0)
                 self.movePoseA(realConfig.bfPosition4A)
                 rospy.sleep(0.355)
-                # time.sleep(0.355)
                 self._openEE()
                 self._moitionSlow()
 
@@ -415,7 +414,6 @@ class realAgent(Agent):
             
             self.movePoseT(realConfig.shakingT)
             print("Arrvied at the Shaking Position")
-            self.rateNormal.sleep()
             self._motionFast()
             self._shake(1)
             self._moitionSlow()
@@ -443,8 +441,16 @@ class realAgent(Agent):
 
     def _pour(self):
         self._robotReadyState.wait()
-        self._rotateZ(realConfig.pourAngle) 
-        self.rateSlow.sleep()
+        self._robotReadyState.clear()
+        joint = self._robotJoint
+        joint[5] -= 120
+        traj_msg = JointTrajectory()
+        traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+        traj_point = JointTrajectoryPoint()
+        traj_point.positions = joint
+        traj_point.time_from_start = rospy.Duration(1.0)
+        traj_msg.points.append(traj_point)
+        self._realJointCommandPub.publish(traj_msg)
 
     def _hereYouare(self):
         if not self._fsm.getState() == 'moving':

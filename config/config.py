@@ -142,13 +142,13 @@ class realConfig :
     initPoseA = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
     initPoseT        = Transform().rotateY(-PI/2).translateX(upperArmLength).translateX(foreArmLength).translateY(-wrist1Length).translateX(wrist2Length)
-    startPoseT       = Transform().translateZ(0.3).translateX(0.3).rotateY(PI/2)
+    startPoseT       = Transform().rotateZ(PI).translateZ(0.3).translateX(0.3).rotateY(PI/2)
     barPoseT         = Transform().rotateZ(PI/2).translateZ(0.3).translateX(0.3).rotateY(PI/2)
-    shakingT         = Transform().rotateZ(PI).translateZ(0.3).translateX(0.3).rotateY(PI/2)
+    shakingT         = Transform().translateZ(0.3).translateX(0.3).rotateY(PI/2)
     servicePositionT = Transform.trcopy(shakingT)
-    servicePositionT = servicePositionT.translateZ(0.2).translateY(-0.1)
+    servicePositionT = servicePositionT.translateZ(0.1).translateX(0.1)
 
-    shakeType1 = os.path.join(os.path.expanduser('~'), "Desktop", "2024_ZEUS", "shake_traj", "shake1.txt")
+    shakeType1 = os.path.join(os.path.expanduser('~'), "Desktop", "2024_ZEUS", "shake_traj", "shake3.txt")
 
 
 #--------------- For Menu -----------------------------------------

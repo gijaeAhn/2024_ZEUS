@@ -38,9 +38,15 @@ class MyWindow(QMainWindow):
         self.bridge = CvBridge()
 
     def setupBasic(self):
-        font = QFont("Arial", 12)
+        font = QFont("Arial", 15)
         self.subtitle_label.setFont(font)
         self.subtitle_label.setWordWrap(True)
+
+        
+        self.guide_label.setText("빨강: 입장, 퇴장 하실때 눌러주세요 \n파랑: 말씀하실때 누르신 상태로 말씀해주세요 \n초록: Cyber가 적절한 메뉴를 추천해줘요" )
+        guide_font = QFont("Arial", 24)
+        self.guide_label.setFont(guide_font)
+        self.guide_label.setWordWrap(True)
 
     def ros_spin(self):
         rospy.rostime.wallsleep(0.01)  # 잠시 대기

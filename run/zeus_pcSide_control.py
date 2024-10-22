@@ -50,21 +50,19 @@ def main():
     pub_ready = rospy.Publisher('/zeus/real/move_ready', Int32, queue_size=1)
     zeus_joint_read = rospy.Publisher('/zeus/real/joint', JointTrajectory, queue_size=1)
 
-    # Server socket for port 5003 (sending commands to robot)
     server_socket_5003 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket_5003.bind(('192.168.0.71', 5003))  # Bind to all interfaces
-    server_socket_5003.listen(1)  # Wait for the robot to connect
+    server_socket_5003.bind(('192.168.0.71', 5003))  
+    server_socket_5003.listen(1) 
     print('Waiting for connection on port 5003 (command socket)...')
-    client_socket_5003, addr = server_socket_5003.accept()  # Accept connection from robot
+    client_socket_5003, addr = server_socket_5003.accept() 
     client_socket_5003.settimeout(1)
     print('Robot connected on port 5003:', addr)
 
-    # Server socket for port 5004 (receiving joint data from robot)
     server_socket_5004 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket_5004.bind(('192.168.0.71', 5004))  # Bind to all interfaces
-    server_socket_5004.listen(1)  # Wait for the robot to connect
+    server_socket_5004.bind(('192.168.0.71', 5004)) 
+    server_socket_5004.listen(1) 
     print('Waiting for connection on port 5004 (data socket)...')
-    client_socket_5004, addr_5004 = server_socket_5004.accept()  # Accept connection from robot
+    client_socket_5004, addr_5004 = server_socket_5004.accept() 
     client_socket_5004.settimeout(1)
     print('Robot connected on port 5004:', addr_5004)
 
@@ -95,6 +93,8 @@ def main():
             print("EARLY MESSAGE...IGNORED!!!")
         else:
             np_arr = np.array(data.points[0].positions, dtype=np.float32)
+            if np_arr[5] < 0:  # Check if the 6th joint's value is negative
+                np_arr[5] += 360.0  # Correct the angle by adding 360.0
             print("Sending joint positions:", np_arr)
             data_payload = struct.pack("f", 0) + np_arr.tobytes()
             data_length = struct.pack('!I', len(data_payload))
@@ -115,6 +115,8 @@ def main():
             print("EARLY MESSAGE...IGNORED!!!")
         else:
             np_arr = np.array([val for point in data.points for val in point.positions], dtype=np.float32)
+            np_arr[5::6] = np.where(np_arr[5::6] < 0, np_arr[5::6] + 360.0, np_arr[5::6])
+
             data_payload = struct.pack("f", 1) + np_arr.tobytes()
             data_length = struct.pack('!I', len(data_payload))
             msg = data_length + data_payload

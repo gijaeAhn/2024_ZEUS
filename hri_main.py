@@ -66,7 +66,10 @@ GreetingService_rq = rospy.ServiceProxy("GreetingService",Greeting_service)
 
 gui = rospy.Publisher("gui_state_topic", String, queue_size=1)
 subtitle_pub = rospy.Publisher("hri_subtitle", String, queue_size=1)
+force_add_pub = rospy.Publisher("hri/force_order", String, queue_size=1)
 order_pub = rospy.Publisher("/zeus/real/menu", String, queue_size=1)
+
+
 
 menu_conversion_dict = {
     "모히또": "0", 
@@ -153,7 +156,14 @@ class HRI_FSM:
  
 
     def act(self, msg):
+        
         print("HRIMAIN::LOOP START")
+        if msg.data == "miss":
+            self.force_order()
+            self.hri_finish_pub.publish("loop finished")
+            return
+        
+        
         triggerd_data = int(msg.data)
         
         if self.state == "initial" and triggerd_data == 0:
@@ -171,9 +181,10 @@ class HRI_FSM:
 
         elif self.state == "idle" and triggerd_data == 2:
             self.act_recommand_FER()
+
         
-        print("DEBUG::LOOP FINISH")
         self.hri_finish_pub.publish("loop finished")
+        print("DEBUG::LOOP FINISH")
 
     
     def act_on_initial(self):
@@ -311,6 +322,10 @@ class HRI_FSM:
             gui.publish("listening")
             return
 
+
+    def force_order(self):
+        hri_print("니는 씨발 주문할 생각이 없구나. 모히또나 쳐먹어라", make_idle=False)
+        force_add_pub.publish()
 
 if __name__ == "__main__":
     rospy.init_node("wtf")
