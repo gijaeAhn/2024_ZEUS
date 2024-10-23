@@ -30,7 +30,7 @@ class inputQueue:
         self.force_order_listener = rospy.Subscriber("hri/force_order", String, callback=self.reset_count)
 
         self.miss_count = 0
-        self.max_miss =5
+        self.max_miss =10
     
     def insert():
         pass
@@ -53,6 +53,7 @@ class inputQueue:
 
     def reset_count(self, msg):
         self.miss_count = 0
+        print("miss count cleared!!->", self.miss_count)
 
 
 

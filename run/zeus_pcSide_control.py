@@ -11,18 +11,19 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from std_msgs.msg import Int32
 
 # Global variables for sockets
-server_socket_5003 = None  # For sending data to robot (port 5003)
+server_socket_5003 = None  
 client_socket_5003 = None
-server_socket_5004 = None  # For receiving data from robot (port 5004)
+server_socket_5004 = None  
 client_socket_5004 = None
 start_time = None
+
+angle_modification_enabled = None
 
 def signal_handler(signal, frame):
     global server_socket_5003, client_socket_5003, server_socket_5004, client_socket_5004
     print("Exiting!")
     rospy.signal_shutdown("break")
     
-    # Close sockets on port 5003
     try:
         client_socket_5003.close()
         server_socket_5003.close()
@@ -30,7 +31,6 @@ def signal_handler(signal, frame):
     except Exception as e:
         print(f"Failed to close sockets on port 5003: {e}")
 
-    # Close sockets on port 5004
     try:
         client_socket_5004.close()
         server_socket_5004.close()
@@ -43,8 +43,20 @@ def signal_handler(signal, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 def main():
-    global server_socket_5003, client_socket_5003, server_socket_5004, client_socket_5004, start_time
+    global server_socket_5003, client_socket_5003, server_socket_5004, client_socket_5004, start_time, angle_modification_enabled
     start_time = time.time()
+
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'bottle':
+            angle_modification_enabled = False
+        elif sys.argv[1] == 'bartender':
+            angle_modification_enabled = True
+        else:
+            print("Unknown argument:", sys.argv[1])
+            angle_modification_enabled = None
+    else:
+        print("No Argument Error.")
+        angle_modification_enabled = None
     
     rospy.init_node('zeuscontrol')
     pub_ready = rospy.Publisher('/zeus/real/move_ready', Int32, queue_size=1)
@@ -68,7 +80,6 @@ def main():
 
 
     def returnJoint_callback(data):
-        # Data is unused
         global start_time
         cur_time = time.time()
         print("Received getJoint message from PC")
@@ -93,8 +104,11 @@ def main():
             print("EARLY MESSAGE...IGNORED!!!")
         else:
             np_arr = np.array(data.points[0].positions, dtype=np.float32)
-            if np_arr[5] < 0:  # Check if the 6th joint's value is negative
-                np_arr[5] += 360.0  # Correct the angle by adding 360.0
+            if angle_modification_enabled == True :
+                if np_arr[5] < 0:  
+                    np_arr[5] += 360.0 
+                if np_arr[3] < 0:
+                    np_arr[3] += 360.0  
             print("Sending joint positions:", np_arr)
             data_payload = struct.pack("f", 0) + np_arr.tobytes()
             data_length = struct.pack('!I', len(data_payload))

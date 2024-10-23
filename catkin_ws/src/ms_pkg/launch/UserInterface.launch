@@ -12,11 +12,11 @@
 
     
     <!-- FER<=Facial Expresstion Recogniton -->
-    <node pkg="ms_pkg" type="FERServiceServer_script.py" name="FERServiceServerNode" output="screen">
+    <!-- <node pkg="ms_pkg" type="FERServiceServer_script.py" name="FERServiceServerNode" output="screen">
         <param name="service_name" value="$(arg FER_SN)"/>
         <param name="weight_path" value="check_points/FER/learning_180.pt"/>
         <param name="device" value="$(arg device)"/>
-    </node>
+    </node> -->
     
     
     <!-- STT<=Speech To Text -->

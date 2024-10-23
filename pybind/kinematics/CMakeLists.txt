@@ -4,8 +4,7 @@ project(zeus_pybind)
 
 set(HOME_DIR $ENV{HOME})
 
-#Set your pybind_DIR depends on your python version
-# set(pybind11_DIR cuuretnHomedirname?/.local/lib/python3.8/site-packages/pybind11/share/cmake/pybind11)
+set(PYTHON_VERSION 3.8)
 set(pybind11_DIR "${HOME_DIR}/.local/lib/python${PYTHON_VERSION}/site-packages/pybind11/share/cmake/pybind11")
 
 

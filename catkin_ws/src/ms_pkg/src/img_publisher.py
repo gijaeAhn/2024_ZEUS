@@ -13,7 +13,7 @@ rospy.init_node("img_publisher_node")
 
 pub = rospy.Publisher("captured_img",Image, queue_size=10 )
 bridge = CvBridge()
-cap = cv2.VideoCapture(0) 
+cap = cv2.VideoCapture(4) 
 rate = rospy.Rate(10)
 
 
@@ -22,7 +22,7 @@ def openWebcamNode():
     while not rospy.is_shutdown():
         ret, frame = cap.read()
         if not ret:
-            rospy.logerr("Failed to capture image from webcam.")
+            # rospy.logerr("Failed to capture image from webcam.")
             break
         
         # OpenCV 이미지를 ROS 메시지로 변환

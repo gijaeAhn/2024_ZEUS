@@ -61,7 +61,7 @@ class DynamixelControlNode:
             rospy.logerr("Reading Encoder Failure.")
             self.initial_position = 0 
 
-        self.initial_position = 1757
+        self.initial_position = 1250
 
 
         goal_position = self.initial_position 

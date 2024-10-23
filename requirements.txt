@@ -12,3 +12,4 @@ whisper
 sounddevice
 google
 anthropic
+dynamixel-sdk

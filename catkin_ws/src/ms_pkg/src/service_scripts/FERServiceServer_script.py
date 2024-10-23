@@ -47,10 +47,8 @@ def FERServiceCallback(req):
  
     frame = cv2.imread(os.path.join(os.path.expanduser("~"),".temp_files/fer_img.png"))
  
-         
-    
     facebool , aligned_face = face_aligner.get_aligned_face(frame)
-
+    print("#####here in FER")
     if facebool:
         small_face = cv2.resize(aligned_face,(48,48))
         small_face = cv2.cvtColor(small_face, cv2.COLOR_RGB2GRAY)

@@ -27,10 +27,30 @@ from config.config import realConfig
 from utils.interpolation import inter_solve
 from utils.traj_processing import dataTrajectory
 
+openEE_WhileMoving = None
+
 
 class realAgent(Agent):
 
     def __init__(self):
+
+        global openEE_WhileMoving
+
+        if len(sys.argv) > 1:
+            if sys.argv[1] == 'bottle':
+                openEE_WhileMoving = True
+            elif sys.argv[1] == 'bartender':
+                openEE_WhileMoving = False
+            else:
+                print("Unknown argument:", sys.argv[1])
+                openEE_WhileMoving = None
+        else:
+            print("No Argument Error.")
+            openEE_WhileMoving = None
+        
+        self._EEMoving = openEE_WhileMoving
+
+        print("Open EE while Moving : ",self._EEMoving)
 
         Agent.__init__(self)
 
@@ -47,6 +67,7 @@ class realAgent(Agent):
         self._jointVelocity             = realConfig.defaultAngleVelocity
         self._robotReadyState           = threading.Event()
         self._robotReadyStateLock       = threading.RLock()
+        self._shakingType               = 0
     
 
     
@@ -116,7 +137,7 @@ class realAgent(Agent):
     def _jointUpdateCallback(self,data):
         DEGREE_TO_RADIAN = 0.0174533
         joint = np.array(data.points[0].positions,dtype= np.float32).tolist()
-        print("Joint : ", " ".join(str(j) for j in joint))
+        # print("Joint : ", " ".join(str(j) for j in joint))
         self._robotJoint = joint
         joint = [angle * DEGREE_TO_RADIAN for angle in joint]
         joint = [angle * direction for angle, direction in zip(joint, realConfig.ROTATE_DIRECTION)]
@@ -124,13 +145,20 @@ class realAgent(Agent):
         self._curTrans = ARM6_kinematics_forward_armReal(joint)
         # print(f"Robot Ready Time    : {time.time()}")
         self._robotReadyState.set()
+        self._curTrans.printTransform(self._curTrans)
 
     def _menuCallback(self,menu):
+        menu_num = int(menu.data)
+        if menu_num in (1, 2, 3):
+            self._shakingType = 1
+        else: 
+            self._shakingType = 2
+
         # self._fsm.handleEvent("get_menu")
         self._makeMenu(menu)
         self._hereYouare()
         # Ordered Task End
-        rospy.sleep(5)
+        rospy.sleep(3)
 
         self._fsm.handleEvent("hri_start")
         self._fsm.handleEvent("get_menu")
@@ -155,9 +183,9 @@ class realAgent(Agent):
                 self._moveZ(-realConfig.smallCommandStep)
             
             elif command == 'r' :
-                self._rotateZ(realConfig.pourAngle)
+                self._pour()
             elif command == 't' :
-                self._rotateZ(-realConfig.pourAngle)
+                self._unpour()
             
             elif command == '0' :
                 angle = [0,0,0,0,0,0]
@@ -175,9 +203,7 @@ class realAgent(Agent):
             elif command == '5' :
                 self.movePoseT(realConfig.bfPosition1)
                 self._openEE()
-
-
-            elif command == '6' :
+                rospy.sleep(1)
                 moveBig =0.18
                 self._moveZ(-moveBig)
                 print("Moving Z Devide : ",realConfig.bfMovingDown + moveBig)
@@ -194,117 +220,87 @@ class realAgent(Agent):
                 self._motionFast()
                 rospy.sleep(8.0)
                 self.movePoseA(realConfig.bfPosition4A)
-                rospy.sleep(0.355)
-                self._openEE()
+                rospy.sleep(0.3905)
+                self._openEE()  
                 self._moitionSlow()
 
-            # ------- Check Traj Command
-            # elif command == '6' :
-            #     curPos =  Transform.trcopy(realConfig.bfPosition1)  
-            #     tempPos = Transform.trcopy(curPos)  
-            #     print("Cur Pose : ")
-            #     curPos.printTransform(curPos)
-                
-            #     print()
-            #     tempPos.setVal(2,3,tempPos(2,3) + realConfig.bfMovingDown)
-            #     print("Temp Pose : ")
-            #     tempPos.printTransform(tempPos)
-            #     print()
-            #     self._interMove(curPos,tempPos)
-            # ---------------------------------------------
-
             elif command == '7' :
-                self._shakingTraj(1)
-
+                self._shakingTraj(2)
+    
             # ---   Motion Param
             elif command == 'o' :
                 self._moitionSlow()
             elif command == 'p' :
                 self._motionFast()    
 
-            # --- For Dispenser Path Test    
-            # elif command == 'g' :
-            #     self._moveY(realConfig.componentOffset['A'][1])
-            # elif command == 'h' :
-            #     self._moveZ(realConfig.componentOffset['A'][2])
-            # elif command == 'j' :
-            #     self._moveZ(realConfig.componentOffset['A'][3])
-            # elif command == 'k' :
-            #     self._moveZ(-(realConfig.componentOffset['A'][2] + realConfig.componentOffset['A'][3]))
+            # elif command == 'v' :
+            #     joint = self._robotJoint
+            #     joint[4] += 5
+            #     traj_msg = JointTrajectory()
+            #     traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+            #     traj_point = JointTrajectoryPoint()
+            #     traj_point.positions = joint
+            #     traj_point.time_from_start = rospy.Duration(1.0)
+            #     traj_msg.points.append(traj_point)
+            #     self._realJointCommandPub.publish(traj_msg)
 
-            elif command == 'v' :
-                joint = self._robotJoint
-                joint[4] += 5
-                traj_msg = JointTrajectory()
-                traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
-                traj_point = JointTrajectoryPoint()
-                traj_point.positions = joint
-                traj_point.time_from_start = rospy.Duration(1.0)
-                traj_msg.points.append(traj_point)
-                self._realJointCommandPub.publish(traj_msg)
+            # elif command == 'b' :
+            #     joint = self._robotJoint
+            #     joint[5] += 5
+            #     traj_msg = JointTrajectory()
+            #     traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+            #     traj_point = JointTrajectoryPoint()
+            #     traj_point.positions = joint
+            #     traj_point.time_from_start = rospy.Duration(1.0)
+            #     traj_msg.points.append(traj_point)
+            #     self._realJointCommandPub.publish(traj_msg)
 
-            elif command == 'b' :
-                joint = self._robotJoint
-                joint[5] += 5
-                traj_msg = JointTrajectory()
-                traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
-                traj_point = JointTrajectoryPoint()
-                traj_point.positions = joint
-                traj_point.time_from_start = rospy.Duration(1.0)
-                traj_msg.points.append(traj_point)
-                self._realJointCommandPub.publish(traj_msg)
-
-            elif command == 'n' :
-                joint = self._robotJoint
-                joint[2] -= 5
-                traj_msg = JointTrajectory()
-                traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
-                traj_point = JointTrajectoryPoint()
-                traj_point.positions = joint
-                traj_point.time_from_start = rospy.Duration(1.0)
-                traj_msg.points.append(traj_point)
-                self._realJointCommandPub.publish(traj_msg)
+            # elif command == 'n' :
+            #     joint = self._robotJoint
+            #     joint[2] -= 5
+            #     traj_msg = JointTrajectory()
+            #     traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+            #     traj_point = JointTrajectoryPoint()
+            #     traj_point.positions = joint
+            #     traj_point.time_from_start = rospy.Duration(1.0)
+            #     traj_msg.points.append(traj_point)
+            #     self._realJointCommandPub.publish(traj_msg)
     
 
-            elif command == 'f' :
-                joint = self._robotJoint
-                joint[4] -= 5
-                traj_msg = JointTrajectory()
-                traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
-                traj_point = JointTrajectoryPoint()
-                traj_point.positions = joint
-                traj_point.time_from_start = rospy.Duration(1.0)
-                traj_msg.points.append(traj_point)
-                self._realJointCommandPub.publish(traj_msg)
+            # elif command == 'f' :
+            #     joint = self._robotJoint
+            #     joint[4] -= 5
+            #     traj_msg = JointTrajectory()
+            #     traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+            #     traj_point = JointTrajectoryPoint()
+            #     traj_point.positions = joint
+            #     traj_point.time_from_start = rospy.Duration(1.0)
+            #     traj_msg.points.append(traj_point)
+            #     self._realJointCommandPub.publish(traj_msg)
 
-            elif command == 'g' :
-                joint = self._robotJoint
-                joint[5] -= 5
-                traj_msg = JointTrajectory()
-                traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
-                traj_point = JointTrajectoryPoint()
-                traj_point.positions = joint
-                traj_point.time_from_start = rospy.Duration(1.0)
-                traj_msg.points.append(traj_point)
-                self._realJointCommandPub.publish(traj_msg)
+            # elif command == 'g' :
+            #     joint = self._robotJoint
+            #     joint[5] -= 5
+            #     traj_msg = JointTrajectory()
+            #     traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+            #     traj_point = JointTrajectoryPoint()
+            #     traj_point.positions = joint
+            #     traj_point.time_from_start = rospy.Duration(1.0)
+            #     traj_msg.points.append(traj_point)
+            #     self._realJointCommandPub.publish(traj_msg)
 
-            elif command == 'h' :
-                joint = self._robotJoint
-                joint[2] += 5
-                traj_msg = JointTrajectory()
-                traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
-                traj_point = JointTrajectoryPoint()
-                traj_point.positions = joint
-                traj_point.time_from_start = rospy.Duration(1.0)
-                traj_msg.points.append(traj_point)
-                self._realJointCommandPub.publish(traj_msg)
+            # elif command == 'h' :
+            #     joint = self._robotJoint
+            #     joint[2] += 5
+            #     traj_msg = JointTrajectory()
+            #     traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+            #     traj_point = JointTrajectoryPoint()
+            #     traj_point.positions = joint
+            #     traj_point.time_from_start = rospy.Duration(1.0)
+            #     traj_msg.points.append(traj_point)
+            #     self._realJointCommandPub.publish(traj_msg)
 
             
-
-
-
-
-
             # ----------------------
 
         elif scale == 'big' :
@@ -346,14 +342,10 @@ class realAgent(Agent):
         self.rateNormal.sleep()
         print("Arrived at the dispensor")
 
-
-        # Check EE is opened
         if self._EE.getState() != 'open':
             print("EE is closed")
             self._EE.open()
             
-        # Temporary Cure : Check Code Required
-
         self.rateNormal.sleep()
         
         if not self._fsm.getState() == 'moving':
@@ -364,8 +356,8 @@ class realAgent(Agent):
             second_comp = realConfig.menuComponent[menu][1]
             movingYtemp = 0.2
             print(f"Component : {first_comp} {second_comp}")
-            # Moving sequence should be (y) - (x) - (z) - (z) | (-z) - (x) - (z) - (z) - (-z) - (-x) - (-y)
 
+            # Moving sequence should be (y) - (x) - (z) - (z) | (-z) - (x) - (z) - (z) - (-z) - (-x) - (-y)
             print("Get First")
             self._moveX(realConfig.componentOffset[first_comp][0])
             self.rateNormal.sleep()
@@ -374,7 +366,6 @@ class realAgent(Agent):
             self._moveZ(realConfig.componentOffset[first_comp][2])
             self.rateNormal.sleep()
             self._moveZ(realConfig.componentOffset[first_comp][3])
-            # self.rateSlow.sleep()
             time.sleep(8)
             # Second Element
             self._moveZ(-(realConfig.componentOffset[first_comp][2] + realConfig.componentOffset[first_comp][3]))
@@ -390,7 +381,6 @@ class realAgent(Agent):
             self._moveZ(realConfig.componentOffset[second_comp][2])
             self.rateNormal.sleep()
             self._moveZ(realConfig.componentOffset[second_comp][3])
-            # self.rateSlow.sleep()
             time.sleep(8)
             self._moveZ(-(realConfig.componentOffset[second_comp][2] + realConfig.componentOffset[second_comp][3] ))
             self.rateNormal.sleep()
@@ -400,9 +390,8 @@ class realAgent(Agent):
             self._moveX(-realConfig.componentOffset[second_comp][0])
             self.rateNormal.sleep()
             self._moveY(-realConfig.componentOffset[second_comp][1] + movingYtemp )
-            self.rateNormal.sleep()   # << Insert here if third or next elements is needed
+            self.rateNormal.sleep() 
             print("Success to get base bevarge\n")
-            # Now We get the componenets
 
             self.rateNormal.sleep()
             self._EE.close()
@@ -415,10 +404,14 @@ class realAgent(Agent):
             self.movePoseT(realConfig.shakingT)
             print("Arrvied at the Shaking Position")
             self._motionFast()
-            self._shake(1)
+            if self._shakingType not in (1, 2):
+                print("Wrong Shaking Type")
+            else:
+                print("Shaking Type : ",self._shakingType)
+                self._shake(self._shakingType)
             self._moitionSlow()
             self.movePoseT(realConfig.shakingT)
-            self.rateNormal.sleep()
+            rospy.sleep(3)
 
             print("Making Menu Done\n")
 
@@ -451,6 +444,20 @@ class realAgent(Agent):
         traj_point.time_from_start = rospy.Duration(1.0)
         traj_msg.points.append(traj_point)
         self._realJointCommandPub.publish(traj_msg)
+    
+    def _unpour(self):
+        self._robotReadyState.wait()
+        self._robotReadyState.clear()
+        joint = self._robotJoint
+        joint[5] += 120
+        traj_msg = JointTrajectory()
+        traj_msg.joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
+        traj_point = JointTrajectoryPoint()
+        traj_point.positions = joint
+        traj_point.time_from_start = rospy.Duration(1.0)
+        traj_msg.points.append(traj_point)
+        self._realJointCommandPub.publish(traj_msg)
+
 
     def _hereYouare(self):
         if not self._fsm.getState() == 'moving':
@@ -461,8 +468,12 @@ class realAgent(Agent):
             sentence = 'Enjoy your drink'
             print(sentence)
             self._EE.open()
-            self.rateFast.sleep()
+            rospy.sleep(2)
             self._pour()
+            rospy.sleep(5)
+            self._unpour()
+            rospy.sleep(1)
+            self.movePoseT(realConfig.shakingT)
             self._fsm.handleEvent('serve_menu')
 
 
@@ -574,11 +585,9 @@ class realAgent(Agent):
         shakeTrajec = None
         if type == 1 :
             shakeTrajec = dataTrajectory(realConfig.shakeType1)
+        elif type == 2:
+            shakeTrajec = dataTrajectory(realConfig.shakeType2)
         self._realJointTrajCommandPub.publish(shakeTrajec)
-
-
-    # ----------- Above Actions are Fully tested ----    
-
 
     def _rotateX(self,xAngle)  :
         print(f"Move Rel Start Time : {time.time()}")
@@ -602,11 +611,16 @@ class realAgent(Agent):
         self.movePoseT(goalTrans)
 
     def _openEE(self) :
-        # self._robotReadyState.wait()
-        self._eeController.open()
+        if self._EEMoving == True : # For BottleFlip
+            self._eeController.open()
+        elif self._EEMoving == False : # For Bartender
+            self._robotReadyState.wait()
+            # self._robotReadyState.clear()
+            self._eeController.open()  
 
     def _closeEE(self) :
         self._robotReadyState.wait()
+        # self._robotReadyState.clear()
         self._eeController.close()
     
     def _moitionSlow(self) :

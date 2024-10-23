@@ -126,7 +126,7 @@ class realConfig :
 
    
 #------------- For Real Position Logger -------------
-    smallCommandStep = 0.05
+    smallCommandStep = 0.02
     bigCommandStep   = 0.05
 
 # ----------- PREDEFINED POSITIONS  -------------------
@@ -146,10 +146,10 @@ class realConfig :
     barPoseT         = Transform().rotateZ(PI/2).translateZ(0.3).translateX(0.3).rotateY(PI/2)
     shakingT         = Transform().translateZ(0.3).translateX(0.3).rotateY(PI/2)
     servicePositionT = Transform.trcopy(shakingT)
-    servicePositionT = servicePositionT.translateZ(0.1).translateX(0.1)
+    servicePositionT = servicePositionT.translateZ(0.11).translateY(0.195).translateX(0.07)
 
-    shakeType1 = os.path.join(os.path.expanduser('~'), "Desktop", "2024_ZEUS", "shake_traj", "shake3.txt")
-
+    shakeType1 = os.path.join(os.path.expanduser('~'), "Desktop", "2024_ZEUS", "shake_traj", "shake1.txt")
+    shakeType2 = os.path.join(os.path.expanduser('~'), "Desktop", "2024_ZEUS", "shake_traj", "shake2.txt")
 
 #--------------- For Menu -----------------------------------------
     # Robot Orig = {0.1, 0.1, 0.0152}
@@ -176,15 +176,15 @@ class realConfig :
 
     # Distance from Z = 0.3
     goUP1 = 0.118 - plateOffset - toolOffsetX
-    goUP2 = 0.018
+    goUP2 = 0.0165
     goFront = disFromOrig - barPoseT.getVal(1,3)
 
     componentOffset = {
     'A': [ 0.05,    goFront, goUP1, goUP2],
     'B': [ 0.15,    goFront, goUP1, goUP2],
     'C': [ 0.25,    goFront, goUP1, goUP2],
-    'D': [ 0.35,    goFront, goUP1, goUP2],
-    'E': [ 0.45,    goFront, goUP1, goUP2]
+    'D': [ 0.34,    goFront, goUP1, goUP2],
+    'E': [ 0.445,    goFront, goUP1, goUP2]
     }
 
     pourAngle = PI * 0.666

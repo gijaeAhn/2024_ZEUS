@@ -72,11 +72,16 @@ order_pub = rospy.Publisher("/zeus/real/menu", String, queue_size=1)
 
 
 menu_conversion_dict = {
-    "모히또": "0", 
-    '진토닉': "1", 
-    '섹스온더비치': "2",
-    '프랜치75': "3", 
-    "마가리타": "4"
+    "모히또": "1",
+    "모히토": "1", 
+    '진토닉': "2", 
+    '소맥': "3",
+    '쏘맥':"3",
+    '프랜치75': "4", 
+    '프렌치75': "4",
+    "마가리타": "5",
+    "마티니": "6",
+
 }
 
 def hri_print(sub_msg, make_idle = True):
@@ -227,6 +232,7 @@ class HRI_FSM:
 
 
     def act_check_answer(self):
+        force_add_pub.publish()
         stt_result = STTService_rq(self.mp3file_path).result
         context = detect_user_answer(stt_result)
 
@@ -295,8 +301,11 @@ class HRI_FSM:
         cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
         cv2.imwrite(HRIConfig.fer_image_path, cv_image)
 
-
+        print("###before send request")
         fer_result = FERService_rq().result
+        print("###after send request")
+
+
         print("DUBUG::FERRESULT->",fer_result)
         if fer_result<0:
             hri_print("죄송하지만 카메라에 사람이 발견되지 않았습니다.", make_idle=True)
