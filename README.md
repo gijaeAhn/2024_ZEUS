@@ -17,13 +17,10 @@
   sudo dpkg -i webots_2022b_Ubuntu-20.04_amd64.deb
 ```
 - Install Webots dependencies:
-```bash
-  sudo apt --fix-broken install
-```
+
 4. Build Catkin Workspace (ROS Packages)
 - To build your ROS packages, run the following command in the root of your project:
   bash ./build_catkin.sh
-- Webots Header Path issue !!!
   
 5. Install Pybind Library
 - Set your pybind_DIR depends on your python version
@@ -36,7 +33,7 @@
 - Run the Webots client:
   python webot_client.py
 - Run the simple command tool:
-  python Tools/simple_command_pub.py
+  python Tools/simple_command_pub(sim, real, mod).py
 - Coordinate system: The robot's frame follows the FLU (Front, Left, Up) convention.
 - Control Commands:
   - Press i: Set the robot to the initial position.
