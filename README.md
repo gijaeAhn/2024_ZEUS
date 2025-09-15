@@ -46,7 +46,7 @@
 
 7. Update Dependencies
 - Keep track of your dependencies by updating the relevant .txt file. This file should contain a list of the required packages for the project.
-- Install Dependencies :
+- Install tmux :
 ```bash
     sudo apt-get install tmux
 ```
@@ -55,14 +55,4 @@
 ```bash
   sudo chmod a+rw /dev/ttyUSB0
 ```
----
 
-## Style Guide
-
-1. Ros Topic Namespace Rule
-- Topics which are shared both by real and webots 
-  - /zeus/'topicName'
-- Topics only for real
-  - /zeus/real/'topicName'
-- Topics only for webots
-  - /zeus/webots/'topicName'
