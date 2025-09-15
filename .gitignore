@@ -1,6 +1,7 @@
 # Ignore VSCode settings
 .vscode/
 
+lib/
 # Ignore catkin workspace build and development folders
 /catkin_ws/build/
 /catkin_ws/devel/
@@ -13,3 +14,5 @@ __pycache__/
 *.so
 
 .thumbs/
+
+webots/controllers/zeus_controller/zeus_controller
