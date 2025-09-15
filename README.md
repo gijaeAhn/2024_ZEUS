@@ -48,7 +48,7 @@
 - Keep track of your dependencies by updating the relevant .txt file. This file should contain a list of the required packages for the project.
 - Install tmux :
 ```bash
-    sudo apt-get install tmux
+  sudo apt-get install tmux
 ```
 
 8. Set UP for Dynamixel 
