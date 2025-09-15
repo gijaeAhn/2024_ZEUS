@@ -35,8 +35,8 @@
 - Open Webots.
 - Run the Webots client:
   python webot_client.py
-- Run the position logger tool:
-  python Tools/positionLogger.py
+- Run the simple command tool:
+  python Tools/simple_command_pub.py
 - Coordinate system: The robot's frame follows the FLU (Front, Left, Up) convention.
 - Control Commands:
   - Press i: Set the robot to the initial position.

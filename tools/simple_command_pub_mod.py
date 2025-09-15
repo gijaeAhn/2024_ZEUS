@@ -6,9 +6,9 @@ home_dir = os.path.expanduser('~')
 
 sys.path.append(os.path.join(home_dir, 'Desktop/2024_ZEUS/'))
 
-from positionLogger import *
+from simple_command_pub_sim import *
 
-class ModifiedPositonLogger(positionLogger):
+class ModifiedPositonLogger(simple_command_pub_sim):
     def __init__(self):
 
         def on_press(self, key):
@@ -25,7 +25,7 @@ class ModifiedPositonLogger(positionLogger):
 
 
 def main():
-    zeusPositionLogger = positionLogger()
+    simple_command_pub_sim = simple_command_pub_sim()
 
     rospy.init_node('zeus_position_logger', anonymous=True)
 

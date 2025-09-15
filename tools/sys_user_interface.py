@@ -1,4 +1,4 @@
-from positionLogger import positionLogger
+from simple_command_pub_sim import simple_command_pub_sim
 
 
 from ms_pkg.srv import LLMC_service, LLMC_serviceResponse
@@ -41,7 +41,7 @@ def captureImagefromCam():
         return ret, frame
 
 #controller for webot and recording
-class SysUserInterface(positionLogger):
+class SysUserInterface(simple_command_pub_sim):
    
     def __init__(self):
         super().__init__()

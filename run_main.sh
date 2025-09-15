@@ -34,7 +34,7 @@ tmux send-keys "python3 main_client.py $1" C-m
 
 tmux select-pane -t 4
 tmux send-keys "cd ~/Desktop/2024_ZEUS/tools" C-m
-tmux send-keys "python3 positionLoggerReal.py" C-m
+tmux send-keys "python3 simple_command_pub_Real.py" C-m
 
 if [ "$1" = "bottle" ]; then
     tmux select-pane -t 5
