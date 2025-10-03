@@ -8,6 +8,7 @@ sys.path.append(os.path.join(home_dir, 'Desktop/2024_ZEUS/'))
 
 import rospy
 import numpy as np
+import copy
 
 # ----------------- ROS Message -----------------
 
@@ -68,11 +69,13 @@ class realAgent(Agent):
         self._robotReadyState           = threading.Event()
         self._robotReadyStateLock       = threading.RLock()
         self._shakingType               = 0
+        self.default_overlap            = 0.01
     
 
     
         #----- Publisher
         self._realJointCommandPub          = rospy.Publisher('/zeus/real/jointCommand'             ,  JointTrajectory    , queue_size = 1    )
+        self._realLinearCommandPub         = rospy.Publisher('/zeus/real/linearCommand'            ,  JointTrajectory    , queue_size = 1    )
         self._realJointTrajCommandPub      = rospy.Publisher('/zeus/real/jointTrajectory'          ,  JointTrajectory    , queue_size = 1    )  
         self._realFSMPub                   = rospy.Publisher('/zeus/fsm'                           ,  String             , queue_size = 1    )
         self._realMotionParamPub           = rospy.Publisher('/zeus/real/param'                    ,  Int32              , queue_size = 1    )
@@ -164,7 +167,7 @@ class realAgent(Agent):
         self._fsm.handleEvent("get_menu")
         self.movePoseT(realConfig.startPoseT)
 
-    def _simpleMoveCallback(self,msg, scale = 'small') :
+    def _simpleMoveCallback(self,msg, scale = 'big') :
     
         command = msg.data        
         if scale == 'small':
@@ -305,17 +308,17 @@ class realAgent(Agent):
 
         elif scale == 'big' :
             if command == 'w' :
-                self._moveX(realConfig.bigCommandStep)
+                self.movePoseLinear('x', realConfig.bigCommandStep)
             elif command == 's' :
-                self._moveX( -realConfig.bigCommandStep)
+                self.movePoseLinear('x', -realConfig.bigCommandStep)
             elif command == 'a' :
-                self._moveY(realConfig.bigCommandStep)
+                self.movePoseLinear('y', realConfig.bigCommandStep)
             elif command == 'd' :
-                self._moveY(-realConfig.bigCommandStep)
+                self.movePoseLinear('y', -realConfig.bigCommandStep)
             elif command == 'q' :
-                self._moveZ(realConfig.bigCommandStep)
+                self.movePoseLinear('z', realConfig.bigCommandStep)
             elif command == 'e' :
-                self._moveZ(-realConfig.bigCommandStep)
+                self.movePoseLinear('z', -realConfig.bigCommandStep)
             elif command == 'i' :
                 self.movePoseT(realConfig.startPoseT)
             elif command == 'o' :
@@ -323,6 +326,17 @@ class realAgent(Agent):
             elif command == '0' :
                 angle = [0,0,0,0,0,0]
                 self.movePoseA(angle)
+            elif command == '1' :
+                self.movePoseT(realConfig.startPoseT)
+            elif command == '2' :
+                self.movePoseT(realConfig.barPoseT)
+            elif command == '3' :
+                self.movePoseT(realConfig.shakingT)
+            elif command == '4' :
+                self.movePoseT(realConfig.servicePositionT)
+            elif command == '5' :
+                self.movePoseT(realConfig.test1T)
+
 
     def _eeControlCallback(self,command) :
         if command == 'open' :
@@ -431,7 +445,6 @@ class realAgent(Agent):
             self._fsm.handleEvent('finish_shake')
             print("Shaking Done\n")
         
-
     def _pour(self):
         self._robotReadyState.wait()
         self._robotReadyState.clear()
@@ -479,7 +492,7 @@ class realAgent(Agent):
 
 # --------------- Base Action ------------------------
 
-    def movePoseA(self, Angle):
+    def movePoseA(self, Angle, Linear = False):
         self._robotReadyState.wait()
         self._robotReadyState.clear()
         if not(self._fsm.getState() == "moving" or self._fsm.getState() == "shaking"):
@@ -497,13 +510,30 @@ class realAgent(Agent):
         traj_point.positions = Angle
         traj_point.time_from_start = rospy.Duration(1.0)
         traj_msg.points.append(traj_point)
-        self._realJointCommandPub.publish(traj_msg)
+        if Linear :
+            self._realLinearCommandPub.publish(traj_msg)
+        else:
+            self._realJointCommandPub.publish(traj_msg)
             
     def movePoseT(self,Transform):
         self._robotReadyState.wait()
         solvedAngle = ARM6_kinematics_inverse_arm(Transform,self._curJoint)
-        self.movePoseA(solvedAngle)
+        self.movePoseA(solvedAngle,False)
 
+    def movePoseLinear(self,direction, distance):
+        self._robotReadyState.wait()
+        curTrans = Transform.trcopy(self._curTrans)
+        targetTrans = Transform.trcopy(curTrans)
+        if direction =='x':
+            targetTrans.translateX(distance)
+        elif direction =='y':
+            targetTrans.translateY(distance)
+        elif direction == 'z':
+            targetTrans.translateZ(distance)
+
+        solvedAngle = ARM6_kinematics_inverse_arm(targetTrans,self._curJoint)
+        self.movePoseA(solvedAngle,True)
+     
     def _moveXDevide(self, xDistance):
         self._robotReadyState.wait()
         step_size = 0.15
@@ -535,21 +565,21 @@ class realAgent(Agent):
             self._moveZ(zDistance)        
 
     def _moveX(self,xDistance) :
-        print(f"Move Rel Start Time : {time.time()}")
+        print(f"Move Global Start Time : {time.time()}")
         self._robotReadyState.wait()
         goalTrans = self._curTrans
         goalTrans = goalTrans.setVal(0,3,self._curTrans(0,3) + xDistance)
         self.movePoseT(goalTrans)
 
     def _moveY(self,yDistance) :
-        print(f"Move Rel Start Time : {time.time()}")
+        print(f"Move Global Start Time : {time.time()}")
         self._robotReadyState.wait()
         goalTrans = self._curTrans
         goalTrans = goalTrans.setVal(1,3,self._curTrans(1,3) + yDistance)
         self.movePoseT(goalTrans)
 
     def _moveZ(self,zDistance) :
-        print(f"Move Rel Start Time : {time.time()}")
+        print(f"Move Global Start Time : {time.time()}")
         self._robotReadyState.wait()
         goalTrans = self._curTrans
         goalTrans = goalTrans.setVal(2,3,self._curTrans(2,3) + zDistance)

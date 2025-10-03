@@ -66,7 +66,7 @@ def interpolate_transforms(trans1, trans2, overlap):
     p2 = np.array(quatp2[4:])
 
     dist = np.linalg.norm(p1-p2)
-    steps = dist/overlap
+    steps = int(dist/overlap)
 
     q1 /= np.linalg.norm(q1)
     q2 /= np.linalg.norm(q2)

@@ -92,7 +92,7 @@ def main():
             print("EARLY MESSAGE...IGNORED!!!")
         else:
             print("Returning joint positions")
-            data_payload = struct.pack("f", 4)
+            data_payload = struct.pack("f", 5)
             msg =  data_payload
             try:
                 client_socket_5003.sendall(msg)
@@ -122,6 +122,28 @@ def main():
             except Exception as e:
                 print("Error sending data to robot:", e)
 
+    def linearCommand_callback(data):
+        global start_time
+        cur_time = time.time()
+        print("Received JointCommand message from PC")
+        if cur_time - start_time < 1.0:
+            print("EARLY MESSAGE...IGNORED!!!")
+        else:
+            np_arr = np.array(data.points[0].positions, dtype=np.float32)
+            if angle_modification_enabled == True :
+                if np_arr[5] < 0:  
+                    np_arr[5] += 360.0 
+                if np_arr[3] < 0:
+                    np_arr[3] += 360.0  
+            print("Sending joint positions:", np_arr)
+            data_payload = struct.pack("f", 1) + np_arr.tobytes()
+            msg = data_payload
+            print("Sending message of length:", len(msg))
+            try:
+                client_socket_5003.sendall(msg)
+            except Exception as e:
+                print("Error sending data to robot:", e) 
+
 
     def trajectory_callback(data):
         global start_time
@@ -134,7 +156,7 @@ def main():
             np_arr = np.array([val for point in data.points for val in point.positions], dtype=np.float32)
             np_arr[5::6] = np.where(np_arr[5::6] < 0, np_arr[5::6] + 360.0, np_arr[5::6])
 
-            data_payload = struct.pack("f", 1) + np_arr.tobytes()
+            data_payload = struct.pack("f", 2) + np_arr.tobytes()
             msg = data_payload
             print(f"Sending message of length: {len(msg)} bytes")
             for i in range(pointNum):
@@ -157,10 +179,10 @@ def main():
         else:
             paramType = msg.data
             if paramType == 0:   # Slow Motion Param
-                data_payload = struct.pack("f", 2.0)
+                data_payload = struct.pack("f", 3.0)
                 print("Sending slow motion parameter")
             elif paramType == 1: # Fast Motion Param
-                data_payload = struct.pack("f", 3.0)
+                data_payload = struct.pack("f", 4.0)
                 print("Sending fast motion parameter")
             else:
                 print("Unknown motion parameter type:", paramType)
@@ -175,6 +197,7 @@ def main():
 
     # Subscribe to ROS topics
     rospy.Subscriber("/zeus/real/jointCommand"   , JointTrajectory, jointCommand_callback )
+    rospy.Subscriber("/zeus/real/linearCommand"  , JointTrajectory, linearCommand_callback)
     rospy.Subscriber("/zeus/real/jointTrajectory", JointTrajectory, trajectory_callback   )
     rospy.Subscriber("/zeus/real/param"          , Int32          , motionParam_callback  )
     rospy.Subscriber("/zeus/real/getJoint"       , Int32          , returnJoint_callback  )
