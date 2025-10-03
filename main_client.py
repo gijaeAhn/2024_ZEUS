@@ -92,16 +92,16 @@ class realAgent(Agent):
             self._getJoint()
             rospy.sleep(2)
 
-        # Temp to Skip HRI Section
+        # Skip HRI STATES for test
         self._fsm.handleEvent("hri_start")
         self._fsm.handleEvent("get_menu")
     
-        #----- Additional Threads
+        # Threads
         threading.Thread(target=self._publishFsmState,daemon=True).start()
         # threading.Thread(target=self._printingReadyState ,daemon= True).start()
         print("Robot Start")
 
-        # --- Run 
+        # Run 
         rospy.spin()
 
 # ---------------- Thread Functions ------------------
@@ -555,11 +555,11 @@ class realAgent(Agent):
         goalTrans = goalTrans.setVal(2,3,self._curTrans(2,3) + zDistance)
         self.movePoseT(goalTrans)
 
-    def _interMove(self, trans1, trans2):
+    def _interMove(self, trans1, trans2, overlap):
         print(f"Inter Move Start Time : {time.time()}")
         self._robotReadyState.wait()
-        num_step = 16
-        result = inter_solve(trans1, trans2, num_step)  
+       
+        result = inter_solve(trans1, trans2, overlap)  
 
         RADIAN_TO_DEGREE = 57.2958
         traj_msg = JointTrajectory()

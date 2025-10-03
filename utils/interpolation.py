@@ -23,7 +23,8 @@ def print_transform(transform, label=None):
     print()  
 
 
-def interpolate_transforms(trans1, trans2, steps):
+#def interpolate_transforms(trans1, trans2, steps):
+def interpolate_transforms(trans1, trans2, overlap):
 
     def transform_from_quatp(quatp):
         q = quatp[:4]  
@@ -62,7 +63,10 @@ def interpolate_transforms(trans1, trans2, steps):
     p1 = np.array(quatp1[4:])  
 
     q2 = np.array(quatp2[:4])  
-    p2 = np.array(quatp2[4:])  
+    p2 = np.array(quatp2[4:])
+
+    dist = np.linalg.norm(p1-p2)
+    steps = dist/overlap
 
     q1 /= np.linalg.norm(q1)
     q2 /= np.linalg.norm(q2)
@@ -109,9 +113,9 @@ def solveAngle(transforms):
     
     return returnAngles
 
-def inter_solve(trans1,trans2,NUM_STEP) :
+def inter_solve(trans1,trans2,overlap) :
 
-    transforms = interpolate_transforms(trans1,trans2,NUM_STEP)
+    transforms = interpolate_transforms(trans1,trans2,overlap)
     solvedAngle = solveAngle(transforms)
 
     return solvedAngle
@@ -120,8 +124,8 @@ def main():
     trans1 = realConfig.bfPosition1
     trans2 = Transform.trcopy(trans1)  
     trans2.translateZ(realConfig.bfMovingDown)
-    steps = 100  
-    transforms = interpolate_transforms(trans1, trans2, steps)
+    overlap = 0.005  
+    transforms = interpolate_transforms(trans1, trans2, overlap)
     solvedAngle = solveAngle(transforms)
 
 if __name__ == "__main__":

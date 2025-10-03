@@ -46,7 +46,7 @@ def main():
     global server_socket_5003, client_socket_5003, server_socket_5004, client_socket_5004, start_time, angle_modification_enabled
     start_time = time.time()
 
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 2:
         if sys.argv[1] == 'bottle':
             angle_modification_enabled = False
         elif sys.argv[1] == 'bartender':
@@ -54,16 +54,21 @@ def main():
         else:
             print("Unknown argument:", sys.argv[1])
             angle_modification_enabled = None
+
+        address = sys.argv[2]
+        print("Server Address :",address)
     else:
-        print("No Argument Error.")
-        angle_modification_enabled = None
-    
+        print("Need 2 Arguments.")
+        print("Mode : 'bottle' or 'bartender'i")
+        print("Server IP address")
+        sys.exit()
+
     rospy.init_node('zeuscontrol')
     pub_ready = rospy.Publisher('/zeus/real/move_ready', Int32, queue_size=1)
     zeus_joint_read = rospy.Publisher('/zeus/real/joint', JointTrajectory, queue_size=1)
 
     server_socket_5003 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket_5003.bind(('192.168.0.71', 5003))  
+    server_socket_5003.bind((address, 5003))  
     server_socket_5003.listen(1) 
     print('Waiting for connection on port 5003 (command socket)...')
     client_socket_5003, addr = server_socket_5003.accept() 
@@ -71,7 +76,7 @@ def main():
     print('Robot connected on port 5003:', addr)
 
     server_socket_5004 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket_5004.bind(('192.168.0.71', 5004)) 
+    server_socket_5004.bind((address, 5004)) 
     server_socket_5004.listen(1) 
     print('Waiting for connection on port 5004 (data socket)...')
     client_socket_5004, addr_5004 = server_socket_5004.accept() 
@@ -87,9 +92,8 @@ def main():
             print("EARLY MESSAGE...IGNORED!!!")
         else:
             print("Returning joint positions")
-            data_payload = struct.pack("f", 5)
-            data_length = struct.pack('!I', len(data_payload))
-            msg = data_length + data_payload
+            data_payload = struct.pack("f", 4)
+            msg =  data_payload
             try:
                 client_socket_5003.sendall(msg)
             except Exception as e:
@@ -111,8 +115,7 @@ def main():
                     np_arr[3] += 360.0  
             print("Sending joint positions:", np_arr)
             data_payload = struct.pack("f", 0) + np_arr.tobytes()
-            data_length = struct.pack('!I', len(data_payload))
-            msg = data_length + data_payload
+            msg = data_payload
             print("Sending message of length:", len(msg))
             try:
                 client_socket_5003.sendall(msg)
@@ -132,8 +135,7 @@ def main():
             np_arr[5::6] = np.where(np_arr[5::6] < 0, np_arr[5::6] + 360.0, np_arr[5::6])
 
             data_payload = struct.pack("f", 1) + np_arr.tobytes()
-            data_length = struct.pack('!I', len(data_payload))
-            msg = data_length + data_payload
+            msg = data_payload
             print(f"Sending message of length: {len(msg)} bytes")
             for i in range(pointNum):
                 if i % 1 == 0:
@@ -155,16 +157,15 @@ def main():
         else:
             paramType = msg.data
             if paramType == 0:   # Slow Motion Param
-                data_payload = struct.pack("f", 3.0)
+                data_payload = struct.pack("f", 2.0)
                 print("Sending slow motion parameter")
             elif paramType == 1: # Fast Motion Param
-                data_payload = struct.pack("f", 4.0)
+                data_payload = struct.pack("f", 3.0)
                 print("Sending fast motion parameter")
             else:
                 print("Unknown motion parameter type:", paramType)
                 return  
-            data_length = struct.pack('!I', len(data_payload))
-            msg = data_length + data_payload
+            msg = data_payload
             
             print(f"Sending message of length: {len(msg)} bytes")
             try:
@@ -182,7 +183,6 @@ def main():
 
     debug_time = time.time()
     while not rospy.is_shutdown():
-        time.sleep(0.02)
         try:
             data_5004 = client_socket_5004.recv(65535)  
             if len(data_5004) == 0:
@@ -213,6 +213,8 @@ def main():
             pass  
         except Exception as e:
             print("Exception on client_socket_5004:", e)
+
+        time.sleep(0.01)
 
 
 if __name__ == '__main__':

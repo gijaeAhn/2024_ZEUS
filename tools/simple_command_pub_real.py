@@ -78,7 +78,7 @@ class simple_command_pub_real :
                 return
 
 
-            if self.exist_user: # 유저가 있는상태에서 
+            if self.exist_user: 
                 if (key_str == 'x' or key_str == 'c') and not self.input_lock:
                     self.input_lock = not self.input_lock
                     self._HRICommandPub.publish("open")
@@ -100,9 +100,8 @@ class simple_command_pub_real :
 
 
 def main():
-    simple_command_pub_real = simple_command_pub_real()
-
     rospy.init_node('zeus_position_logger', anonymous=True)
+    command_pub = simple_command_pub_real()
 
     try:
         rospy.spin()
