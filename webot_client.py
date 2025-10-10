@@ -25,7 +25,7 @@ from cv_bridge import CvBridge
 from lib.zeus_kinematics import *
 
 
-from config.config import WebotsConfig
+from config.config import WebotsConfig, realConfig
 
 
 
@@ -55,7 +55,7 @@ class WebotsAgent(Agent) :
         # self._paramPoseSub                 = rospy.Subscriber('/zeus/webots/paramPose'             ,  String              , self._paramPoseCallback         )
         # self._eeCommandSub                 = rospy.Subscriber('/zeus/webots/eeCommand'             ,  String              , self._eeControlCallback         )
         # self._webotsJointCommandSub        = rospy.Subscriber('/zeus/webots/prejointCommand'       ,  JointState          , self._preJointCommandCallback   )
-        # self._webotsRealJointSub           = rospy.Subscriber('/zeus/webots/realJoint'             ,  JointState          , self._updateJointCallback       )
+        self._webotsRealJointSub           = rospy.Subscriber('/zeus/webots/realJoint'             ,  JointState          , self._updateJointCallback       )
         self._webotsSimpleMoveSub          = rospy.Subscriber('/zeus/webots/simpleMoveCommand'     ,  String              , self._simpleMoveCallback        )
         # self._webotsHRICommandSub          = rospy.Subscriber('/zeus/webots/HRICommand'            ,  String              , self._HRIEventLoopCallback           )
         # self._webotsPositionMoveSub        = rospy.Subscriber('/zeus/webots/positionCommnad'       ,  String              , self._paramPoseCallback         )
@@ -113,6 +113,7 @@ class WebotsAgent(Agent) :
         self._curJoint = tempPosition
 
         self._curTrans = ARM6_kinematics_forward_armReal(self._curJoint)
+        print("1")
         self._curTrans.printTransform(self._curTrans)  
 
     def _simpleMoveCallback(self,msg, scale = 'small') :
@@ -135,6 +136,17 @@ class WebotsAgent(Agent) :
                 self._moveZ(-WebotsConfig.smallCommandStep)
             elif command == 'i' :
                 self.movePoseT(WebotsConfig.startPoseT)
+            elif command == '0' :
+                angle = [0,0,0,0,0,0]
+                self.movePoseA(angle)
+            elif command == '1' :
+                self.movePoseT(realConfig.startPoseT)
+            elif command == '2' :
+                self.movePoseT(realConfig.barPoseT)
+            elif command == '3' :
+                self.movePoseT(realConfig.shakingT)
+            elif command == '4' :
+                self.movePoseT(realConfig.servicePositionT)
         elif scale == 'big' :
             if command == 'w' :
                 self._moveX(WebotsConfig.bigCommandStep)
